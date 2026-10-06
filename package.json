@@ -7,12 +7,15 @@
     "apps/web",
     "apps/api"
   ],
+  "type": "module",
+  "main": "src/server.js",
   "scripts": {
+    "start": "node src/server.js",
+    "start:api": "node apps/api/src/server.js",
     "dev": "concurrently -n \"API,WEB\" -c \"cyan,magenta\" \"npm run dev --prefix apps/api\" \"npm run dev --prefix apps/web\"",
     "dev:web": "npm run dev --prefix apps/web",
     "dev:api": "npm run dev --prefix apps/api",
-    "build:web": "npm run build --prefix apps/web",
-    "start:api": "npm start --prefix apps/api"
+    "build:web": "npm run build --prefix apps/web"
   },
   "keywords": [
     "career",

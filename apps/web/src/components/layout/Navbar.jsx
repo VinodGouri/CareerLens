@@ -8,7 +8,6 @@ import {
   BookOpen, 
   Sparkles, 
   LayoutDashboard, 
-  ShieldCheck, 
   FileSearch,
   ChevronDown,
   Bookmark,
@@ -37,8 +36,7 @@ export default function Navbar() {
     { to: '/resume-analyzer', label: 'ATS Analyzer', icon: FileSearch },
     { to: '/applications', label: 'Tracker', icon: CheckSquare },
     { to: '/learning', label: 'Learn', icon: BookOpen },
-    { to: '/settings', label: 'Settings', icon: Settings },
-    { to: '/admin', label: 'Admin', icon: ShieldCheck }
+    { to: '/settings', label: 'Settings', icon: Settings }
   ];
 
   return (
@@ -91,54 +89,66 @@ export default function Navbar() {
           {/* Right Action: Persona Switcher & AI Assistant Button */}
           <div className="flex items-center gap-3">
             
-            {/* Persona Switcher Dropdown */}
-            <div className="relative group">
-              <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-slate-900/80 border border-white/10 hover:border-brand-500/40 cursor-pointer text-xs transition-all">
-                <div className="w-2 h-2 rounded-full bg-accent-emerald animate-ping" />
-                <div className="text-left hidden md:block">
-                  <p className="text-[10px] text-slate-400 font-medium">Active Persona</p>
-                  <p className="font-semibold text-slate-200 leading-tight">
-                    {activePersona === 'user_fresher_01' ? 'Rahul (Fresher)' : 'Priya (1.5 YOE)'}
-                  </p>
+            {/* User Account Menu */}
+            {currentUser ? (
+              <div className="relative group">
+                <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-slate-900/80 border border-white/10 hover:border-brand-500/40 cursor-pointer text-xs transition-all">
+                  <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-brand-600 to-accent-cyan flex items-center justify-center text-white font-bold text-[11px]">
+                    {currentUser.name ? currentUser.name.charAt(0).toUpperCase() : 'U'}
+                  </div>
+                  <div className="text-left hidden md:block">
+                    <p className="font-semibold text-slate-200 leading-tight">
+                      {currentUser.name || 'Account'}
+                    </p>
+                    <p className="text-[10px] text-slate-400 font-medium">
+                      {(currentUser.preferred_roles || [])[0] || 'User'}
+                    </p>
+                  </div>
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-400 group-hover:rotate-180 transition-transform" />
                 </div>
-                <ChevronDown className="w-3.5 h-3.5 text-slate-400 group-hover:rotate-180 transition-transform" />
-              </div>
 
-              {/* Persona Options Dropdown */}
-              <div className="absolute right-0 mt-2 w-64 glass-panel rounded-xl shadow-2xl p-2 hidden group-hover:block transition-all border border-white/15">
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-2 py-1">
-                  Test Personas (PRD Scenarios)
-                </p>
-                <button
-                  onClick={() => switchPersona('user_fresher_01')}
-                  className={`w-full text-left p-2 rounded-lg text-xs transition-colors mb-1 ${
-                    activePersona === 'user_fresher_01' ? 'bg-brand-500/20 text-brand-200 border border-brand-500/30' : 'hover:bg-white/5 text-slate-300'
-                  }`}
-                >
-                  <div className="font-semibold">Rahul Sharma (Persona 1)</div>
-                  <div className="text-[11px] text-slate-400">B.Tech Fresher · React, Node.js, MongoDB</div>
-                </button>
-                <button
-                  onClick={() => switchPersona('user_junior_02')}
-                  className={`w-full text-left p-2 rounded-lg text-xs transition-colors ${
-                    activePersona === 'user_junior_02' ? 'bg-brand-500/20 text-brand-200 border border-brand-500/30' : 'hover:bg-white/5 text-slate-300'
-                  }`}
-                >
-                  <div className="font-semibold">Priya Nair (Persona 2)</div>
-                  <div className="text-[11px] text-slate-400">1.5 YOE Frontend · Transitioning to Full Stack</div>
-                </button>
+                {/* Account Dropdown */}
+                <div className="absolute right-0 mt-2 w-52 glass-panel rounded-xl shadow-2xl p-2 hidden group-hover:block transition-all border border-white/15">
+                  <div className="px-2 py-1.5 border-b border-white/10 mb-1">
+                    <p className="text-xs font-semibold text-white">{currentUser.name || 'User'}</p>
+                    <p className="text-[10px] text-slate-400 truncate">{currentUser.email || ''}</p>
+                  </div>
 
-                <div className="border-t border-white/10 mt-2 pt-2">
-                  <button
-                    onClick={handleLogout}
-                    className="w-full flex items-center gap-2 p-2 rounded-lg text-xs text-red-400 hover:bg-red-500/10 transition-colors"
+                  <Link
+                    to="/profile"
+                    className="w-full flex items-center gap-2 p-2 rounded-lg text-xs text-slate-300 hover:text-white hover:bg-white/5 transition-colors"
                   >
-                    <LogOut className="w-3.5 h-3.5" />
-                    Sign Out
-                  </button>
+                    <User className="w-3.5 h-3.5 text-brand-400" />
+                    <span>My Profile</span>
+                  </Link>
+
+                  <Link
+                    to="/settings"
+                    className="w-full flex items-center gap-2 p-2 rounded-lg text-xs text-slate-300 hover:text-white hover:bg-white/5 transition-colors"
+                  >
+                    <Settings className="w-3.5 h-3.5 text-slate-400" />
+                    <span>Settings</span>
+                  </Link>
+
+                  <div className="border-t border-white/10 mt-1 pt-1">
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center gap-2 p-2 rounded-lg text-xs text-red-400 hover:bg-red-500/10 transition-colors"
+                    >
+                      <LogOut className="w-3.5 h-3.5" />
+                      <span>Sign Out</span>
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <Link
+                to="/login"
+                className="px-3.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 text-white text-xs font-semibold border border-white/10 transition-colors"
+              >
+                Sign In
+              </Link>
+            )}
 
             {/* AI Assistant Button */}
             <button

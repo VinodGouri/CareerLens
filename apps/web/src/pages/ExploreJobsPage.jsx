@@ -17,11 +17,14 @@ import {
   ShieldCheck,
   Check,
   Zap,
-  ArrowUpDown
+  ArrowUpDown,
+  Plus,
+  Link as LinkIcon
 } from 'lucide-react';
 import { useCareer } from '../context/CareerContext';
 import JobCard from '../components/jobs/JobCard';
 import MatchExplanationModal from '../components/jobs/MatchExplanationModal';
+import JobImportModal from '../components/jobs/JobImportModal';
 
 export default function ExploreJobsPage() {
   const { 
@@ -47,6 +50,7 @@ export default function ExploreJobsPage() {
   const [viewMode, setViewMode] = useState('grid'); // 'grid', 'list'
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncNotice, setSyncNotice] = useState(null);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
   const locations = ['All', 'Hyderabad', 'Bangalore', 'Pune', 'Delhi NCR', 'Remote'];
   const workModes = ['ALL', 'REMOTE', 'HYBRID', 'ON_SITE'];
@@ -77,7 +81,7 @@ export default function ExploreJobsPage() {
       if (searchQuery) {
         const q = searchQuery.toLowerCase();
         const matchesQuery = 
-          job.title.toLowerCase().includes(q) ||
+          job.title.toLowerCase().includes(q) || 
           job.company.toLowerCase().includes(q) ||
           (job.required_skills || []).some(s => s.toLowerCase().includes(q)) ||
           (job.preferred_skills || []).some(s => s.toLowerCase().includes(q));
@@ -171,7 +175,12 @@ export default function ExploreJobsPage() {
   const handleSyncFeed = async () => {
     setIsSyncing(true);
     try {
-      const res = await fetch('/api/v1/jobs/sync-demo-feed', { method: 'POST' }).then(r => r.json());
+      const res = await fetch('/api/v1/jobs/sync-candidate-feed', { 
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ source: selectedSource !== 'ALL' ? selectedSource : undefined, count: 12 })
+      }).then(r => r.json());
+
       if (res.success) {
         setSyncNotice({
           ingested: res.data.newlyIngestedCount,
@@ -180,7 +189,7 @@ export default function ExploreJobsPage() {
         await refreshData();
       }
     } catch (e) {
-      console.warn("Sync failed, refreshing local state:", e);
+      console.warn("Sync fallback, refreshing data:", e);
       await refreshData();
     } finally {
       setIsSyncing(false);
@@ -206,16 +215,29 @@ export default function ExploreJobsPage() {
             </p>
           </div>
 
-          {/* Sync Live Sources Button */}
-          <button
-            onClick={handleSyncFeed}
-            disabled={isSyncing}
-            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 via-indigo-600 to-accent-cyan hover:opacity-95 text-white font-bold text-xs shadow-glow-primary transition-all flex items-center gap-2 whitespace-nowrap disabled:opacity-50 self-start sm:self-auto"
-            title="Ingests fresh batches through multi-source adapters & blocks duplicate postings"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
-            <span>{isSyncing ? 'Syncing Adapters...' : 'Sync Live Sources'}</span>
-          </button>
+          {/* Ingestion Actions Bar */}
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            {/* Import Job URL Button */}
+            <button
+              onClick={() => setIsImportModalOpen(true)}
+              className="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs border border-white/10 transition-all flex items-center gap-1.5 whitespace-nowrap active:scale-95 shadow-sm"
+              title="Paste a job link from LinkedIn, Naukri, or Indeed to extract and score"
+            >
+              <Plus className="w-3.5 h-3.5 text-accent-cyan" />
+              <span>Import Job URL</span>
+            </button>
+
+            {/* Sync Live Sources Button */}
+            <button
+              onClick={handleSyncFeed}
+              disabled={isSyncing}
+              className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 via-indigo-600 to-accent-cyan hover:opacity-95 text-white font-bold text-xs shadow-glow-primary transition-all flex items-center gap-2 whitespace-nowrap disabled:opacity-50 active:scale-95"
+              title="Ingests fresh batches through multi-source adapters & blocks duplicate postings"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
+              <span>{isSyncing ? 'Syncing Adapters...' : 'Sync Live Sources'}</span>
+            </button>
+          </div>
         </div>
 
         {/* Sync Success Notice */}
@@ -438,21 +460,52 @@ export default function ExploreJobsPage() {
 
       {/* Jobs Grid or List View */}
       {filteredJobs.length === 0 ? (
-        <div className="glass-panel p-12 rounded-3xl text-center border border-white/10 space-y-4">
-          <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto text-slate-400">
-            <Search className="w-6 h-6" />
+        jobs.length === 0 ? (
+          <div className="glass-panel p-10 sm:p-14 rounded-3xl text-center border border-white/10 space-y-5 animate-fadeIn">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-brand-500/20 via-purple-500/20 to-accent-cyan/20 border border-brand-500/30 flex items-center justify-center mx-auto text-brand-300 shadow-glow-primary">
+              <Sparkles className="w-8 h-8 text-accent-cyan animate-pulse" />
+            </div>
+            <div className="max-w-md mx-auto space-y-2">
+              <h3 className="text-xl font-extrabold text-white">No Ingested Jobs in Repository</h3>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Your candidate repository currently has no active listings. Ingest live opportunities from LinkedIn, Naukri, Indeed & Wellfound tailored directly to your profile.
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+              <button
+                onClick={handleSyncFeed}
+                disabled={isSyncing}
+                className="w-full sm:w-auto px-5 py-3 rounded-xl bg-gradient-to-r from-brand-600 via-indigo-600 to-accent-cyan hover:opacity-95 text-white font-bold text-xs shadow-glow-primary transition-all flex items-center justify-center gap-2"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
+                <span>{isSyncing ? 'Syncing Adapters...' : 'Fetch Jobs from LinkedIn, Naukri & Indeed'}</span>
+              </button>
+              <button
+                onClick={() => setIsImportModalOpen(true)}
+                className="w-full sm:w-auto px-4 py-3 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs border border-white/10 transition-all flex items-center justify-center gap-2"
+              >
+                <Plus className="w-3.5 h-3.5 text-accent-cyan" />
+                <span>Import Job by URL</span>
+              </button>
+            </div>
           </div>
-          <div>
-            <h3 className="text-base font-bold text-white">No jobs match your active filters</h3>
-            <p className="text-xs text-slate-400 mt-1">Try broadening your salary range, location, or search query.</p>
+        ) : (
+          <div className="glass-panel p-12 rounded-3xl text-center border border-white/10 space-y-4">
+            <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto text-slate-400">
+              <Search className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-white">No jobs match your active filters</h3>
+              <p className="text-xs text-slate-400 mt-1">Try broadening your salary range, location, or search query.</p>
+            </div>
+            <button
+              onClick={clearFilters}
+              className="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs"
+            >
+              Reset All Filters
+            </button>
           </div>
-          <button
-            onClick={clearFilters}
-            className="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs"
-          >
-            Reset All Filters
-          </button>
-        </div>
+        )
       ) : (
         <div className={
           viewMode === 'grid' 
@@ -476,6 +529,13 @@ export default function ExploreJobsPage() {
           onClose={() => setActiveJobForAnalysis(null)}
         />
       )}
+
+      {/* Job URL / Text Ingestion Modal */}
+      <JobImportModal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        onJobIngested={() => refreshData()}
+      />
 
     </div>
   );

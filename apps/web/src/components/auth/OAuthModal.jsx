@@ -27,7 +27,6 @@ const GitHubIcon = () => (
 export default function OAuthModal({ isOpen, onClose, provider = 'google', redirectPath = '/' }) {
   const navigate = useNavigate();
   const { switchPersona, refreshData } = useCareer();
-  const [activeTab, setActiveTab] = useState('quick'); // 'quick' | 'custom'
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [authSuccess, setAuthSuccess] = useState(false);
   const [error, setError] = useState('');
@@ -52,20 +51,6 @@ export default function OAuthModal({ isOpen, onClose, provider = 'google', redir
         'Read your basic profile information (name, avatar, locale)',
         'Verify your primary email address',
         'Import authenticated credentials into CareerLens'
-      ],
-      defaultProfiles: [
-        {
-          name: 'Rahul Sharma',
-          email: 'rahul.sharma@example.com',
-          subtitle: 'Fresher / B.Tech CSE (Google Workspace)',
-          avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80'
-        },
-        {
-          name: 'Priya Nair',
-          email: 'priya.nair@example.com',
-          subtitle: 'Associate Developer (PES Alum)',
-          avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80'
-        }
       ]
     },
     linkedin: {
@@ -79,20 +64,6 @@ export default function OAuthModal({ isOpen, onClose, provider = 'google', redir
         'Import professional headline, work experience & company badges',
         'Sync LinkedIn verified skill assessment badges & endorsements',
         'Auto-populate ATS resume and AI compatibility profile'
-      ],
-      defaultProfiles: [
-        {
-          name: 'Priya Nair',
-          email: 'priya.nair@example.com',
-          subtitle: 'Frontend Engineer @ CognitiveCloud (1.5 YOE)',
-          avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80'
-        },
-        {
-          name: 'Rahul Sharma',
-          email: 'rahul.sharma@example.com',
-          subtitle: 'Full Stack Engineer | JNTUH 2025',
-          avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80'
-        }
       ]
     },
     github: {
@@ -106,20 +77,6 @@ export default function OAuthModal({ isOpen, onClose, provider = 'google', redir
         'Import public repositories, commit activity and pinned projects',
         'Verify programming languages (JavaScript, React, Node.js, TypeScript)',
         'Generate AI skill evidence directly from repository commits'
-      ],
-      defaultProfiles: [
-        {
-          name: 'Rahul Sharma (rahulsharma-dev)',
-          email: 'rahul.sharma@example.com',
-          subtitle: '2 Featured Repositories • 1,200+ Users Served',
-          avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&auto=format&fit=crop&q=80'
-        },
-        {
-          name: 'Priya Nair (priyanair)',
-          email: 'priya.nair@example.com',
-          subtitle: 'DevPulse Creator • TypeScript / React Contributor',
-          avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80'
-        }
       ]
     }
   }[provider] || {
@@ -127,8 +84,7 @@ export default function OAuthModal({ isOpen, onClose, provider = 'google', redir
     icon: <GoogleIcon />,
     title: `Sign in with ${provider}`,
     subtitle: 'OAuth 2.0 authentication',
-    scopes: ['Read profile', 'Verify email'],
-    defaultProfiles: []
+    scopes: ['Read profile', 'Verify email']
   };
 
   const executeOAuthLogin = async (payload) => {
@@ -168,13 +124,6 @@ export default function OAuthModal({ isOpen, onClose, provider = 'google', redir
     }
   };
 
-  const handleQuickProfileSelect = (prof) => {
-    executeOAuthLogin({
-      email: prof.email,
-      name: prof.name.split(' (')[0],
-      avatarUrl: prof.avatar
-    });
-  };
 
   const handleCustomSubmit = (e) => {
     e.preventDefault();
@@ -240,70 +189,8 @@ export default function OAuthModal({ isOpen, onClose, provider = 'google', redir
               </div>
             )}
 
-            {/* Tab switch between 1-Click Persona vs Custom Identity */}
-            <div className="flex p-1 rounded-xl bg-white/5 border border-white/10">
-              <button
-                type="button"
-                onClick={() => setActiveTab('quick')}
-                className={`flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-                  activeTab === 'quick' ? 'bg-brand-500 text-white shadow-md' : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                ⚡ 1-Click Candidate Profiles
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveTab('custom')}
-                className={`flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-                  activeTab === 'custom' ? 'bg-brand-500 text-white shadow-md' : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                ✏️ Custom {config.name} Identity
-              </button>
-            </div>
-
-            {/* TAB 1: 1-Click Fast Accounts */}
-            {activeTab === 'quick' && (
-              <div className="space-y-3">
-                <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                  Select an account to authorize:
-                </p>
-                <div className="space-y-2">
-                  {config.defaultProfiles.map((prof, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      disabled={isAuthenticating}
-                      onClick={() => handleQuickProfileSelect(prof)}
-                      className="w-full flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-brand-500/40 text-left transition-all group disabled:opacity-50"
-                    >
-                      <div className="flex items-center gap-3">
-                        <img
-                          src={prof.avatar}
-                          alt={prof.name}
-                          className="w-9 h-9 rounded-full object-cover border border-white/20"
-                        />
-                        <div>
-                          <p className="text-sm font-semibold text-white group-hover:text-brand-300 transition-colors">
-                            {prof.name}
-                          </p>
-                          <p className="text-xs text-slate-400">{prof.email}</p>
-                          <p className="text-[10px] text-accent-cyan mt-0.5">{prof.subtitle}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-1.5 text-xs font-semibold text-brand-400 group-hover:translate-x-1 transition-transform">
-                        <span>Connect</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* TAB 2: Custom Identity */}
-            {activeTab === 'custom' && (
-              <form onSubmit={handleCustomSubmit} className="space-y-3">
+            {/* Direct Custom Identity Authorization */}
+            <form onSubmit={handleCustomSubmit} className="space-y-3">
                 <div className="space-y-1">
                   <label className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Full Name</label>
                   <div className="relative">
@@ -363,7 +250,6 @@ export default function OAuthModal({ isOpen, onClose, provider = 'google', redir
                   )}
                 </button>
               </form>
-            )}
 
             {/* Permissions / Scopes info */}
             <div className="pt-2 border-t border-white/10 space-y-1.5">

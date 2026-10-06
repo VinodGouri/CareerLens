@@ -24,6 +24,11 @@ import SavedJobsPage from './pages/SavedJobsPage';
 import SettingsPage from './pages/SettingsPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 
+// Admin Portal Components (Dedicated layout, guard, & login)
+import AdminGuard from './components/admin/AdminGuard';
+import AdminLayout from './components/admin/AdminLayout';
+import AdminLoginPage from './pages/admin/AdminLoginPage';
+
 /* ─── Layout wrapper for authenticated pages ─── */
 function AppLayout({ children }) {
   return (
@@ -133,10 +138,14 @@ export default function App() {
               <AppLayout><SettingsPage /></AppLayout>
             </AuthGuard>
           } />
+          {/* Dedicated Administrator Portal */}
+          <Route path="/admin/login" element={<AdminLoginPage />} />
           <Route path="/admin" element={
-            <AuthGuard>
-              <AppLayout><AdminDashboardPage /></AppLayout>
-            </AuthGuard>
+            <AdminGuard>
+              <AdminLayout>
+                <AdminDashboardPage />
+              </AdminLayout>
+            </AdminGuard>
           } />
         </Routes>
       </BrowserRouter>

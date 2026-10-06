@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   User, 
   Mail, 
@@ -44,7 +45,25 @@ export default function ProfilePage() {
   const [newSkillYears, setNewSkillYears] = useState(1);
   const [newSkillEvidence, setNewSkillEvidence] = useState('');
 
-  if (!currentUser) return null;
+  if (!currentUser) {
+    return (
+      <div className="glass-panel p-12 rounded-3xl text-center border border-white/10 space-y-4 max-w-lg mx-auto mt-12">
+        <User className="w-12 h-12 text-slate-500 mx-auto" />
+        <div>
+          <h2 className="text-lg font-bold text-white">No Profile Found</h2>
+          <p className="text-xs text-slate-400 mt-1">
+            Please register or sign in to configure your verified skills, education, and career preferences.
+          </p>
+        </div>
+        <Link
+          to="/register"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs transition-all shadow-glow-primary"
+        >
+          <span>Create Account</span>
+        </Link>
+      </div>
+    );
+  }
 
   const handleAddSkill = (e) => {
     e.preventDefault();

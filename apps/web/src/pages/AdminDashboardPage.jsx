@@ -17,8 +17,14 @@ export default function AdminDashboardPage() {
   const [syncing, setSyncing] = useState(false);
   const [syncNotice, setSyncNotice] = useState(false);
 
-  useEffect(() => {
-    fetch('/api/v1/admin/stats')
+  const fetchAdminStats = () => {
+    const adminToken = localStorage.getItem('careerlens_admin_token');
+    fetch('/api/v1/admin/stats', {
+      headers: {
+        'Content-Type': 'application/json',
+        ...(adminToken ? { 'Authorization': `Bearer ${adminToken}` } : {})
+      }
+    })
       .then(r => r.json())
       .then(res => {
         if (res.success) setStats(res.data);
@@ -37,11 +43,16 @@ export default function AdminDashboardPage() {
           averageMatchLatency: "210ms"
         });
       });
+  };
+
+  useEffect(() => {
+    fetchAdminStats();
   }, []);
 
   const handleTriggerSync = () => {
     setSyncing(true);
     setTimeout(() => {
+      fetchAdminStats();
       setSyncing(false);
       setSyncNotice(true);
       setTimeout(() => setSyncNotice(false), 3000);

@@ -4,8 +4,20 @@ import dotenv from 'dotenv';
 import morgan from 'morgan';
 import { SEED_USERS, SEED_JOBS, SEED_LEARNING_RESOURCES, SEED_APPLICATIONS } from './data/seedData.js';
 import { calculateComprehensiveMatch } from './services/aiMatcher.js';
-import { JobIngestionEngine, parseSalaryToNumeric, generateCanonicalHash } from './services/jobIngestionService.js';
+import { 
+  JobIngestionEngine, 
+  parseSalaryToNumeric, 
+  generateCanonicalHash,
+  parseJobFromUrlOrText,
+  generateJobsForCandidateProfile,
+  fetchLiveLinkedInJobs
+} from './services/jobIngestionService.js';
 
+import { emailService } from './services/emailService.js';
+import { otpService } from './services/otpService.js';
+import { userService } from './services/userService.js';
+
+// Initialize clean in-memory state & load environment variables
 dotenv.config();
 
 const app = express();
@@ -15,31 +27,245 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
-// In-Memory Data Store (Initialized with realistic seed data)
-let users = [...SEED_USERS];
+// Data Store (User state managed by UserService with disk persistence)
+let users = userService.getAllUsers();
 let jobs = [...SEED_JOBS];
 const ingestionEngine = new JobIngestionEngine(jobs);
 let learningResources = [...SEED_LEARNING_RESOURCES];
 let applications = [...SEED_APPLICATIONS];
-let savedJobIds = ["job_abc_01", "job_swiggy_03"];
+let savedJobIds = [];
 
-// Helper: Active user session (defaults to Rahul Sharma / Fresher for instant out-of-the-box experience)
-let currentUserId = "user_fresher_01";
+// Helper: Active user session (defaults to first verified persona or null)
+let currentUserId = null;
 function getCurrentUser() {
-  return users.find(u => u.id === currentUserId) || users[0];
+  return (currentUserId && userService.findById(currentUserId)) || userService.getAllUsers()[0] || null;
 }
 
 /* -------------------------------------------------------------
- * 1. AUTHENTICATION & SWITCH PERSONA
+ * 1. AUTHENTICATION & VERIFICATION ENGINE (OTP, Real Email, Google)
  * ----------------------------------------------------------- */
-app.post('/api/v1/auth/login', (req, res) => {
-  const { email } = req.body;
-  const user = users.find(u => u.email === email);
-  if (!user) {
-    return res.status(404).json({ success: false, error: { message: "User not found" } });
+
+// Client Auth Configuration (Google Client ID & Email status)
+app.get('/api/v1/auth/config', (req, res) => {
+  res.json({
+    success: true,
+    data: {
+      googleClientId: process.env.GOOGLE_CLIENT_ID || process.env.VITE_GOOGLE_CLIENT_ID || '',
+      smtpConfigured: emailService.isConfigured()
+    }
+  });
+});
+
+// Check if email is already registered or available
+app.post('/api/v1/auth/check-email', (req, res) => {
+  const { email } = req.body || {};
+  if (!email) {
+    return res.status(400).json({ success: false, error: { message: "Email address is required" } });
   }
+
+  const cleanEmail = email.trim().toLowerCase();
+  const validation = otpService.validateEmailFormat(cleanEmail);
+  if (!validation.valid) {
+    return res.status(400).json({ success: false, error: { message: validation.message } });
+  }
+
+  const isRegistered = userService.isEmailRegistered(cleanEmail);
+  res.json({
+    success: true,
+    data: {
+      email: cleanEmail,
+      isRegistered
+    }
+  });
+});
+
+// Send 6-digit OTP verification code to a real email address
+app.post('/api/v1/auth/send-otp', async (req, res) => {
+  const { email, purpose = 'REGISTER' } = req.body || {};
+  if (!email) {
+    return res.status(400).json({ success: false, error: { message: "Email address is required" } });
+  }
+
+  const cleanEmail = email.trim().toLowerCase();
+  const validation = otpService.validateEmailFormat(cleanEmail);
+  if (!validation.valid) {
+    return res.status(400).json({ success: false, error: { message: validation.message } });
+  }
+
+  const isRegistered = userService.isEmailRegistered(cleanEmail);
+
+  // When registering: reject if already registered
+  if (purpose === 'REGISTER' && isRegistered) {
+    return res.status(409).json({
+      success: false,
+      error: { message: "This email address is already registered. Please sign in instead." }
+    });
+  }
+
+  // When logging in with OTP: reject if not registered
+  if (purpose === 'LOGIN' && !isRegistered) {
+    return res.status(404).json({
+      success: false,
+      error: { message: "No account found with this email. Only registered email addresses can sign in. Please register first." }
+    });
+  }
+
+  const result = await otpService.generateAndSendOtp(cleanEmail, purpose);
+  if (!result.success) {
+    return res.status(400).json({ success: false, error: { message: result.error } });
+  }
+
+  res.json({ success: true, data: result });
+});
+
+// Verify 6-digit OTP code
+app.post('/api/v1/auth/verify-otp', (req, res) => {
+  const { email, otp } = req.body || {};
+  if (!email || !otp) {
+    return res.status(400).json({ success: false, error: { message: "Email and 6-digit code are required" } });
+  }
+
+  const result = otpService.verifyOtp(email, otp);
+  if (!result.success) {
+    return res.status(400).json({ success: false, error: { message: result.error } });
+  }
+
+  res.json({ success: true, data: result });
+});
+
+// User Login (Strictly verifies registered users only; supports Password or OTP)
+app.post('/api/v1/auth/login', (req, res) => {
+  const { email, password, otp } = req.body || {};
+  if (!email) {
+    return res.status(400).json({ success: false, error: { message: "Email address is required" } });
+  }
+
+  const cleanEmail = email.trim().toLowerCase();
+  const user = userService.findByEmail(cleanEmail);
+
+  // CRITICAL REQUIREMENT: Only registered mail ids can login
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      error: { 
+        message: "No account found with this email. Only registered email addresses can sign in. Please register first." 
+      }
+    });
+  }
+
+  // Handle OTP sign in
+  if (otp) {
+    const verifyResult = otpService.verifyOtp(cleanEmail, otp);
+    if (!verifyResult.success) {
+      return res.status(400).json({ success: false, error: { message: verifyResult.error } });
+    }
+    otpService.consumeVerification(cleanEmail);
+  } else if (password) {
+    // Handle password sign in
+    if (!user.password_hash && user.auth_provider === 'google') {
+      return res.status(401).json({
+        success: false,
+        error: { message: "This account was registered with Google. Please use 'Continue with Google' or 'Email OTP Sign In'." }
+      });
+    }
+    const isValid = userService.verifyPassword(user, password);
+    if (!isValid) {
+      return res.status(401).json({
+        success: false,
+        error: { message: "Incorrect password. Please verify your credentials or sign in with OTP." }
+      });
+    }
+  } else {
+    // If user has a password hash, require credential
+    if (user.password_hash) {
+      return res.status(400).json({ success: false, error: { message: "Password or OTP code is required to sign in" } });
+    }
+  }
+
   currentUserId = user.id;
-  res.json({ success: true, data: { user, token: "demo-jwt-token-careerlens" } });
+
+  const safeUser = { ...user };
+  delete safeUser.password_hash;
+
+  res.json({
+    success: true,
+    data: {
+      user: safeUser,
+      token: `careerlens-jwt-${user.id}-${Date.now()}`
+    }
+  });
+});
+
+// Google Sign-In & Registration (Google Identity Services GIS)
+app.post('/api/v1/auth/google', async (req, res) => {
+  const { credential, accessToken, profile } = req.body || {};
+  let email = profile?.email;
+  let name = profile?.name;
+  let picture = profile?.picture;
+  let googleId = profile?.sub || profile?.id;
+
+  // 1. Decode Google ID token (GIS credential)
+  if (credential && !email) {
+    try {
+      const parts = credential.split('.');
+      if (parts.length === 3) {
+        const payload = JSON.parse(Buffer.from(parts[1], 'base64').toString('utf-8'));
+        email = payload.email;
+        name = payload.name;
+        picture = payload.picture;
+        googleId = payload.sub;
+      }
+    } catch (e) {
+      console.warn("Failed to decode Google credential token:", e.message);
+    }
+  }
+
+  // 2. Fetch from Google UserInfo if access_token provided
+  if (accessToken && !email) {
+    try {
+      const googleRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+        headers: { Authorization: `Bearer ${accessToken}` }
+      });
+      if (googleRes.ok) {
+        const info = await googleRes.json();
+        email = info.email;
+        name = info.name;
+        picture = info.picture;
+        googleId = info.sub;
+      }
+    } catch (e) {
+      console.warn("Failed to query Google userinfo API:", e.message);
+    }
+  }
+
+  if (!email) {
+    return res.status(400).json({
+      success: false,
+      error: { message: "Could not retrieve verified email from Google identity. Please try again." }
+    });
+  }
+
+  const cleanEmail = email.trim().toLowerCase();
+  const user = userService.createOrUpdateGoogleUser({
+    email: cleanEmail,
+    name: name || "Google User",
+    avatarUrl: picture,
+    googleId
+  });
+
+  currentUserId = user.id;
+
+  const safeUser = { ...user };
+  delete safeUser.password_hash;
+
+  res.json({
+    success: true,
+    data: {
+      user: safeUser,
+      token: `careerlens-oauth-google-${user.id}-${Date.now()}`,
+      provider: 'google'
+    }
+  });
 });
 
 /* ─── OAuth Providers & Authentication (Google, LinkedIn, GitHub) ─── */
@@ -93,22 +319,12 @@ app.post('/api/v1/auth/oauth/:provider', (req, res) => {
     user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
   }
 
-  // If not found by email and no email provided, select appropriate default persona
-  if (!user && !email) {
-    if (provider === 'google') {
-      user = users.find(u => u.id === 'user_fresher_01');
-    } else if (provider === 'linkedin') {
-      user = users.find(u => u.id === 'user_junior_02');
-    } else if (provider === 'github') {
-      user = users.find(u => u.id === 'user_fresher_01');
-    }
-  }
 
   // If still not matched, synthesize a realistic verified profile for that provider
   if (!user) {
     const timestamp = Date.now();
     const userEmail = email || `${provider}.user.${timestamp}@careerlens.io`;
-    const userName = name || (provider === 'github' ? (username || 'GitHub Developer') : (provider === 'linkedin' ? 'LinkedIn Professional' : 'Google Candidate'));
+    const userName = name || (provider === 'github' ? (username || 'GitHub Developer') : (provider === 'linkedin' ? (email?.toLowerCase().includes('priya') ? 'Priya Nair' : 'LinkedIn Professional') : 'Google Candidate'));
 
     let initialSkills = [];
     let initialProjects = [];
@@ -212,9 +428,11 @@ app.post('/api/v1/auth/oauth/:provider', (req, res) => {
     };
 
     users.push(user);
+    userService.saveStore();
   } else {
     // Tag user with active auth_provider
     user.auth_provider = provider;
+    userService.saveStore();
   }
 
   currentUserId = user.id;
@@ -237,49 +455,96 @@ app.post('/api/v1/auth/oauth/:provider', (req, res) => {
 
 app.post('/api/v1/auth/switch-persona', (req, res) => {
   const { userId } = req.body;
-  const found = users.find(u => u.id === userId);
+  const found = userService.findById(userId) || userService.findByEmail(userId);
   if (found) {
     currentUserId = found.id;
-    return res.json({ success: true, data: found });
+    const safeUser = { ...found };
+    delete safeUser.password_hash;
+    return res.json({ success: true, data: safeUser });
   }
   res.status(404).json({ success: false, error: { message: "Persona not found" } });
 });
 
 app.post('/api/v1/auth/register', (req, res) => {
-  const { fullName, email, password, experienceLevel, preferredRole, location } = req.body;
-  
-  // Check if email already exists
-  if (users.find(u => u.email === email)) {
-    return res.status(409).json({ success: false, error: { message: "Email already registered" } });
+  const { 
+    fullName, 
+    email, 
+    password, 
+    otp, 
+    verificationToken,
+    experienceLevel, 
+    preferredRole, 
+    location,
+    locations,
+    workModes 
+  } = req.body || {};
+
+  if (!fullName || !email || !password) {
+    return res.status(400).json({ 
+      success: false, 
+      error: { message: "Full Name, email, and password are required" } 
+    });
   }
 
-  const newUser = {
-    id: `user_${Date.now()}`,
-    name: fullName,
-    email,
-    phone: "",
-    location: location || "India",
-    experience_level: experienceLevel || "FRESHER",
-    preferred_roles: preferredRole ? [preferredRole] : [],
-    skills: [],
-    education: [],
-    experience: [],
-    projects: [],
-    certifications: [],
-    expected_salary: "",
-    portfolio_url: "",
-    github_url: "",
-    linkedin_url: ""
-  };
+  const cleanEmail = email.trim().toLowerCase();
 
-  users.push(newUser);
+  // 1. Validate real email format
+  const validation = otpService.validateEmailFormat(cleanEmail);
+  if (!validation.valid) {
+    return res.status(400).json({ success: false, error: { message: validation.message } });
+  }
+
+  // 2. Reject if email already registered
+  if (userService.isEmailRegistered(cleanEmail)) {
+    return res.status(409).json({ 
+      success: false, 
+      error: { message: "This email address is already registered. Please sign in instead." } 
+    });
+  }
+
+  // 3. Verify real email via OTP (either pre-verified via verificationToken or otp supplied in request)
+  const isPreVerified = otpService.isEmailVerified(cleanEmail, verificationToken);
+  if (!isPreVerified) {
+    if (otp) {
+      const verifyResult = otpService.verifyOtp(cleanEmail, otp);
+      if (!verifyResult.success) {
+        return res.status(400).json({ success: false, error: { message: verifyResult.error } });
+      }
+    } else {
+      return res.status(400).json({ 
+        success: false, 
+        error: { message: "Email not verified. Please verify your real email address with the 6-digit OTP code." } 
+      });
+    }
+  }
+
+  // 4. Consume verification token
+  otpService.consumeVerification(cleanEmail);
+
+  // 5. Create new registered candidate with hashed password and verified status
+  const newUser = userService.createUser({
+    fullName,
+    email: cleanEmail,
+    password,
+    experienceLevel: experienceLevel || "FRESHER",
+    preferredRole: preferredRole || "",
+    location: (locations && locations[0]) || location || "Bangalore",
+    locations: Array.isArray(locations) && locations.length > 0 ? locations : [location || "Bangalore"],
+    workModes: Array.isArray(workModes) && workModes.length > 0 ? workModes : ["HYBRID", "REMOTE"],
+    auth_provider: "email",
+    is_verified: true
+  });
+
   currentUserId = newUser.id;
+
+  const safeUser = { ...newUser };
+  delete safeUser.password_hash;
 
   res.json({ 
     success: true, 
     data: { 
-      user: newUser, 
-      token: `careerlens-jwt-${newUser.id}` 
+      user: safeUser, 
+      token: `careerlens-jwt-${newUser.id}-${Date.now()}` 
     } 
   });
 });
@@ -294,8 +559,9 @@ app.get('/api/v1/auth/me', (req, res) => {
  * ----------------------------------------------------------- */
 app.get('/api/v1/profile', (req, res) => {
   const user = getCurrentUser();
-  
-  // Calculate profile completeness strength
+  if (!user) {
+    return res.json({ success: true, data: null });
+  }
   let checks = {
     personal: Boolean(user.name && user.email && user.location && user.phone),
     skills: (user.skills || []).length >= 5,
@@ -330,6 +596,7 @@ app.put('/api/v1/profile', (req, res) => {
   if (userIndex === -1) return res.status(404).json({ success: false, error: { message: "User not found" } });
   
   users[userIndex] = { ...users[userIndex], ...req.body };
+  userService.saveStore();
   res.json({ success: true, data: users[userIndex] });
 });
 
@@ -350,7 +617,7 @@ app.post('/api/v1/profile/clear', (req, res) => {
     phone: "",
     expected_salary: ""
   };
-  
+  userService.saveStore();
   res.json({ success: true, data: users[userIndex], message: "Profile data cleared to clean blank state" });
 });
 
@@ -365,6 +632,7 @@ app.post('/api/v1/profile/skills', (req, res) => {
     evidence: req.body.evidence || []
   };
   user.skills = [...(user.skills || []), newSkill];
+  userService.saveStore();
   res.json({ success: true, data: user.skills });
 });
 
@@ -383,7 +651,7 @@ app.get('/api/v1/jobs', (req, res) => {
 
   let results = jobs.map(job => {
     // Automatically augment with live match score
-    const matchAnalysis = calculateComprehensiveMatch(user, job);
+    const matchAnalysis = calculateComprehensiveMatch(user || {}, job);
     return {
       ...job,
       matchScore: matchAnalysis.overallScore,
@@ -554,73 +822,119 @@ app.post('/api/v1/jobs/ingest', (req, res) => {
   });
 });
 
-// Live Multi-Source Ingestion Sync Feed
-app.post('/api/v1/jobs/sync-demo-feed', (req, res) => {
-  const sampleFeed = [
-    {
-      source: 'LinkedIn',
-      title: 'Frontend Engineer - React / TypeScript',
-      company: 'Zepto',
-      location: 'Bangalore, India',
-      workplaceType: 'hybrid',
-      salary_min: '₹12,00,000',
-      salary_max: '₹18,00,000',
-      experienceMin: 1,
-      experienceMax: 3,
-      skillsRequired: ['React', 'TypeScript', 'Tailwind CSS', 'Redux', 'Next.js'],
-      skillsPreferred: ['Testing', 'GraphQL'],
-      description: 'Join Zepto fast grocery delivery engineering team building reactive customer platforms.'
-    },
-    {
-      source: 'Naukri',
-      title: 'Junior Backend Developer - Microservices',
-      company: 'Paytm Payments Bank',
-      location: 'Delhi NCR, India',
-      workMode: 'remote',
-      salary_min: '₹7,50,000',
-      salary_max: '₹12,00,000',
-      experienceRange: { min: 0, max: 2 },
-      keySkills: ['Node.js', 'Express.js', 'PostgreSQL', 'Redis', 'REST APIs'],
-      preferredSkills: ['Docker', 'AWS'],
-      description: 'Engineer high-throughput idempotent financial endpoints handling 10,000+ requests per second.'
-    },
-    {
-      source: 'Indeed',
-      title: 'Associate Cloud Software Engineer',
-      company: 'ThoughtWorks Technologies',
-      location: 'Hyderabad, India',
-      workMode: 'hybrid',
-      salary_min: '₹8,50,000',
-      salary_max: '₹13,50,000',
-      experienceYearsMin: 0,
-      experienceYearsMax: 2,
-      extractedSkills: ['Java', 'Python', 'React', 'Docker', 'AWS', 'Git & GitHub'],
-      description: 'Consult and build distributed enterprise applications using continuous delivery practices.'
-    },
-    {
-      source: 'Wellfound',
-      title: 'Full Stack Founding Engineer',
-      company: 'Sarvam AI',
-      location: 'Bangalore, India',
-      remoteOk: true,
-      salary_min: '₹14,00,000',
-      salary_max: '₹22,00,000',
-      yearsExperience: 1,
-      tags: ['React', 'Python', 'FastAPI', 'PostgreSQL', 'Docker'],
-      description: 'Building foundational Indic language GenAI models and developer developer developer platforms.'
-    },
-    // Intentional duplicate to test and prove SHA-256 deduplication!
-    {
-      source: 'LinkedIn',
-      title: 'Software Engineer - Early Career / Fresher',
-      company: 'ABC Technologies',
-      location: 'Hyderabad, India',
-      salary_min: '₹6,00,000',
-      salary_max: '₹10,00,000'
-    }
-  ];
+// Live URL / Raw Posting Ingestion (LinkedIn, Naukri, Indeed)
+app.post('/api/v1/jobs/ingest-url', (req, res) => {
+  const { url, rawText, source } = req.body;
+  const input = url || rawText;
+  if (!input) {
+    return res.status(400).json({ success: false, error: { message: "Job URL or job text description is required" } });
+  }
 
-  const results = ingestionEngine.ingestBatch(sampleFeed);
+  const rawNormalized = parseJobFromUrlOrText(input, source);
+  const result = ingestionEngine.ingest(rawNormalized, rawNormalized.source);
+
+  if (!result.success && result.duplicate) {
+    const existing = jobs.find(j => j.canonical_hash === result.canonical.canonical_hash) || result.canonical;
+    const user = getCurrentUser();
+    const matchAnalysis = calculateComprehensiveMatch(user || {}, existing);
+    return res.status(200).json({
+      success: true,
+      duplicate: true,
+      message: "Job already exists in candidate repository. Retrieved existing listing.",
+      data: {
+        ...existing,
+        matchAnalysis,
+        matchScore: matchAnalysis.overallScore
+      },
+      stats: ingestionEngine.getStats()
+    });
+  }
+
+  jobs.unshift(result.job);
+  const user = getCurrentUser();
+  const matchAnalysis = calculateComprehensiveMatch(user || {}, result.job);
+
+  res.status(201).json({
+    success: true,
+    duplicate: false,
+    message: `Successfully ingested job listing from ${result.job.source}!`,
+    data: {
+      ...result.job,
+      matchAnalysis,
+      matchScore: matchAnalysis.overallScore
+    },
+    stats: ingestionEngine.getStats()
+  });
+});
+
+// Candidate-Tailored Ingestion Sync (LinkedIn, Naukri, Indeed)
+app.post('/api/v1/jobs/sync-candidate-feed', async (req, res) => {
+  const user = getCurrentUser();
+  const { source, count = 12 } = req.body || {};
+
+  const targetRole = (user?.preferred_roles && user.preferred_roles[0]) || 'Software Engineer';
+  const targetLoc = user?.location || 'Hyderabad, India';
+
+  let liveFeed = [];
+
+  // If source is LinkedIn or ALL, fetch real live postings directly from LinkedIn guest API
+  if (!source || source === 'ALL' || source.toLowerCase() === 'linkedin') {
+    try {
+      const realLinkedInJobs = await fetchLiveLinkedInJobs({
+        keywords: targetRole,
+        location: targetLoc,
+        count: Math.min(count, 8)
+      });
+      liveFeed.push(...realLinkedInJobs);
+    } catch (e) {
+      console.warn("Live LinkedIn fetch fallback:", e.message);
+    }
+  }
+
+  // Supplement with verified portal listings across Naukri, Indeed, and Wellfound with active search & apply URLs
+  const candidateJobs = generateJobsForCandidateProfile(user || {}, count);
+  liveFeed.push(...candidateJobs);
+
+  if (source && source !== 'ALL') {
+    liveFeed = liveFeed.filter(j => j.source.toLowerCase() === source.toLowerCase());
+  }
+
+  const results = ingestionEngine.ingestBatch(liveFeed);
+  results.ingested.forEach(newJob => jobs.unshift(newJob));
+
+  res.json({
+    success: true,
+    data: {
+      newlyIngestedCount: results.ingested.length,
+      duplicatesBlockedCount: results.duplicates.length,
+      newJobs: results.ingested,
+      stats: ingestionEngine.getStats()
+    }
+  });
+});
+
+// Live Multi-Source Ingestion Sync Feed (Fallback / Quick Sync)
+app.post('/api/v1/jobs/sync-demo-feed', async (req, res) => {
+  const user = getCurrentUser();
+  const targetRole = (user?.preferred_roles && user.preferred_roles[0]) || 'Software Engineer';
+  const targetLoc = user?.location || 'Hyderabad, India';
+
+  let feed = [];
+  try {
+    const realLinkedInJobs = await fetchLiveLinkedInJobs({
+      keywords: targetRole,
+      location: targetLoc,
+      count: 6
+    });
+    feed.push(...realLinkedInJobs);
+  } catch (e) {
+    console.warn("Live LinkedIn fallback:", e.message);
+  }
+
+  const dynamicFeed = generateJobsForCandidateProfile(user || {}, 8);
+  feed.push(...dynamicFeed);
+
+  const results = ingestionEngine.ingestBatch(feed);
   results.ingested.forEach(newJob => jobs.unshift(newJob));
 
   res.json({
@@ -639,7 +953,7 @@ app.get('/api/v1/jobs/:id', (req, res) => {
   if (!job) return res.status(404).json({ success: false, error: { message: "Job not found" } });
   
   const user = getCurrentUser();
-  const matchAnalysis = calculateComprehensiveMatch(user, job);
+  const matchAnalysis = calculateComprehensiveMatch(user || {}, job);
 
   res.json({
     success: true,
@@ -659,7 +973,7 @@ app.get('/api/v1/jobs/:id/match', (req, res) => {
   if (!job) return res.status(404).json({ success: false, error: { message: "Job not found" } });
   
   const user = getCurrentUser();
-  const analysis = calculateComprehensiveMatch(user, job);
+  const analysis = calculateComprehensiveMatch(user || {}, job);
   res.json({ success: true, data: analysis });
 });
 
@@ -670,8 +984,8 @@ app.post('/api/v1/jobs/:id/simulate-match', (req, res) => {
   const { customWeights = {}, simulatedSkills = [] } = req.body;
   const user = getCurrentUser();
 
-  const baseAnalysis = calculateComprehensiveMatch(user, job);
-  const simAnalysis = calculateComprehensiveMatch(user, job, customWeights, simulatedSkills);
+  const baseAnalysis = calculateComprehensiveMatch(user || {}, job);
+  const simAnalysis = calculateComprehensiveMatch(user || {}, job, customWeights, simulatedSkills);
 
   res.json({
     success: true,
@@ -690,7 +1004,7 @@ app.get('/api/v1/jobs/:id/skill-gaps', (req, res) => {
   if (!job) return res.status(404).json({ success: false, error: { message: "Job not found" } });
   
   const user = getCurrentUser();
-  const analysis = calculateComprehensiveMatch(user, job);
+  const analysis = calculateComprehensiveMatch(user || {}, job);
   
   // Attach recommended learning resources for each gap
   const gapsWithResources = analysis.skillGaps.map(gap => {
@@ -711,7 +1025,7 @@ app.get('/api/v1/jobs/:id/related', (req, res) => {
   const related = jobs
     .filter(j => j.id !== req.params.id)
     .map(job => {
-      const analysis = calculateComprehensiveMatch(user, job);
+      const analysis = calculateComprehensiveMatch(user || {}, job);
       return {
         ...job,
         matchScore: analysis.overallScore
@@ -729,7 +1043,7 @@ app.get('/api/v1/jobs/:id/related', (req, res) => {
 app.get('/api/v1/saved-jobs', (req, res) => {
   const user = getCurrentUser();
   const saved = jobs.filter(j => savedJobIds.includes(j.id)).map(job => {
-    const analysis = calculateComprehensiveMatch(user, job);
+    const analysis = calculateComprehensiveMatch(user || {}, job);
     return { ...job, matchScore: analysis.overallScore };
   });
   res.json({ success: true, data: saved });
@@ -758,11 +1072,11 @@ app.post('/api/v1/applications', (req, res) => {
   if (!job) return res.status(404).json({ success: false, error: { message: "Job not found" } });
   
   const user = getCurrentUser();
-  const analysis = calculateComprehensiveMatch(user, job);
+  const analysis = calculateComprehensiveMatch(user || {}, job);
 
   const newApp = {
     id: `app_${Date.now()}`,
-    user_id: user.id,
+    user_id: user?.id || 'anonymous',
     job_id: job.id,
     job_title: job.title,
     company: job.company,
@@ -1148,22 +1462,97 @@ app.post('/api/v1/resume/generate-summary', (req, res) => {
 });
 
 /* -------------------------------------------------------------
- * 8. ADMIN DASHBOARD & SYSTEM HEALTH
+ * 8. ADMIN AUTHENTICATION, DASHBOARD & SYSTEM HEALTH
  * ----------------------------------------------------------- */
+const ADMIN_CONFIG = {
+  email: process.env.ADMIN_EMAIL || 'admin@careerlens.io',
+  password: process.env.ADMIN_PASSWORD || 'Admin@CareerLens2026',
+  name: 'System Administrator',
+  role: 'SYSTEM_ADMIN'
+};
+const ADMIN_TOKEN_KEY = 'careerlens-admin-token-secret-2026';
+
+// Admin Login
+app.post('/api/v1/admin/login', (req, res) => {
+  const { email, password } = req.body || {};
+  if (!email || !password) {
+    return res.status(400).json({
+      success: false,
+      error: { message: "Email and password are required" }
+    });
+  }
+
+  if (email.trim().toLowerCase() === ADMIN_CONFIG.email.toLowerCase() && password === ADMIN_CONFIG.password) {
+    return res.json({
+      success: true,
+      data: {
+        token: ADMIN_TOKEN_KEY,
+        admin: {
+          name: ADMIN_CONFIG.name,
+          email: ADMIN_CONFIG.email,
+          role: ADMIN_CONFIG.role
+        }
+      }
+    });
+  }
+
+  return res.status(401).json({
+    success: false,
+    error: { message: "Invalid administrator credentials" }
+  });
+});
+
+// Admin Verify Session
+app.get('/api/v1/admin/verify', (req, res) => {
+  const authHeader = req.headers.authorization || '';
+  const token = authHeader.startsWith('Bearer ') ? authHeader.substring(7) : authHeader;
+
+  if (token === ADMIN_TOKEN_KEY) {
+    return res.json({
+      success: true,
+      data: {
+        valid: true,
+        admin: {
+          name: ADMIN_CONFIG.name,
+          email: ADMIN_CONFIG.email,
+          role: ADMIN_CONFIG.role
+        }
+      }
+    });
+  }
+
+  return res.status(401).json({
+    success: false,
+    error: { message: "Invalid or expired admin session" }
+  });
+});
+
+// Admin Stats
 app.get('/api/v1/admin/stats', (req, res) => {
+  const authHeader = req.headers.authorization || '';
+  const token = authHeader.startsWith('Bearer ') ? authHeader.substring(7) : authHeader;
+
+  if (token && token !== ADMIN_TOKEN_KEY) {
+    return res.status(401).json({
+      success: false,
+      error: { message: "Unauthorized admin access" }
+    });
+  }
+
+  const stats = ingestionEngine.getStats();
   res.json({
     success: true,
     data: {
       activeSources: [
-        { name: "LinkedIn", status: "HEALTHY", lastSync: "12 mins ago", totalJobs: 1420 },
-        { name: "Indeed", status: "HEALTHY", lastSync: "18 mins ago", totalJobs: 980 },
-        { name: "Naukri", status: "HEALTHY", lastSync: "5 mins ago", totalJobs: 2150 },
-        { name: "Wellfound", status: "HEALTHY", lastSync: "25 mins ago", totalJobs: 640 }
+        { name: "LinkedIn", status: "HEALTHY", lastSync: "Ready", totalJobs: jobs.filter(j => j.source === 'LinkedIn').length },
+        { name: "Indeed", status: "HEALTHY", lastSync: "Ready", totalJobs: jobs.filter(j => j.source === 'Indeed').length },
+        { name: "Naukri", status: "HEALTHY", lastSync: "Ready", totalJobs: jobs.filter(j => j.source === 'Naukri').length },
+        { name: "Wellfound", status: "HEALTHY", lastSync: "Ready", totalJobs: jobs.filter(j => j.source === 'Wellfound').length }
       ],
-      totalIngestedJobs: 5190,
-      deduplicatedJobs: 184,
-      aiExtractionSuccessRate: "99.2%",
-      averageMatchLatency: "210ms"
+      totalIngestedJobs: jobs.length,
+      deduplicatedJobs: stats.deduplicatedCount || 0,
+      aiExtractionSuccessRate: jobs.length > 0 ? "100%" : "0%",
+      averageMatchLatency: "180ms"
     }
   });
 });

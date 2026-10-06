@@ -1,4 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import {
   FileText,
   Sparkles,
@@ -139,7 +140,26 @@ export default function ResumeBuilderPage() {
   const [enhancingItem, setEnhancingItem] = useState(null);
   const [copied, setCopied] = useState(false);
 
-  if (!currentUser) return null;
+  if (!currentUser) {
+    return (
+      <div className="glass-panel p-12 rounded-3xl text-center border border-white/10 space-y-4 max-w-lg mx-auto mt-12">
+        <FileText className="w-12 h-12 text-slate-500 mx-auto" />
+        <div>
+          <h2 className="text-lg font-bold text-white">Setup Your Profile First</h2>
+          <p className="text-xs text-slate-400 mt-1">
+            Fill in your education, projects, and skills to auto-generate an ATS-optimized resume.
+          </p>
+        </div>
+        <Link
+          to="/profile"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs transition-all shadow-glow-primary"
+        >
+          <span>Setup Profile</span>
+          <ChevronRight className="w-3.5 h-3.5" />
+        </Link>
+      </div>
+    );
+  }
 
   const style = TEMPLATE_STYLES[selectedTemplate];
 

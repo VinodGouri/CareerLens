@@ -38,7 +38,8 @@ export default function OnboardingPage() {
   const [goals, setGoals] = useState({
     targetRoles: [],
     locations: [],
-    workMode: '',
+    workModes: ['HYBRID', 'REMOTE'],
+    workMode: 'HYBRID',
     salaryRange: ''
   });
 
@@ -84,7 +85,8 @@ export default function OnboardingPage() {
           })),
           preferred_roles: goals.targetRoles,
           preferred_locations: goals.locations,
-          preferred_work_mode: goals.workMode,
+          preferred_work_mode: goals.workModes?.[0] || goals.workMode || 'HYBRID',
+          work_modes: (goals.workModes && goals.workModes.length > 0) ? goals.workModes : ['HYBRID', 'REMOTE'],
           education: education.institution ? [{
             institution: education.institution,
             degree: `${education.degree} in ${education.field}`,
@@ -391,26 +393,40 @@ export default function OnboardingPage() {
 
                 {/* Work Mode */}
                 <div>
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Work Mode</p>
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                      Work Mode (Select Multiple)
+                    </p>
+                    <span className="text-[10px] text-accent-cyan font-medium">
+                      {(goals.workModes || []).length} selected
+                    </span>
+                  </div>
                   <div className="grid grid-cols-3 gap-2">
                     {[
                       { value: 'ONSITE', label: 'On-site', emoji: '🏢' },
                       { value: 'HYBRID', label: 'Hybrid', emoji: '🔀' },
                       { value: 'REMOTE', label: 'Remote', emoji: '🏠' }
-                    ].map(mode => (
-                      <button
-                        key={mode.value}
-                        onClick={() => setGoals(prev => ({ ...prev, workMode: mode.value }))}
-                        className={`p-3 rounded-xl text-center text-xs border transition-all ${
-                          goals.workMode === mode.value
-                            ? 'bg-accent-cyan/15 border-accent-cyan/40 text-accent-cyan'
-                            : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'
-                        }`}
-                      >
-                        <div className="text-lg mb-1">{mode.emoji}</div>
-                        <div className="font-semibold">{mode.label}</div>
-                      </button>
-                    ))}
+                    ].map(mode => {
+                      const isSelected = (goals.workModes || []).includes(mode.value);
+                      return (
+                        <button
+                          key={mode.value}
+                          type="button"
+                          onClick={() => toggleGoal('workModes', mode.value)}
+                          className={`p-3 rounded-xl text-center text-xs border transition-all ${
+                            isSelected
+                              ? 'bg-accent-cyan/15 border-accent-cyan/50 text-white font-semibold shadow-sm'
+                              : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:text-white'
+                          }`}
+                        >
+                          <div className="text-lg mb-1">{mode.emoji}</div>
+                          <div className="flex items-center justify-center gap-1">
+                            <span className="font-semibold">{mode.label}</span>
+                            {isSelected && <span className="text-accent-cyan font-bold text-xs">✓</span>}
+                          </div>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
 

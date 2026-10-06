@@ -90,6 +90,15 @@ export default function ApplicationTrackerPage() {
         </div>
       </div>
 
+      {applications.length === 0 && (
+        <div className="glass-panel p-6 rounded-2xl border border-white/10 text-center space-y-2">
+          <p className="text-sm font-bold text-white">No applications tracked yet</p>
+          <p className="text-xs text-slate-400">
+            Bookmark and track your job applications while exploring jobs to monitor your hiring stages here.
+          </p>
+        </div>
+      )}
+
       {/* Kanban Board View */}
       {viewMode === 'kanban' && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 overflow-x-auto pb-4">

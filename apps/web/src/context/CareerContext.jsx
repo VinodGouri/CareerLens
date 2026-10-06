@@ -4,7 +4,7 @@ const CareerContext = createContext();
 
 export function CareerProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
-  const [activePersona, setActivePersona] = useState('user_fresher_01'); // default to Rahul Sharma (Fresher)
+  const [activePersona, setActivePersona] = useState(null);
   const [jobs, setJobs] = useState([]);
   const [savedJobs, setSavedJobs] = useState([]);
   const [applications, setApplications] = useState([]);
@@ -23,18 +23,21 @@ export function CareerProvider({ children }) {
     try {
       setLoading(true);
       const [profRes, jobsRes, appsRes, resRes] = await Promise.all([
-        fetch('/api/v1/profile').then(r => r.json()),
-        fetch('/api/v1/jobs').then(r => r.json()),
-        fetch('/api/v1/applications').then(r => r.json()),
-        fetch('/api/v1/learning/resources').then(r => r.json())
+        fetch('/api/v1/profile').then(r => r.json()).catch(() => ({ success: false })),
+        fetch('/api/v1/jobs').then(r => r.json()).catch(() => ({ success: false })),
+        fetch('/api/v1/applications').then(r => r.json()).catch(() => ({ success: false })),
+        fetch('/api/v1/learning/resources').then(r => r.json()).catch(() => ({ success: false }))
       ]);
 
-      if (profRes.success) setCurrentUser(profRes.data);
-      if (jobsRes.success) setJobs(jobsRes.data.jobs);
-      if (appsRes.success) setApplications(appsRes.data);
-      if (resRes.success) setLearningResources(resRes.data);
+      if (profRes.success) setCurrentUser(profRes.data || null);
+      if (jobsRes.success && jobsRes.data?.jobs) setJobs(jobsRes.data.jobs);
+      else setJobs([]);
+      if (appsRes.success && Array.isArray(appsRes.data)) setApplications(appsRes.data);
+      else setApplications([]);
+      if (resRes.success && Array.isArray(resRes.data)) setLearningResources(resRes.data);
+      else setLearningResources([]);
     } catch (err) {
-      console.warn("Backend API not reachable yet, falling back to local state sync:", err);
+      console.warn("Backend API sync notice:", err);
     } finally {
       setLoading(false);
     }

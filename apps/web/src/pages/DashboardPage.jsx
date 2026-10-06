@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Sparkles, 
@@ -12,7 +12,8 @@ import {
   BookOpen,
   Briefcase,
   CheckCircle2,
-  Calendar
+  Calendar,
+  RefreshCw
 } from 'lucide-react';
 import { useCareer } from '../context/CareerContext';
 import JobCard from '../components/jobs/JobCard';
@@ -26,23 +27,59 @@ export default function DashboardPage() {
     savedJobs, 
     setIsAIChatOpen,
     activeJobForAnalysis,
-    setActiveJobForAnalysis
+    setActiveJobForAnalysis,
+    refreshData
   } = useCareer();
 
-  const profileStrength = currentUser?.profileStrength?.score || 85;
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  const handleQuickSync = async () => {
+    setIsSyncing(true);
+    try {
+      await fetch('/api/v1/jobs/sync-candidate-feed', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ count: 12 })
+      });
+      await refreshData();
+    } catch (e) {
+      console.warn("Sync error:", e);
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  const profileStrength = currentUser?.profileStrength?.score ?? (currentUser ? 30 : 0);
   const checklist = currentUser?.profileStrength?.checklist || {
-    personal: true,
-    skills: true,
-    education: true,
-    experience: true,
-    projects: true,
-    preferences: true
+    personal: Boolean(currentUser?.name && currentUser?.email),
+    skills: (currentUser?.skills || []).length >= 5,
+    education: (currentUser?.education || []).length >= 1,
+    experience: (currentUser?.experience || []).length >= 1,
+    projects: (currentUser?.projects || []).length >= 2,
+    preferences: Boolean((currentUser?.preferred_roles || []).length > 0)
   };
 
   // High match jobs (80%+)
   const recommendedJobs = jobs.filter(j => (j.matchScore || 0) >= 80).slice(0, 3);
   const activeApplicationsCount = applications.filter(a => a.status !== 'REJECTED' && a.status !== 'WITHDRAWN').length;
   const interviewsCount = applications.filter(a => a.status === 'INTERVIEW').length;
+
+  // Dynamically compute high-impact skill gaps from market jobs
+  const marketGaps = useMemo(() => {
+    const gapMap = {};
+    const userSkills = (currentUser?.skills || []).map(s => (s.name || '').toLowerCase());
+    (jobs || []).forEach(job => {
+      (job.required_skills || []).forEach(s => {
+        if (!userSkills.includes(s.toLowerCase())) {
+          gapMap[s] = (gapMap[s] || 0) + 1;
+        }
+      });
+    });
+    return Object.entries(gapMap)
+      .map(([skill, count]) => ({ skill, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 3);
+  }, [jobs, currentUser]);
 
   return (
     <div className="space-y-8 animate-fadeIn">
@@ -128,7 +165,9 @@ export default function DashboardPage() {
             <Calendar className="w-4 h-4 text-brand-400" />
           </div>
           <p className="text-2xl sm:text-3xl font-black text-white">{interviewsCount}</p>
-          <p className="text-[11px] text-slate-400">HyperLocal Tech (Thu)</p>
+          <p className="text-[11px] text-slate-400">
+            {interviewsCount > 0 ? `${interviewsCount} scheduled` : 'No active interviews'}
+          </p>
         </div>
 
       </div>
@@ -157,33 +196,43 @@ export default function DashboardPage() {
           <div className="space-y-2.5 text-xs">
             <div className="flex items-center justify-between text-slate-300">
               <span className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Personal Contact Info
+                <CheckCircle2 className={`w-4 h-4 ${checklist.personal ? 'text-emerald-400' : 'text-slate-500'}`} /> Personal Contact Info
               </span>
-              <span className="text-emerald-400 font-semibold">Done</span>
+              <span className={checklist.personal ? 'text-emerald-400 font-semibold' : 'text-slate-500'}>
+                {checklist.personal ? 'Complete' : 'Pending'}
+              </span>
             </div>
             <div className="flex items-center justify-between text-slate-300">
               <span className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Categorized Skills (10+)
+                <CheckCircle2 className={`w-4 h-4 ${checklist.skills ? 'text-emerald-400' : 'text-slate-500'}`} /> Categorized Skills (5+)
               </span>
-              <span className="text-emerald-400 font-semibold">Done</span>
+              <span className={checklist.skills ? 'text-emerald-400 font-semibold' : 'text-slate-500'}>
+                {(currentUser?.skills || []).length} Added
+              </span>
             </div>
             <div className="flex items-center justify-between text-slate-300">
               <span className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Projects with GitHub Links
+                <CheckCircle2 className={`w-4 h-4 ${checklist.projects ? 'text-emerald-400' : 'text-slate-500'}`} /> Projects with GitHub Links
               </span>
-              <span className="text-emerald-400 font-semibold">2 Listed</span>
+              <span className={checklist.projects ? 'text-emerald-400 font-semibold' : 'text-slate-500'}>
+                {(currentUser?.projects || []).length} Listed
+              </span>
             </div>
             <div className="flex items-center justify-between text-slate-300">
               <span className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Education & Degree
+                <CheckCircle2 className={`w-4 h-4 ${checklist.education ? 'text-emerald-400' : 'text-slate-500'}`} /> Education & Degree
               </span>
-              <span className="text-emerald-400 font-semibold">Verified</span>
+              <span className={checklist.education ? 'text-emerald-400 font-semibold' : 'text-slate-500'}>
+                {(currentUser?.education || []).length > 0 ? 'Added' : 'Pending'}
+              </span>
             </div>
             <div className="flex items-center justify-between text-slate-300">
               <span className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Work / Internship Experience
+                <CheckCircle2 className={`w-4 h-4 ${checklist.experience ? 'text-emerald-400' : 'text-slate-500'}`} /> Work / Internship Experience
               </span>
-              <span className="text-emerald-400 font-semibold">Added</span>
+              <span className={checklist.experience ? 'text-emerald-400 font-semibold' : 'text-slate-500'}>
+                {(currentUser?.experience || []).length > 0 ? 'Added' : 'Pending'}
+              </span>
             </div>
           </div>
 
@@ -210,72 +259,39 @@ export default function DashboardPage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            
-            {/* Docker Gap */}
-            <div className="p-4 rounded-xl bg-slate-900/80 border border-white/10 hover:border-brand-500/40 transition-all flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-bold text-white text-sm">Docker</span>
-                  <span className="text-[10px] px-2 py-0.5 rounded bg-rose-500/20 text-rose-400 font-bold uppercase">
-                    High Gap
-                  </span>
-                </div>
-                <p className="text-[11px] text-slate-400 leading-relaxed">
-                  Required in 80% of Full Stack roles. Containerize Node APIs & build docker-compose.
-                </p>
-              </div>
-              <Link
-                to="/learning"
-                className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-brand-400 hover:text-brand-300"
-              >
-                <span>3h Guided Path</span> <ArrowRight className="w-3 h-3" />
-              </Link>
+          {marketGaps.length === 0 ? (
+            <div className="p-6 rounded-xl bg-slate-900/60 border border-white/5 text-center space-y-2">
+              <BookOpen className="w-6 h-6 text-slate-500 mx-auto" />
+              <p className="text-xs text-slate-300 font-medium">No skill gaps identified yet</p>
+              <p className="text-[11px] text-slate-500">
+                Explore jobs or add skills to your profile to generate real-time gap intelligence.
+              </p>
             </div>
-
-            {/* AWS Cloud */}
-            <div className="p-4 rounded-xl bg-slate-900/80 border border-white/10 hover:border-brand-500/40 transition-all flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-bold text-white text-sm">AWS Cloud</span>
-                  <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 font-bold uppercase">
-                    Medium
-                  </span>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {marketGaps.map((gap, idx) => (
+                <div key={idx} className="p-4 rounded-xl bg-slate-900/80 border border-white/10 hover:border-brand-500/40 transition-all flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-bold text-white text-sm">{gap.skill}</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded bg-rose-500/20 text-rose-400 font-bold uppercase">
+                        {gap.count} Jobs
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-400 leading-relaxed">
+                      High-demand skill across target listings. Master this skill to boost compatibility.
+                    </p>
+                  </div>
+                  <Link
+                    to="/learning"
+                    className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-brand-400 hover:text-brand-300"
+                  >
+                    <span>View Roadmap</span> <ArrowRight className="w-3 h-3" />
+                  </Link>
                 </div>
-                <p className="text-[11px] text-slate-400 leading-relaxed">
-                  Preferred qualification for FinFlow & CogniMesh. Master EC2, S3, and IAM basics.
-                </p>
-              </div>
-              <Link
-                to="/learning"
-                className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-brand-400 hover:text-brand-300"
-              >
-                <span>6h Hands-on</span> <ArrowRight className="w-3 h-3" />
-              </Link>
+              ))}
             </div>
-
-            {/* Redis Caching */}
-            <div className="p-4 rounded-xl bg-slate-900/80 border border-white/10 hover:border-brand-500/40 transition-all flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-bold text-white text-sm">Redis</span>
-                  <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 font-bold uppercase">
-                    Medium
-                  </span>
-                </div>
-                <p className="text-[11px] text-slate-400 leading-relaxed">
-                  High-speed caching & queues. Boost backend throughput for REST endpoints.
-                </p>
-              </div>
-              <Link
-                to="/learning"
-                className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-brand-400 hover:text-brand-300"
-              >
-                <span>4h Official Course</span> <ArrowRight className="w-3 h-3" />
-              </Link>
-            </div>
-
-          </div>
+          )}
 
         </div>
 
@@ -300,15 +316,42 @@ export default function DashboardPage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {recommendedJobs.map((job) => (
-            <JobCard
-              key={job.id}
-              job={job}
-              onAnalyze={(j) => setActiveJobForAnalysis(j)}
-            />
-          ))}
-        </div>
+        {recommendedJobs.length === 0 ? (
+          <div className="glass-panel p-8 rounded-2xl text-center border border-white/10 space-y-3">
+            <Compass className="w-8 h-8 text-slate-500 mx-auto" />
+            <h3 className="text-base font-bold text-white">No active job listings yet</h3>
+            <p className="text-xs text-slate-300 max-w-md mx-auto leading-relaxed">
+              Ingest live job postings from LinkedIn, Naukri & Indeed matched specifically to your skills and target roles.
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+              <button
+                onClick={handleQuickSync}
+                disabled={isSyncing}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 via-indigo-600 to-accent-cyan hover:opacity-95 text-white font-bold text-xs shadow-glow-primary transition-all disabled:opacity-50"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
+                <span>{isSyncing ? 'Ingesting Jobs...' : 'Fetch Jobs from LinkedIn, Naukri & Indeed'}</span>
+              </button>
+              <Link
+                to="/jobs"
+                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-semibold text-xs border border-white/10 transition-all"
+              >
+                <span>Explore Jobs</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {recommendedJobs.map((job) => (
+              <JobCard
+                key={job.id}
+                job={job}
+                onAnalyze={(j) => setActiveJobForAnalysis(j)}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Match Explanation Modal */}

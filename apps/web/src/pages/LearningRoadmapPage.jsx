@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   BookOpen, 
   Sparkles, 
@@ -242,8 +243,26 @@ export default function LearningRoadmapPage() {
       </div>
 
       {/* Roadmaps Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {filteredResources.map((res) => {
+      {filteredResources.length === 0 ? (
+        <div className="glass-panel p-12 rounded-3xl text-center border border-white/10 space-y-4">
+          <BookOpen className="w-10 h-10 text-slate-500 mx-auto" />
+          <div>
+            <h3 className="text-base font-bold text-white">No learning curricula available yet</h3>
+            <p className="text-xs text-slate-400 mt-1 max-w-md mx-auto">
+              Add target roles and explore opportunities to trigger AI-guided skill bridging roadmaps.
+            </p>
+          </div>
+          <Link
+            to="/jobs"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold text-xs transition-all shadow-glow-primary"
+          >
+            <span>Explore Jobs</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {filteredResources.map((res) => {
           const totalSteps = res.steps?.length || 5;
           const completedCount = Array.from({ length: totalSteps }).filter((_, i) => completedSteps[`${res.id}_${i}`]).length;
           const progressPercent = Math.round((completedCount / totalSteps) * 100);
@@ -363,7 +382,8 @@ export default function LearningRoadmapPage() {
             </div>
           );
         })}
-      </div>
+        </div>
+      )}
 
     </div>
   );

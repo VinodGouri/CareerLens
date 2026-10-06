@@ -136,7 +136,9 @@ export function computeSkillMatch(candidateSkills, requiredSkill, candidateProje
   };
 }
 
-export function calculateComprehensiveMatch(userProfile, job, customWeights = {}, simulatedSkills = []) {
+export function calculateComprehensiveMatch(userProfile = {}, job = {}, customWeights = {}, simulatedSkills = []) {
+  const profile = userProfile || {};
+  const jobData = job || {};
   const weights = {
     requiredSkills: customWeights.requiredSkills ?? 0.40,
     preferredSkills: customWeights.preferredSkills ?? 0.15,
@@ -148,7 +150,7 @@ export function calculateComprehensiveMatch(userProfile, job, customWeights = {}
   };
 
   // Merge simulated skills if candidate is testing "What-If" scenarios
-  const baseSkills = userProfile.skills || [];
+  const baseSkills = profile.skills || [];
   const addedSimSkills = (simulatedSkills || []).map(s => ({
     id: `sim_${s}`,
     name: s,
@@ -158,10 +160,10 @@ export function calculateComprehensiveMatch(userProfile, job, customWeights = {}
   }));
   const userSkills = [...baseSkills, ...addedSimSkills];
 
-  const reqSkills = job.required_skills || [];
-  const prefSkills = job.preferred_skills || [];
-  const userProjects = userProfile.projects || [];
-  const userExp = userProfile.experience || [];
+  const reqSkills = jobData.required_skills || [];
+  const prefSkills = jobData.preferred_skills || [];
+  const userProjects = profile.projects || [];
+  const userExp = profile.experience || [];
 
   // 1. Required Skills Score (using 4-tier confidence weights: EXACT=1.0, SEMANTIC=0.85, PARTIAL=0.50, MISSING=0.0)
   const reqMatches = reqSkills.map(s => computeSkillMatch(userSkills, s, userProjects, userExp));
@@ -175,16 +177,16 @@ export function calculateComprehensiveMatch(userProfile, job, customWeights = {}
 
   // 3. Experience Score
   let experienceScore = 85;
-  const userExpYears = userProfile.experience_level === 'FRESHER' ? 0.5 : 1.5;
-  if (userExpYears >= (job.experience_min || 0)) {
+  const userExpYears = profile.experience_level === 'FRESHER' ? 0.5 : (profile.experience_level ? 1.5 : 0);
+  if (userExpYears >= (jobData.experience_min || 0)) {
     experienceScore = 95;
   } else {
     experienceScore = 65;
   }
 
   // 4. Role Alignment Score
-  const userPreferredRoles = (userProfile.preferred_roles || []).map(r => r.toLowerCase());
-  const jobTitle = (job.title || '').toLowerCase();
+  const userPreferredRoles = (profile.preferred_roles || []).map(r => r.toLowerCase());
+  const jobTitle = (jobData.title || '').toLowerCase();
   const roleAligned = userPreferredRoles.some(r => jobTitle.includes(r.toLowerCase()) || r.toLowerCase().includes(jobTitle.split(' ')[0]));
   const roleAlignmentScore = roleAligned ? 95 : 75;
 
@@ -199,16 +201,16 @@ export function calculateComprehensiveMatch(userProfile, job, customWeights = {}
 
   // 6. Location & Work Mode Score
   let locationScore = 80;
-  const userLocs = (userProfile.preferred_locations || []).map(l => l.toLowerCase());
-  const jobLoc = (job.location || '').toLowerCase();
-  if (job.work_mode === 'REMOTE' || userLocs.some(l => jobLoc.includes(l))) {
+  const userLocs = (profile.preferred_locations || []).map(l => l.toLowerCase());
+  const jobLoc = (jobData.location || '').toLowerCase();
+  if (jobData.work_mode === 'REMOTE' || userLocs.some(l => jobLoc.includes(l))) {
     locationScore = 100;
-  } else if (job.work_mode === 'HYBRID') {
+  } else if (jobData.work_mode === 'HYBRID') {
     locationScore = 85;
   }
 
   // 7. Education Score
-  const hasDegree = (userProfile.education || []).some(e => ['B.Tech', 'B.E.', 'MCA', 'B.Sc'].some(d => (e.degree || '').includes(d)));
+  const hasDegree = (profile.education || []).some(e => ['B.Tech', 'B.E.', 'MCA', 'B.Sc'].some(d => (e.degree || '').includes(d)));
   const educationScore = hasDegree ? 100 : 80;
 
   // Overall Weighted Score

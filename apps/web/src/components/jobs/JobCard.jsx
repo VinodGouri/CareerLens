@@ -9,7 +9,8 @@ import {
   ExternalLink, 
   CheckCircle2, 
   AlertCircle,
-  Clock
+  Clock,
+  Calendar
 } from 'lucide-react';
 import MatchScoreBadge from '../ui/MatchScoreBadge';
 import { useCareer } from '../../context/CareerContext';
@@ -31,6 +32,66 @@ export default function JobCard({ job, onAnalyze }) {
         return 'bg-slate-700/30 text-slate-300 border-slate-600/40';
     }
   };
+
+  const getApplyButtonDetails = (source) => {
+    switch (source?.toLowerCase()) {
+      case 'linkedin':
+        return {
+          label: 'Apply on LinkedIn',
+          className: 'bg-[#0077b5] hover:bg-[#006097] text-white shadow-[#0077b5]/30 shadow-lg'
+        };
+      case 'naukri':
+        return {
+          label: 'Apply on Naukri',
+          className: 'bg-blue-600 hover:bg-blue-500 text-white shadow-blue-600/30 shadow-lg'
+        };
+      case 'indeed':
+        return {
+          label: 'Apply on Indeed',
+          className: 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-indigo-600/30 shadow-lg'
+        };
+      case 'wellfound':
+        return {
+          label: 'Apply on Wellfound',
+          className: 'bg-rose-600 hover:bg-rose-500 text-white shadow-rose-600/30 shadow-lg'
+        };
+      default:
+        return {
+          label: `Apply on ${source || 'Source'}`,
+          className: 'bg-brand-600 hover:bg-brand-500 text-white shadow-glow-primary'
+        };
+    }
+  };
+
+  const getRelativePostedTime = (dateStr) => {
+    if (!dateStr) return { label: 'Recently', isToday: false };
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffHours = Math.round(diffMs / (1000 * 3600));
+    const diffDays = Math.round(diffMs / (1000 * 3600 * 24));
+
+    if (diffHours < 1) return { label: 'Posted Just Now', isToday: true };
+    if (diffHours <= 12 || date.toDateString() === now.toDateString()) {
+      return { label: 'Posted Today', isToday: true };
+    }
+    if (diffHours <= 36 || diffDays === 1) {
+      return { label: 'Posted Yesterday', isToday: false };
+    }
+    if (diffDays <= 3) {
+      return { label: `Posted ${diffDays}d ago`, isToday: false };
+    }
+    if (diffDays <= 7) {
+      return { label: 'Posted 1w ago', isToday: false };
+    }
+    if (diffDays <= 14) {
+      return { label: 'Posted 2w ago', isToday: false };
+    }
+    return { label: `Posted ${diffDays}d ago`, isToday: false };
+  };
+
+  const postedInfo = getRelativePostedTime(job.posted_at);
+  const applyBtn = getApplyButtonDetails(job.source);
 
   return (
     <div className="group glass-panel-interactive rounded-2xl p-5 flex flex-col justify-between border border-white/10 hover:border-brand-500/40 relative">
@@ -68,7 +129,7 @@ export default function JobCard({ job, onAnalyze }) {
           </div>
         </div>
 
-        {/* Badges: Location, Work Mode, Salary, Source */}
+        {/* Badges: Location, Work Mode, Salary, Source, and Posted Date */}
         <div className="flex flex-wrap items-center gap-2 mt-3.5 text-xs text-slate-300">
           <span className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-white/5 border border-white/5">
             <MapPin className="w-3 h-3 text-slate-400" />
@@ -83,6 +144,17 @@ export default function JobCard({ job, onAnalyze }) {
           <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${getSourceBadge(job.source)}`}>
             {job.source}
           </span>
+          {postedInfo.isToday ? (
+            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1">
+              <Sparkles className="w-2.5 h-2.5 text-emerald-400" />
+              {postedInfo.label}
+            </span>
+          ) : (
+            <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-white/5 text-slate-400 border border-white/5 flex items-center gap-1">
+              <Calendar className="w-2.5 h-2.5 text-slate-500" />
+              {postedInfo.label}
+            </span>
+          )}
         </div>
 
         {/* AI Match Overview */}
@@ -99,7 +171,7 @@ export default function JobCard({ job, onAnalyze }) {
           </div>
           <span className="text-[11px] text-slate-400 flex items-center gap-1">
             <Clock className="w-3 h-3 text-slate-500" />
-            Active
+            Active Role
           </span>
         </div>
 
@@ -140,6 +212,7 @@ export default function JobCard({ job, onAnalyze }) {
         <button
           onClick={() => onAnalyze && onAnalyze(job)}
           className="py-2 px-3 rounded-xl bg-brand-600/20 hover:bg-brand-600/40 text-brand-300 font-semibold text-xs border border-brand-500/30 transition-colors flex items-center gap-1.5"
+          title="Analyze match & skill gap breakdown"
         >
           <Sparkles className="w-3.5 h-3.5 text-accent-cyan" />
           <span>Analyze</span>
@@ -152,11 +225,11 @@ export default function JobCard({ job, onAnalyze }) {
           onClick={() => {
             trackApplication(job.id, 'APPLIED', `Applied directly via ${job.source} redirect.`);
           }}
-          className="py-2 px-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs shadow-glow-primary transition-all flex items-center gap-1"
+          className={`py-2 px-3.5 rounded-xl font-bold text-xs transition-all flex items-center gap-1.5 whitespace-nowrap active:scale-95 ${applyBtn.className}`}
           title={`Apply on ${job.source}`}
         >
-          <span>Apply</span>
-          <ExternalLink className="w-3 h-3" />
+          <span>{applyBtn.label}</span>
+          <ExternalLink className="w-3.5 h-3.5" />
         </a>
       </div>
 

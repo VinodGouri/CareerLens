@@ -13,6 +13,7 @@ import {
   ArrowLeft,
   Share2,
   Clock,
+  Calendar,
   BookOpen
 } from 'lucide-react';
 import { useCareer } from '../context/CareerContext';
@@ -48,6 +49,66 @@ export default function JobDetailPage() {
   }
 
   const analysis = job.matchAnalysis;
+
+  const getRelativePostedTime = (dateStr) => {
+    if (!dateStr) return { label: 'Recently Active', isToday: false };
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffHours = Math.round(diffMs / (1000 * 3600));
+    const diffDays = Math.round(diffMs / (1000 * 3600 * 24));
+
+    if (diffHours < 1) return { label: 'Posted Just Now', isToday: true };
+    if (diffHours <= 12 || date.toDateString() === now.toDateString()) {
+      return { label: 'Posted Today', isToday: true };
+    }
+    if (diffHours <= 36 || diffDays === 1) {
+      return { label: 'Posted Yesterday', isToday: false };
+    }
+    if (diffDays <= 3) {
+      return { label: `Posted ${diffDays}d ago`, isToday: false };
+    }
+    if (diffDays <= 7) {
+      return { label: 'Posted 1w ago', isToday: false };
+    }
+    if (diffDays <= 14) {
+      return { label: 'Posted 2w ago', isToday: false };
+    }
+    return { label: `Posted ${diffDays}d ago`, isToday: false };
+  };
+
+  const getApplyButtonDetails = (source) => {
+    switch (source?.toLowerCase()) {
+      case 'linkedin':
+        return {
+          label: 'Apply on LinkedIn',
+          className: 'bg-[#0077b5] hover:bg-[#006097] text-white shadow-[#0077b5]/40 shadow-lg'
+        };
+      case 'naukri':
+        return {
+          label: 'Apply on Naukri',
+          className: 'bg-blue-600 hover:bg-blue-500 text-white shadow-blue-600/40 shadow-lg'
+        };
+      case 'indeed':
+        return {
+          label: 'Apply on Indeed',
+          className: 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-indigo-600/40 shadow-lg'
+        };
+      case 'wellfound':
+        return {
+          label: 'Apply on Wellfound',
+          className: 'bg-rose-600 hover:bg-rose-500 text-white shadow-rose-600/40 shadow-lg'
+        };
+      default:
+        return {
+          label: `Apply on ${source || 'Source'}`,
+          className: 'bg-brand-600 hover:bg-brand-500 text-white shadow-glow-primary'
+        };
+    }
+  };
+
+  const postedInfo = getRelativePostedTime(job.posted_at);
+  const applyBtn = getApplyButtonDetails(job.source);
 
   const handleApplyRedirect = () => {
     window.open(job.source_url, '_blank');
@@ -85,9 +146,22 @@ export default function JobDetailPage() {
               {job.company?.[0] || 'C'}
             </div>
             <div className="space-y-1">
-              <span className="text-[11px] px-2 py-0.5 rounded bg-brand-500/20 text-brand-300 font-bold border border-brand-500/30 uppercase tracking-wider">
-                {job.source} Verified Listing
-              </span>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-[11px] px-2 py-0.5 rounded bg-brand-500/20 text-brand-300 font-bold border border-brand-500/30 uppercase tracking-wider">
+                  {job.source} Verified Listing
+                </span>
+                {postedInfo.isToday ? (
+                  <span className="px-2.5 py-0.5 rounded text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1">
+                    <Sparkles className="w-3 h-3 text-emerald-400" />
+                    {postedInfo.label}
+                  </span>
+                ) : (
+                  <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-white/5 text-slate-400 border border-white/5 flex items-center gap-1">
+                    <Calendar className="w-3 h-3 text-slate-500" />
+                    {postedInfo.label}
+                  </span>
+                )}
+              </div>
               <h1 className="text-xl sm:text-3xl font-extrabold text-white tracking-tight">
                 {job.title}
               </h1>
@@ -103,7 +177,7 @@ export default function JobDetailPage() {
               onClick={() => toggleSaveJob(job.id)}
               className={`p-3 rounded-2xl border transition-all ${
                 job.isSaved
-                  ? 'bg-amber-500/20 border-amber-500/40 text-amber-400'
+                  ? 'bg-amber-500/20 border-amber-500/40 text-amber-400 shadow-glow-amber'
                   : 'bg-white/5 border-white/10 text-slate-300 hover:text-white hover:bg-white/10'
               }`}
               title={job.isSaved ? "Saved" : "Save Job"}
@@ -113,9 +187,10 @@ export default function JobDetailPage() {
 
             <button
               onClick={handleApplyRedirect}
-              className="px-6 py-3 rounded-2xl bg-gradient-to-r from-brand-600 via-indigo-600 to-accent-cyan hover:opacity-95 text-white font-extrabold text-sm shadow-glow-primary transition-all flex items-center gap-2"
+              className={`px-6 py-3 rounded-2xl font-extrabold text-sm transition-all flex items-center gap-2 active:scale-95 ${applyBtn.className}`}
+              title={`Opens direct application link to ${job.source}`}
             >
-              <span>Apply on {job.source}</span>
+              <span>{applyBtn.label}</span>
               <ExternalLink className="w-4 h-4" />
             </button>
           </div>
@@ -137,6 +212,7 @@ export default function JobDetailPage() {
           </span>
         </div>
       </div>
+
 
       {/* Applied Confirmation Banner Prompt */}
       {appliedPromptOpen && (

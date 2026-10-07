@@ -16,6 +16,7 @@ import {
 import { emailService } from './services/emailService.js';
 import { otpService } from './services/otpService.js';
 import { userService } from './services/userService.js';
+import { jobService, getDirectSourceUrl } from './services/jobService.js';
 
 // Initialize clean in-memory state & load environment variables
 dotenv.config();
@@ -27,13 +28,12 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
-// Data Store (User state managed by UserService with disk persistence)
+// Data Store (User state managed by UserService with disk persistence, Jobs managed by JobService)
 let users = userService.getAllUsers();
-let jobs = [...SEED_JOBS];
-const ingestionEngine = new JobIngestionEngine(jobs);
+let jobs = jobService.jobs;
+const ingestionEngine = new JobIngestionEngine(jobService.jobs);
 let learningResources = [...SEED_LEARNING_RESOURCES];
 let applications = [...SEED_APPLICATIONS];
-let savedJobIds = [];
 
 // Helper: Active user session (defaults to first verified persona or null)
 let currentUserId = null;
@@ -646,155 +646,69 @@ app.delete('/api/v1/profile/skills/:id', (req, res) => {
  * 3. JOBS DISCOVERY & SEARCH
  * ----------------------------------------------------------- */
 app.get('/api/v1/jobs', (req, res) => {
-  const { query, location, workMode, source, experience, minSalary, skill, sortBy = 'match' } = req.query;
+  const { 
+    query, 
+    location, 
+    workMode, 
+    source, 
+    experience, 
+    minSalary, 
+    skill, 
+    datePosted, 
+    sortBy = 'match',
+    page = 1,
+    limit = 100 // Allow viewing more than 20 jobs smoothly (up to 100 or ALL)
+  } = req.query;
   const user = getCurrentUser();
 
-  let results = jobs.map(job => {
-    // Automatically augment with live match score
-    const matchAnalysis = calculateComprehensiveMatch(user || {}, job);
-    return {
-      ...job,
-      matchScore: matchAnalysis.overallScore,
-      isSaved: savedJobIds.includes(job.id)
-    };
+  const response = jobService.getJobs({
+    user,
+    query,
+    location,
+    workMode,
+    source,
+    experience,
+    minSalary,
+    skill,
+    datePosted,
+    sortBy,
+    page,
+    limit
   });
-
-  // Calculate dynamic facet breakdown before filter restrictions
-  const facets = {
-    bySource: {
-      LinkedIn: results.filter(j => j.source === 'LinkedIn').length,
-      Naukri: results.filter(j => j.source === 'Naukri').length,
-      Indeed: results.filter(j => j.source === 'Indeed').length,
-      Wellfound: results.filter(j => j.source === 'Wellfound').length
-    },
-    byWorkMode: {
-      REMOTE: results.filter(j => j.work_mode === 'REMOTE').length,
-      HYBRID: results.filter(j => j.work_mode === 'HYBRID').length,
-      ON_SITE: results.filter(j => j.work_mode === 'ON_SITE').length
-    },
-    byLocation: {
-      Hyderabad: results.filter(j => /hyderabad/i.test(j.location)).length,
-      Bangalore: results.filter(j => /bangalore/i.test(j.location)).length,
-      Pune: results.filter(j => /pune/i.test(j.location)).length,
-      Remote: results.filter(j => /remote/i.test(j.location) || j.work_mode === 'REMOTE').length
-    },
-    byExperience: {
-      fresher: results.filter(j => j.experience_min === 0).length,
-      experienced: results.filter(j => j.experience_min > 0).length
-    }
-  };
-
-  // 1. Text Query Filter (Title, Company, Skills, Location)
-  if (query) {
-    const q = query.toLowerCase();
-    results = results.filter(j => 
-      j.title.toLowerCase().includes(q) || 
-      j.company.toLowerCase().includes(q) ||
-      (j.required_skills || []).some(s => s.toLowerCase().includes(q)) ||
-      (j.preferred_skills || []).some(s => s.toLowerCase().includes(q))
-    );
-  }
-
-  // 2. Location Filter
-  if (location && location !== 'All') {
-    results = results.filter(j => j.location.toLowerCase().includes(location.toLowerCase()));
-  }
-
-  // 3. Work Mode Filter
-  if (workMode && workMode !== 'ALL') {
-    results = results.filter(j => j.work_mode === workMode);
-  }
-
-  // 4. Source Filter
-  if (source && source !== 'ALL') {
-    results = results.filter(j => j.source.toLowerCase() === source.toLowerCase());
-  }
-
-  // 5. Experience Filter
-  if (experience) {
-    if (experience === 'fresher') {
-      results = results.filter(j => j.experience_min === 0);
-    } else if (experience === 'experienced') {
-      results = results.filter(j => j.experience_min > 0);
-    }
-  }
-
-  // 6. Minimum Salary Filter
-  if (minSalary && Number(minSalary) > 0) {
-    const minVal = Number(minSalary);
-    results = results.filter(j => {
-      const numMin = j.salary_numeric_min || parseSalaryToNumeric(j.salary_min);
-      const numMax = j.salary_numeric_max || parseSalaryToNumeric(j.salary_max);
-      return numMax >= minVal || numMin >= minVal;
-    });
-  }
-
-  // 7. Specific Skill Filter
-  if (skill && skill !== 'ALL') {
-    const sk = skill.toLowerCase();
-    results = results.filter(j =>
-      (j.required_skills || []).some(s => s.toLowerCase().includes(sk)) ||
-      (j.preferred_skills || []).some(s => s.toLowerCase().includes(sk))
-    );
-  }
-
-  // 8. Sorting
-  if (sortBy === 'salary') {
-    results.sort((a, b) => {
-      const salB = b.salary_numeric_max || parseSalaryToNumeric(b.salary_max);
-      const salA = a.salary_numeric_max || parseSalaryToNumeric(a.salary_max);
-      return salB - salA;
-    });
-  } else if (sortBy === 'recent') {
-    results.sort((a, b) => new Date(b.posted_at || 0) - new Date(a.posted_at || 0));
-  } else {
-    // Default: Best match percentage
-    results.sort((a, b) => b.matchScore - a.matchScore);
-  }
 
   res.json({
     success: true,
     data: {
-      jobs: results,
-      total: results.length,
-      facets,
+      jobs: response.jobs,
+      total: response.total,
+      totalDatabaseCount: response.totalDatabaseCount,
+      facets: response.facets,
+      page: response.page,
+      pageSize: response.pageSize,
+      totalPages: response.totalPages,
       ingestionStats: ingestionEngine.getStats()
     }
   });
 });
 
 app.get('/api/v1/jobs/facets', (req, res) => {
-  const facets = {
-    totalJobs: jobs.length,
-    bySource: {
-      LinkedIn: jobs.filter(j => j.source === 'LinkedIn').length,
-      Naukri: jobs.filter(j => j.source === 'Naukri').length,
-      Indeed: jobs.filter(j => j.source === 'Indeed').length,
-      Wellfound: jobs.filter(j => j.source === 'Wellfound').length
-    },
-    byWorkMode: {
-      REMOTE: jobs.filter(j => j.work_mode === 'REMOTE').length,
-      HYBRID: jobs.filter(j => j.work_mode === 'HYBRID').length,
-      ON_SITE: jobs.filter(j => j.work_mode === 'ON_SITE').length
-    },
-    byLocation: {
-      Hyderabad: jobs.filter(j => /hyderabad/i.test(j.location)).length,
-      Bangalore: jobs.filter(j => /bangalore/i.test(j.location)).length,
-      Pune: jobs.filter(j => /pune/i.test(j.location)).length,
-      Remote: jobs.filter(j => /remote/i.test(j.location) || j.work_mode === 'REMOTE').length
-    },
-    topSkills: [
-      { name: 'React', count: jobs.filter(j => (j.required_skills || []).includes('React')).length },
-      { name: 'Node.js', count: jobs.filter(j => (j.required_skills || []).includes('Node.js')).length },
-      { name: 'PostgreSQL', count: jobs.filter(j => (j.required_skills || []).includes('PostgreSQL')).length },
-      { name: 'JavaScript', count: jobs.filter(j => (j.required_skills || []).includes('JavaScript')).length },
-      { name: 'TypeScript', count: jobs.filter(j => (j.required_skills || []).includes('TypeScript')).length },
-      { name: 'Docker', count: jobs.filter(j => (j.preferred_skills || []).includes('Docker')).length }
-    ],
-    ingestionStats: ingestionEngine.getStats()
-  };
-
-  res.json({ success: true, data: facets });
+  const user = getCurrentUser();
+  const summary = jobService.getJobs({ user, limit: 'ALL' });
+  res.json({ 
+    success: true, 
+    data: {
+      ...summary.facets,
+      topSkills: [
+        { name: 'React', count: jobService.jobs.filter(j => (j.required_skills || []).includes('React')).length },
+        { name: 'Node.js', count: jobService.jobs.filter(j => (j.required_skills || []).includes('Node.js')).length },
+        { name: 'PostgreSQL', count: jobService.jobs.filter(j => (j.required_skills || []).includes('PostgreSQL')).length },
+        { name: 'JavaScript', count: jobService.jobs.filter(j => (j.required_skills || []).includes('JavaScript')).length },
+        { name: 'TypeScript', count: jobService.jobs.filter(j => (j.required_skills || []).includes('TypeScript')).length },
+        { name: 'Docker', count: jobService.jobs.filter(j => (j.preferred_skills || []).includes('Docker')).length }
+      ],
+      ingestionStats: ingestionEngine.getStats()
+    }
+  });
 });
 
 // Single Job Ingestion via Adapter
@@ -804,20 +718,36 @@ app.post('/api/v1/jobs/ingest', (req, res) => {
     return res.status(400).json({ success: false, error: { message: "rawJob payload is required" } });
   }
 
-  const result = ingestionEngine.ingest(rawJob, source);
-  if (!result.success && result.duplicate) {
+  // Stamp newly ingested job with today's real timestamp and valid source URL
+  const enrichedJob = {
+    ...rawJob,
+    source: source || rawJob.source || 'LinkedIn',
+    posted_at: new Date().toISOString(), // Today's date!
+    source_url: getDirectSourceUrl(
+      source || rawJob.source || 'LinkedIn',
+      rawJob.title || 'Software Engineer',
+      rawJob.company || 'Tech Company',
+      rawJob.location || 'India',
+      rawJob.source_url || rawJob.jobUrl
+    )
+  };
+
+  const batchRes = jobService.ingestBatch([enrichedJob]);
+  if (batchRes.duplicatesBlocked.length > 0 && batchRes.newlyIngested.length === 0) {
     return res.status(409).json({
       success: false,
       duplicate: true,
-      message: "Job listing already exists in database (SHA-256 fingerprint collision detected)",
-      canonical_hash: result.canonical.canonical_hash
+      message: "Job listing already exists in database (fingerprint collision detected)",
+      canonical_hash: batchRes.duplicatesBlocked[0].canonical_hash
     });
   }
 
-  jobs.unshift(result.job);
+  const job = batchRes.newlyIngested[0] || enrichedJob;
+  jobs = jobService.jobs;
+
   res.status(201).json({
     success: true,
-    data: result.job,
+    data: job,
     stats: ingestionEngine.getStats()
   });
 });
@@ -831,11 +761,16 @@ app.post('/api/v1/jobs/ingest-url', (req, res) => {
   }
 
   const rawNormalized = parseJobFromUrlOrText(input, source);
-  const result = ingestionEngine.ingest(rawNormalized, rawNormalized.source);
+  rawNormalized.posted_at = new Date().toISOString(); // Stamped with today's real timestamp!
+  rawNormalized.source_url = url && url.startsWith('http') 
+    ? url 
+    : getDirectSourceUrl(rawNormalized.source, rawNormalized.title, rawNormalized.company, rawNormalized.location, rawNormalized.source_url);
 
-  if (!result.success && result.duplicate) {
-    const existing = jobs.find(j => j.canonical_hash === result.canonical.canonical_hash) || result.canonical;
-    const user = getCurrentUser();
+  const batchRes = jobService.ingestBatch([rawNormalized]);
+  const user = getCurrentUser();
+
+  if (batchRes.duplicatesBlocked.length > 0 && batchRes.newlyIngested.length === 0) {
+    const existing = batchRes.duplicatesBlocked[0];
     const matchAnalysis = calculateComprehensiveMatch(user || {}, existing);
     return res.status(200).json({
       success: true,
@@ -850,16 +785,16 @@ app.post('/api/v1/jobs/ingest-url', (req, res) => {
     });
   }
 
-  jobs.unshift(result.job);
-  const user = getCurrentUser();
-  const matchAnalysis = calculateComprehensiveMatch(user || {}, result.job);
+  const newJob = batchRes.newlyIngested[0] || rawNormalized;
+  jobs = jobService.jobs;
+  const matchAnalysis = calculateComprehensiveMatch(user || {}, newJob);
 
   res.status(201).json({
     success: true,
     duplicate: false,
-    message: `Successfully ingested job listing from ${result.job.source}!`,
+    message: `Successfully ingested job listing from ${newJob.source}!`,
     data: {
-      ...result.job,
+      ...newJob,
       matchAnalysis,
       matchScore: matchAnalysis.overallScore
     },
@@ -899,15 +834,23 @@ app.post('/api/v1/jobs/sync-candidate-feed', async (req, res) => {
     liveFeed = liveFeed.filter(j => j.source.toLowerCase() === source.toLowerCase());
   }
 
-  const results = ingestionEngine.ingestBatch(liveFeed);
-  results.ingested.forEach(newJob => jobs.unshift(newJob));
+  // CRITICAL REQUIREMENT: Newly imported jobs MUST be stamped with TODAY's timestamp!
+  const todayIso = new Date().toISOString();
+  liveFeed = liveFeed.map(j => ({
+    ...j,
+    posted_at: todayIso,
+    source_url: getDirectSourceUrl(j.source, j.title, j.company, j.location, j.source_url)
+  }));
+
+  const results = jobService.ingestBatch(liveFeed);
+  jobs = jobService.jobs;
 
   res.json({
     success: true,
     data: {
-      newlyIngestedCount: results.ingested.length,
-      duplicatesBlockedCount: results.duplicates.length,
-      newJobs: results.ingested,
+      newlyIngestedCount: results.newlyIngested.length,
+      duplicatesBlockedCount: results.duplicatesBlocked.length,
+      newJobs: results.newlyIngested,
       stats: ingestionEngine.getStats()
     }
   });
@@ -934,22 +877,29 @@ app.post('/api/v1/jobs/sync-demo-feed', async (req, res) => {
   const dynamicFeed = generateJobsForCandidateProfile(user || {}, 8);
   feed.push(...dynamicFeed);
 
-  const results = ingestionEngine.ingestBatch(feed);
-  results.ingested.forEach(newJob => jobs.unshift(newJob));
+  const todayIso = new Date().toISOString();
+  feed = feed.map(j => ({
+    ...j,
+    posted_at: todayIso,
+    source_url: getDirectSourceUrl(j.source, j.title, j.company, j.location, j.source_url)
+  }));
+
+  const results = jobService.ingestBatch(feed);
+  jobs = jobService.jobs;
 
   res.json({
     success: true,
     data: {
-      newlyIngestedCount: results.ingested.length,
-      duplicatesBlockedCount: results.duplicates.length,
-      newJobs: results.ingested,
+      newlyIngestedCount: results.newlyIngested.length,
+      duplicatesBlockedCount: results.duplicatesBlocked.length,
+      newJobs: results.newlyIngested,
       stats: ingestionEngine.getStats()
     }
   });
 });
 
 app.get('/api/v1/jobs/:id', (req, res) => {
-  const job = jobs.find(j => j.id === req.params.id);
+  const job = jobService.getJobById(req.params.id) || jobs.find(j => j.id === req.params.id);
   if (!job) return res.status(404).json({ success: false, error: { message: "Job not found" } });
   
   const user = getCurrentUser();
@@ -959,7 +909,7 @@ app.get('/api/v1/jobs/:id', (req, res) => {
     success: true,
     data: {
       ...job,
-      isSaved: savedJobIds.includes(job.id),
+      isSaved: jobService.savedJobIds.includes(job.id),
       matchAnalysis
     }
   });
@@ -1042,24 +992,20 @@ app.get('/api/v1/jobs/:id/related', (req, res) => {
  * ----------------------------------------------------------- */
 app.get('/api/v1/saved-jobs', (req, res) => {
   const user = getCurrentUser();
-  const saved = jobs.filter(j => savedJobIds.includes(j.id)).map(job => {
-    const analysis = calculateComprehensiveMatch(user || {}, job);
-    return { ...job, matchScore: analysis.overallScore };
-  });
+  // CRITICAL REQUIREMENT: All saved jobs remain in the app, regardless of age (even 1 week or 1 month ago)!
+  const saved = jobService.getSavedJobs(user);
   res.json({ success: true, data: saved });
 });
 
 app.post('/api/v1/saved-jobs', (req, res) => {
   const { jobId } = req.body;
-  if (!savedJobIds.includes(jobId)) {
-    savedJobIds.push(jobId);
-  }
-  res.json({ success: true, data: savedJobIds });
+  const savedIds = jobService.saveJob(jobId);
+  res.json({ success: true, data: savedIds });
 });
 
 app.delete('/api/v1/saved-jobs/:id', (req, res) => {
-  savedJobIds = savedJobIds.filter(id => id !== req.params.id);
-  res.json({ success: true, data: savedJobIds });
+  const savedIds = jobService.unsaveJob(req.params.id);
+  res.json({ success: true, data: savedIds });
 });
 
 app.get('/api/v1/applications', (req, res) => {

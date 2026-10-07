@@ -19,7 +19,9 @@ import {
   Zap,
   ArrowUpDown,
   Plus,
-  Link as LinkIcon
+  Link as LinkIcon,
+  Calendar,
+  Clock
 } from 'lucide-react';
 import { useCareer } from '../context/CareerContext';
 import JobCard from '../components/jobs/JobCard';
@@ -44,6 +46,8 @@ export default function ExploreJobsPage() {
     refreshData
   } = useCareer();
 
+  const [selectedDateFilter, setSelectedDateFilter] = useState('ALL'); // 'ALL', 'TODAY', 'PAST_3_DAYS', 'PAST_WEEK', 'PAST_MONTH'
+  const [visibleLimit, setVisibleLimit] = useState(24);
   const [minSalary, setMinSalary] = useState('0');
   const [selectedSkill, setSelectedSkill] = useState('ALL');
   const [sortBy, setSortBy] = useState('match'); // 'match', 'salary', 'recent'
@@ -64,6 +68,13 @@ export default function ExploreJobsPage() {
     { label: '₹12L+ PA', value: '1200000' },
     { label: '₹15L+ PA', value: '1500000' }
   ];
+  const dateOptions = [
+    { id: 'ALL', label: 'All Dates' },
+    { id: 'TODAY', label: 'Posted Today (24h)' },
+    { id: 'PAST_3_DAYS', label: 'Past 3 Days' },
+    { id: 'PAST_WEEK', label: 'Past Week' },
+    { id: 'PAST_MONTH', label: 'Past Month' }
+  ];
   const popularSkills = ['React', 'Node.js', 'PostgreSQL', 'TypeScript', 'Python', 'Docker', 'Redis', 'Tailwind CSS'];
 
   // Parse salary string to numeric for sorting / filtering
@@ -74,43 +85,89 @@ export default function ExploreJobsPage() {
     return m ? parseInt(m[0], 10) : 0;
   };
 
+  // Helper: Match date posted
+  const matchesDate = (postedAt, filterKey) => {
+    if (!filterKey || filterKey === 'ALL' || filterKey === 'all') return true;
+    if (!postedAt) return false;
+    const postedDate = new Date(postedAt);
+    const now = new Date();
+    const diffMs = now.getTime() - postedDate.getTime();
+    const diffHours = diffMs / (1000 * 3600);
+    const diffDays = diffMs / (1000 * 3600 * 24);
+
+    if (/^\d{4}-\d{2}-\d{2}$/.test(filterKey)) {
+      const jobDateStr = postedDate.toISOString().split('T')[0];
+      const localJobDateStr = postedDate.toLocaleDateString('en-CA');
+      return jobDateStr === filterKey || localJobDateStr === filterKey;
+    }
+
+    const key = String(filterKey).toUpperCase().trim();
+    if (key === 'TODAY' || key === 'PAST_24H' || key === '24H') {
+      const isTodayCalendar = postedDate.toDateString() === now.toDateString() ||
+                              postedDate.toISOString().split('T')[0] === now.toISOString().split('T')[0];
+      return (diffHours >= 0 && diffHours <= 24) || isTodayCalendar;
+    }
+    if (key === 'PAST_3_DAYS' || key === '3D') {
+      return diffDays >= 0 && diffDays <= 3;
+    }
+    if (key === 'PAST_WEEK' || key === '7D' || key === 'WEEK') {
+      return diffDays >= 0 && diffDays <= 7;
+    }
+    if (key === 'PAST_MONTH' || key === '30D' || key === 'MONTH') {
+      return diffDays >= 0 && diffDays <= 30;
+    }
+    return true;
+  };
+
   // Filter & Sort Logic
   const filteredJobs = useMemo(() => {
     return jobs.filter(job => {
-      // Query filter
-      if (searchQuery) {
-        const q = searchQuery.toLowerCase();
-        const matchesQuery = 
-          job.title.toLowerCase().includes(q) || 
-          job.company.toLowerCase().includes(q) ||
-          (job.required_skills || []).some(s => s.toLowerCase().includes(q)) ||
-          (job.preferred_skills || []).some(s => s.toLowerCase().includes(q));
-        if (!matchesQuery) return false;
+      // 1. CRITICAL: Date Posted Filter
+      if (selectedDateFilter !== 'ALL') {
+        if (!matchesDate(job.posted_at, selectedDateFilter)) return false;
       }
 
-      // Location filter
+      // 2. Query filter (Supports role, company, skill, or "today" / calendar date)
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase().trim();
+        if (q === 'today' || q === 'posted today') {
+          if (!matchesDate(job.posted_at, 'TODAY')) return false;
+        } else if (/^\d{4}-\d{2}-\d{2}$/.test(q)) {
+          if (!matchesDate(job.posted_at, q)) return false;
+        } else {
+          const matchesQuery = 
+            job.title.toLowerCase().includes(q) || 
+            job.company.toLowerCase().includes(q) ||
+            (job.required_skills || []).some(s => s.toLowerCase().includes(q)) ||
+            (job.preferred_skills || []).some(s => s.toLowerCase().includes(q)) ||
+            job.location.toLowerCase().includes(q);
+          if (!matchesQuery) return false;
+        }
+      }
+
+      // 3. Location filter
       if (selectedLocation !== 'All') {
         if (!job.location.toLowerCase().includes(selectedLocation.toLowerCase())) return false;
       }
 
-      // Work Mode filter
+      // 4. Work Mode filter
       if (selectedWorkMode !== 'ALL') {
         if (job.work_mode !== selectedWorkMode) return false;
       }
 
-      // Source filter
+      // 5. Source filter
       if (selectedSource !== 'ALL') {
         if (job.source.toLowerCase() !== selectedSource.toLowerCase()) return false;
       }
 
-      // Experience filter
+      // 6. Experience filter
       if (selectedExperience === 'fresher') {
         if (job.experience_min !== 0) return false;
       } else if (selectedExperience === 'experienced') {
         if (job.experience_min === 0) return false;
       }
 
-      // Minimum Salary filter
+      // 7. Minimum Salary filter
       if (Number(minSalary) > 0) {
         const minVal = Number(minSalary);
         const salMax = job.salary_numeric_max || parseSal(job.salary_max);
@@ -118,7 +175,7 @@ export default function ExploreJobsPage() {
         if (salMax < minVal && salMin < minVal) return false;
       }
 
-      // Skill filter
+      // 8. Skill filter
       if (selectedSkill !== 'ALL') {
         const sk = selectedSkill.toLowerCase();
         const hasSkill = 
@@ -139,7 +196,12 @@ export default function ExploreJobsPage() {
       }
       return (b.matchScore || 0) - (a.matchScore || 0);
     });
-  }, [jobs, searchQuery, selectedLocation, selectedWorkMode, selectedSource, selectedExperience, minSalary, selectedSkill, sortBy]);
+  }, [jobs, searchQuery, selectedDateFilter, selectedLocation, selectedWorkMode, selectedSource, selectedExperience, minSalary, selectedSkill, sortBy]);
+
+  // Display subset for pagination / Load More
+  const displayedJobs = useMemo(() => {
+    return filteredJobs.slice(0, visibleLimit);
+  }, [filteredJobs, visibleLimit]);
 
   // Source Counts for Quick Pills
   const sourceCounts = useMemo(() => {
@@ -151,8 +213,20 @@ export default function ExploreJobsPage() {
     };
   }, [jobs]);
 
+  // Date Counts for Quick Pills
+  const dateCounts = useMemo(() => {
+    return {
+      ALL: jobs.length,
+      TODAY: jobs.filter(j => matchesDate(j.posted_at, 'TODAY')).length,
+      PAST_3_DAYS: jobs.filter(j => matchesDate(j.posted_at, 'PAST_3_DAYS')).length,
+      PAST_WEEK: jobs.filter(j => matchesDate(j.posted_at, 'PAST_WEEK')).length,
+      PAST_MONTH: jobs.filter(j => matchesDate(j.posted_at, 'PAST_MONTH')).length
+    };
+  }, [jobs]);
+
   const clearFilters = () => {
     setSearchQuery('');
+    setSelectedDateFilter('ALL');
     setSelectedLocation('All');
     setSelectedWorkMode('ALL');
     setSelectedSource('ALL');
@@ -160,10 +234,12 @@ export default function ExploreJobsPage() {
     setMinSalary('0');
     setSelectedSkill('ALL');
     setSortBy('match');
+    setVisibleLimit(24);
   };
 
   const hasActiveFilters = 
     searchQuery || 
+    selectedDateFilter !== 'ALL' ||
     selectedLocation !== 'All' || 
     selectedWorkMode !== 'ALL' || 
     selectedSource !== 'ALL' || 
@@ -211,7 +287,7 @@ export default function ExploreJobsPage() {
               </span>
             </h1>
             <p className="text-xs sm:text-sm text-slate-400 mt-1">
-              Multi-source canonical ingestion across LinkedIn, Indeed, Naukri, and Wellfound with SHA-256 deduplication and AI match scoring.
+              Real opportunities from LinkedIn, Naukri, Indeed & Wellfound with direct application links, date filtering, and AI match scoring.
             </p>
           </div>
 
@@ -232,10 +308,10 @@ export default function ExploreJobsPage() {
               onClick={handleSyncFeed}
               disabled={isSyncing}
               className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 via-indigo-600 to-accent-cyan hover:opacity-95 text-white font-bold text-xs shadow-glow-primary transition-all flex items-center gap-2 whitespace-nowrap disabled:opacity-50 active:scale-95"
-              title="Ingests fresh batches through multi-source adapters & blocks duplicate postings"
+              title="Ingests fresh batches through multi-source adapters stamped with today's date"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
-              <span>{isSyncing ? 'Syncing Adapters...' : 'Sync Live Sources'}</span>
+              <span>{isSyncing ? 'Syncing Sources...' : 'Sync Live Sources'}</span>
             </button>
           </div>
         </div>
@@ -246,8 +322,8 @@ export default function ExploreJobsPage() {
             <div className="flex items-center gap-2">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
               <span>
-                Adapter Sync Complete: Ingested <strong>{syncNotice.ingested} new jobs</strong> across LinkedIn, Naukri, Indeed & Wellfound. 
-                Blocked <strong>{syncNotice.duplicates} duplicates</strong> via SHA-256 fingerprinting.
+                Adapter Sync Complete: Ingested <strong>{syncNotice.ingested} new jobs</strong> stamped with today's date. 
+                Blocked <strong>{syncNotice.duplicates} duplicates</strong> via fingerprinting.
               </span>
             </div>
             <button onClick={() => setSyncNotice(null)} className="text-slate-400 hover:text-white">
@@ -265,7 +341,7 @@ export default function ExploreJobsPage() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search roles, companies, or technologies (e.g. Software Engineer, React, Full Stack, Python)..."
+            placeholder="Search roles, companies, skills, or type 'today' (e.g. Software Engineer, React, Razorpay, today)..."
             className="flex-1 bg-transparent border-none text-white text-sm focus:outline-none placeholder-slate-500"
           />
           {searchQuery && (
@@ -279,41 +355,77 @@ export default function ExploreJobsPage() {
         </div>
       </div>
 
-      {/* Multi-Source Quick Filter Pills */}
-      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 text-xs">
-        <span className="text-slate-400 font-semibold text-[11px] whitespace-nowrap">Portal Source:</span>
-        <button
-          onClick={() => setSelectedSource('ALL')}
-          className={`px-3 py-1.5 rounded-xl font-bold transition-all whitespace-nowrap ${
-            selectedSource === 'ALL'
-              ? 'bg-brand-600 text-white shadow-glow-primary'
-              : 'bg-white/5 text-slate-400 hover:text-white'
-          }`}
-        >
-          All Portals ({jobs.length})
-        </button>
-
-        {[
-          { id: 'LinkedIn', color: 'border-[#0077b5]/40 text-[#38bdf8] bg-[#0077b5]/15' },
-          { id: 'Naukri', color: 'border-blue-500/40 text-blue-400 bg-blue-600/15' },
-          { id: 'Indeed', color: 'border-indigo-500/40 text-indigo-300 bg-indigo-600/15' },
-          { id: 'Wellfound', color: 'border-rose-500/40 text-rose-300 bg-rose-500/15' }
-        ].map(src => (
+      {/* Quick Pills: Portal Source & Date Posted */}
+      <div className="space-y-2">
+        {/* Portal Source Pills */}
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 text-xs">
+          <span className="text-slate-400 font-semibold text-[11px] whitespace-nowrap">Source:</span>
           <button
-            key={src.id}
-            onClick={() => setSelectedSource(selectedSource === src.id ? 'ALL' : src.id)}
-            className={`px-3 py-1.5 rounded-xl font-bold border transition-all whitespace-nowrap flex items-center gap-1.5 ${
-              selectedSource === src.id
-                ? `${src.color} ring-2 ring-brand-500/50 shadow-glow-primary`
-                : 'bg-white/5 border-white/5 text-slate-400 hover:text-white'
+            onClick={() => setSelectedSource('ALL')}
+            className={`px-3 py-1.5 rounded-xl font-bold transition-all whitespace-nowrap ${
+              selectedSource === 'ALL'
+                ? 'bg-brand-600 text-white shadow-glow-primary'
+                : 'bg-white/5 text-slate-400 hover:text-white'
             }`}
           >
-            <span>{src.id}</span>
-            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-white/10 font-mono">
-              {sourceCounts[src.id] || 0}
-            </span>
+            All Sources ({jobs.length})
           </button>
-        ))}
+
+          {[
+            { id: 'LinkedIn', color: 'border-[#0077b5]/40 text-[#38bdf8] bg-[#0077b5]/15' },
+            { id: 'Naukri', color: 'border-blue-500/40 text-blue-400 bg-blue-600/15' },
+            { id: 'Indeed', color: 'border-indigo-500/40 text-indigo-300 bg-indigo-600/15' },
+            { id: 'Wellfound', color: 'border-rose-500/40 text-rose-300 bg-rose-500/15' }
+          ].map(src => (
+            <button
+              key={src.id}
+              onClick={() => setSelectedSource(selectedSource === src.id ? 'ALL' : src.id)}
+              className={`px-3 py-1.5 rounded-xl font-bold border transition-all whitespace-nowrap flex items-center gap-1.5 ${
+                selectedSource === src.id
+                  ? `${src.color} ring-2 ring-brand-500/50 shadow-glow-primary`
+                  : 'bg-white/5 border-white/5 text-slate-400 hover:text-white'
+              }`}
+            >
+              <span>{src.id}</span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-white/10 font-mono">
+                {sourceCounts[src.id] || 0}
+              </span>
+            </button>
+          ))}
+        </div>
+
+        {/* Date Posted Quick Pills */}
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 text-xs">
+          <span className="text-slate-400 font-semibold text-[11px] whitespace-nowrap flex items-center gap-1">
+            <Calendar className="w-3.5 h-3.5 text-accent-cyan" /> Date:
+          </span>
+          {dateOptions.map(df => {
+            const isSelected = selectedDateFilter === df.id;
+            const isToday = df.id === 'TODAY';
+            return (
+              <button
+                key={df.id}
+                onClick={() => {
+                  setSelectedDateFilter(df.id);
+                  setVisibleLimit(24);
+                }}
+                className={`px-3 py-1.5 rounded-xl font-bold border transition-all whitespace-nowrap flex items-center gap-1.5 ${
+                  isSelected
+                    ? isToday 
+                      ? 'bg-emerald-500/25 border-emerald-500/60 text-emerald-300 shadow-glow-emerald ring-2 ring-emerald-500/40'
+                      : 'bg-indigo-600 text-white border-indigo-500 shadow-glow-primary'
+                    : 'bg-white/5 border-white/5 text-slate-400 hover:text-white'
+                }`}
+              >
+                {isToday && <Sparkles className="w-3 h-3 text-emerald-400" />}
+                <span>{df.label}</span>
+                <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-white/10 font-mono">
+                  {dateCounts[df.id] ?? 0}
+                </span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Multi-facet Filter Bar */}
@@ -354,7 +466,7 @@ export default function ExploreJobsPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 text-xs">
+        <div className="grid grid-cols-2 sm:grid-cols-6 gap-3 text-xs">
           
           {/* Location Filter */}
           <div>
@@ -413,6 +525,23 @@ export default function ExploreJobsPage() {
             </select>
           </div>
 
+          {/* Date Posted Filter */}
+          <div>
+            <label className="block text-[11px] font-semibold text-slate-400 mb-1">Date Posted</label>
+            <select
+              value={selectedDateFilter}
+              onChange={(e) => {
+                setSelectedDateFilter(e.target.value);
+                setVisibleLimit(24);
+              }}
+              className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-brand-500 font-medium"
+            >
+              {dateOptions.map(opt => (
+                <option key={opt.id} value={opt.id}>{opt.label}</option>
+              ))}
+            </select>
+          </div>
+
           {/* Sorting */}
           <div>
             <label className="block text-[11px] font-semibold text-slate-400 mb-1">Sort By</label>
@@ -422,8 +551,8 @@ export default function ExploreJobsPage() {
               className="w-full bg-slate-900 border border-white/10 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-brand-500"
             >
               <option value="match">Highest Match %</option>
-              <option value="salary">Highest Salary</option>
               <option value="recent">Most Recently Posted</option>
+              <option value="salary">Highest Salary</option>
             </select>
           </div>
 
@@ -457,6 +586,42 @@ export default function ExploreJobsPage() {
           ))}
         </div>
       </div>
+
+      {/* Results Header: Count & Pagination Controls */}
+      {filteredJobs.length > 0 && (
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-1 text-xs text-slate-400">
+          <div className="flex items-center gap-2">
+            <span>
+              Showing <strong className="text-white font-bold">{displayedJobs.length}</strong> of{' '}
+              <strong className="text-white font-bold">{filteredJobs.length}</strong> opportunities
+            </span>
+            {filteredJobs.length > 20 && (
+              <span className="text-[11px] px-2 py-0.5 rounded-md bg-brand-500/15 text-brand-300 border border-brand-500/30 font-semibold">
+                More than 20 available
+              </span>
+            )}
+            {selectedDateFilter === 'TODAY' && (
+              <span className="text-[11px] px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold flex items-center gap-1">
+                <Sparkles className="w-3 h-3 text-emerald-400" /> Today's Posts Only
+              </span>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] text-slate-500">View capacity:</span>
+            <select
+              value={visibleLimit >= filteredJobs.length ? 'ALL' : visibleLimit}
+              onChange={(e) => setVisibleLimit(e.target.value === 'ALL' ? filteredJobs.length : Number(e.target.value))}
+              className="bg-slate-900 border border-white/10 rounded-xl px-2.5 py-1 text-xs text-slate-300 focus:outline-none focus:border-brand-500"
+            >
+              <option value="20">20 jobs</option>
+              <option value="40">40 jobs</option>
+              <option value="60">60 jobs</option>
+              <option value="ALL">All ({filteredJobs.length})</option>
+            </select>
+          </div>
+        </div>
+      )}
 
       {/* Jobs Grid or List View */}
       {filteredJobs.length === 0 ? (
@@ -496,7 +661,11 @@ export default function ExploreJobsPage() {
             </div>
             <div>
               <h3 className="text-base font-bold text-white">No jobs match your active filters</h3>
-              <p className="text-xs text-slate-400 mt-1">Try broadening your salary range, location, or search query.</p>
+              <p className="text-xs text-slate-400 mt-1">
+                {selectedDateFilter === 'TODAY' 
+                  ? "No jobs match today's date with the current criteria. Try selecting 'Past 3 Days' or 'All Dates'."
+                  : "Try broadening your salary range, location, or search query."}
+              </p>
             </div>
             <button
               onClick={clearFilters}
@@ -507,18 +676,42 @@ export default function ExploreJobsPage() {
           </div>
         )
       ) : (
-        <div className={
-          viewMode === 'grid' 
-            ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
-            : "space-y-4"
-        }>
-          {filteredJobs.map((job) => (
-            <JobCard
-              key={job.id}
-              job={job}
-              onAnalyze={(j) => setActiveJobForAnalysis(j)}
-            />
-          ))}
+        <div className="space-y-6">
+          <div className={
+            viewMode === 'grid' 
+              ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
+              : "space-y-4"
+          }>
+            {displayedJobs.map((job) => (
+              <JobCard
+                key={job.id}
+                job={job}
+                onAnalyze={(j) => setActiveJobForAnalysis(j)}
+              />
+            ))}
+          </div>
+
+          {/* Load More (+20) and Show All Pagination Controls */}
+          {filteredJobs.length > visibleLimit && (
+            <div className="p-6 rounded-2xl glass-panel border border-white/10 text-center flex flex-col sm:flex-row items-center justify-center gap-3 animate-fadeIn">
+              <button
+                onClick={() => setVisibleLimit(prev => Math.min(filteredJobs.length, prev + 20))}
+                className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-brand-600 via-indigo-600 to-accent-cyan hover:opacity-95 text-white font-bold text-xs shadow-glow-primary transition-all flex items-center justify-center gap-2 active:scale-95"
+              >
+                <span>Load More Jobs (+20)</span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/20 font-mono">
+                  +{Math.min(20, filteredJobs.length - visibleLimit)} more
+                </span>
+              </button>
+              
+              <button
+                onClick={() => setVisibleLimit(filteredJobs.length)}
+                className="w-full sm:w-auto px-5 py-3 rounded-xl bg-white/10 hover:bg-white/15 text-white font-semibold text-xs border border-white/10 transition-all active:scale-95"
+              >
+                <span>Show All {filteredJobs.length} Jobs</span>
+              </button>
+            </div>
+          )}
         </div>
       )}
 

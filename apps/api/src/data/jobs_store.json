@@ -1,0 +1,2486 @@
+[
+  {
+    "id": "job_linkedin_101",
+    "source_id": "src_linkedin",
+    "source": "LinkedIn",
+    "external_job_id": "linkedin_1000",
+    "title": "Full Stack Engineer (React & Node.js)",
+    "company": "Razorpay",
+    "location": "Bangalore, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 3,
+    "salary_min": "₹14,00,000",
+    "salary_max": "₹22,00,000",
+    "salary_numeric_min": 1400000,
+    "salary_numeric_max": 2200000,
+    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Full%20Stack%20Engineer%20(React%20%26%20Node.js)%20Razorpay&location=Bangalore%2C%20India",
+    "posted_at": "2026-10-07T05:23:17.630Z",
+    "description": "Join Razorpay payments platform team to build scalable merchant checkout flows and microservices handling millions of transactions daily.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "React",
+      "Node.js",
+      "PostgreSQL",
+      "JavaScript"
+    ],
+    "preferred_skills": [
+      "Redis",
+      "Docker",
+      "AWS"
+    ],
+    "is_verified": true,
+    "canonical_hash": "be5c032d18b1d4aff3b7a1396babf31eec5bac0b92d5f7a5bed58c60c6a82243"
+  },
+  {
+    "id": "job_linkedin_102",
+    "source_id": "src_linkedin",
+    "source": "LinkedIn",
+    "external_job_id": "linkedin_1001",
+    "title": "Frontend Developer - Core App",
+    "company": "Swiggy Tech",
+    "location": "Bangalore, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 0,
+    "experience_max": 2,
+    "salary_min": "₹12,00,000",
+    "salary_max": "₹18,00,000",
+    "salary_numeric_min": 1200000,
+    "salary_numeric_max": 1800000,
+    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Frontend%20Developer%20-%20Core%20App%20Swiggy%20Tech&location=Bangalore%2C%20India",
+    "posted_at": "2026-10-07T03:23:17.630Z",
+    "description": "Build fast, responsive, accessible consumer checkout interfaces and real-time delivery tracking UI using React and modern CSS.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "React",
+      "JavaScript",
+      "Tailwind CSS",
+      "HTML/CSS"
+    ],
+    "preferred_skills": [
+      "Next.js",
+      "Redux",
+      "TypeScript"
+    ],
+    "is_verified": true,
+    "canonical_hash": "ecfcab356e4ff1d838f7c6a68a20a5aa00aa283f39c4ccff1bf0115fa03556d1"
+  },
+  {
+    "id": "job_linkedin_103",
+    "source_id": "src_linkedin",
+    "source": "LinkedIn",
+    "external_job_id": "linkedin_1002",
+    "title": "Software Engineer - Distributed Systems",
+    "company": "Microsoft India",
+    "location": "Hyderabad, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 4,
+    "salary_min": "₹16,00,000",
+    "salary_max": "₹26,00,000",
+    "salary_numeric_min": 1600000,
+    "salary_numeric_max": 2600000,
+    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Software%20Engineer%20-%20Distributed%20Systems%20Microsoft%20India&location=Hyderabad%2C%20India",
+    "posted_at": "2026-10-07T02:23:17.630Z",
+    "description": "Engineer high-throughput cloud infrastructure and API backends serving enterprise Azure customers globally.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "JavaScript",
+      "Node.js",
+      "Python",
+      "PostgreSQL"
+    ],
+    "preferred_skills": [
+      "Azure",
+      "Kubernetes",
+      "Docker"
+    ],
+    "is_verified": true,
+    "canonical_hash": "a3a0640e839f1141856c70b4dbe9fd3d3d91c5fd5ce8fedf4a1413efe50a2314"
+  },
+  {
+    "id": "job_linkedin_104",
+    "source_id": "src_linkedin",
+    "source": "LinkedIn",
+    "external_job_id": "linkedin_1003",
+    "title": "Junior Software Engineer (Fresher / SDE-1)",
+    "company": "PhonePe",
+    "location": "Pune, India",
+    "work_mode": "ON_SITE",
+    "employment_type": "FULL_TIME",
+    "experience_min": 0,
+    "experience_max": 1,
+    "salary_min": "₹10,00,000",
+    "salary_max": "₹15,00,000",
+    "salary_numeric_min": 1000000,
+    "salary_numeric_max": 1500000,
+    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Junior%20Software%20Engineer%20(Fresher%20%2F%20SDE-1)%20PhonePe&location=Pune%2C%20India",
+    "posted_at": "2026-10-07T01:23:17.630Z",
+    "description": "Exciting early-career opportunity for 2024-2026 CS graduates to engineer real-time UPI transaction pipelines and web tooling.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "JavaScript",
+      "React",
+      "HTML/CSS",
+      "Git & GitHub"
+    ],
+    "preferred_skills": [
+      "Node.js",
+      "SQL",
+      "REST APIs"
+    ],
+    "is_verified": true,
+    "canonical_hash": "62981abf028666c302934856fcc1685dfe354a60b1a369434552704f8d45cc86"
+  },
+  {
+    "id": "job_wellfound_105",
+    "source_id": "src_wellfound",
+    "source": "Wellfound",
+    "external_job_id": "wellfound_1004",
+    "title": "React Native & Web Frontend Engineer",
+    "company": "Zepto",
+    "location": "Bangalore, India",
+    "work_mode": "REMOTE",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 3,
+    "salary_min": "₹13,00,000",
+    "salary_max": "₹20,00,000",
+    "salary_numeric_min": 1300000,
+    "salary_numeric_max": 2000000,
+    "source_url": "https://wellfound.com/jobs?keywords=React%20Native%20%26%20Web%20Frontend%20Engineer&location=Bangalore%2C%20India",
+    "posted_at": "2026-10-07T04:23:17.630Z",
+    "description": "Deliver instant 10-minute grocery delivery rider and consumer apps with rich animation micro-interactions and offline-first cache.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "React",
+      "TypeScript",
+      "JavaScript",
+      "REST APIs"
+    ],
+    "preferred_skills": [
+      "Tailwind CSS",
+      "Redux",
+      "GraphQL"
+    ],
+    "is_verified": true,
+    "canonical_hash": "d69e50cdc856bae87afe804c682ba45d17b6865f70cac13faa0f2de64ec4e884"
+  },
+  {
+    "id": "job_linkedin_106",
+    "source_id": "src_linkedin",
+    "source": "LinkedIn",
+    "external_job_id": "linkedin_1005",
+    "title": "Backend API Engineer (Node.js & Postgres)",
+    "company": "CRED",
+    "location": "Bangalore, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 4,
+    "salary_min": "₹18,00,000",
+    "salary_max": "₹28,00,000",
+    "salary_numeric_min": 1800000,
+    "salary_numeric_max": 2800000,
+    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Backend%20API%20Engineer%20(Node.js%20%26%20Postgres)%20CRED&location=Bangalore%2C%20India",
+    "posted_at": "2026-10-07T00:23:17.630Z",
+    "description": "Architect low-latency financial ledger services, credit card rewards systems, and secure member auth APIs.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "Node.js",
+      "PostgreSQL",
+      "Express.js",
+      "Redis"
+    ],
+    "preferred_skills": [
+      "Kafka",
+      "Docker",
+      "AWS"
+    ],
+    "is_verified": true,
+    "canonical_hash": "0f69562544a7140f0f70141f8eed02f08bdb967051634dc89ae6906085df1e5a"
+  },
+  {
+    "id": "job_naukri_107",
+    "source_id": "src_naukri",
+    "source": "Naukri",
+    "external_job_id": "naukri_1006",
+    "title": "Associate Software Engineer - Trainee",
+    "company": "TCS Digital",
+    "location": "Hyderabad, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 0,
+    "experience_max": 1,
+    "salary_min": "₹7,00,000",
+    "salary_max": "₹9,50,000",
+    "salary_numeric_min": 700000,
+    "salary_numeric_max": 950000,
+    "source_url": "https://www.naukri.com/jobs-in-india?k=Associate%20Software%20Engineer%20-%20Trainee%20TCS%20Digital&l=Hyderabad%2C%20India",
+    "posted_at": "2026-10-06T23:23:17.630Z",
+    "description": "TCS Digital hiring stream for entry-level developers working on high-impact banking, healthcare, and retail client platforms.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "JavaScript",
+      "React",
+      "SQL",
+      "HTML/CSS"
+    ],
+    "preferred_skills": [
+      "Git & GitHub",
+      "Python",
+      "Java"
+    ],
+    "is_verified": true,
+    "canonical_hash": "f941ffad4208ac6a7a0f6a196877912cdf34fa199b8d652da6c3fc452ac9ef05"
+  },
+  {
+    "id": "job_indeed_108",
+    "source_id": "src_indeed",
+    "source": "Indeed",
+    "external_job_id": "indeed_1007",
+    "title": "Junior Web Developer - React & Tailwind",
+    "company": "Zoho Corporation",
+    "location": "Chennai, India",
+    "work_mode": "ON_SITE",
+    "employment_type": "FULL_TIME",
+    "experience_min": 0,
+    "experience_max": 2,
+    "salary_min": "₹6,50,000",
+    "salary_max": "₹10,50,000",
+    "salary_numeric_min": 650000,
+    "salary_numeric_max": 1050000,
+    "source_url": "https://in.indeed.com/jobs?q=Junior%20Web%20Developer%20-%20React%20%26%20Tailwind%20Zoho%20Corporation&l=Chennai%2C%20India",
+    "posted_at": "2026-10-06T22:23:17.630Z",
+    "description": "Build enterprise productivity software modules within Zoho Suite utilized by over 100 million global business users.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "React",
+      "JavaScript",
+      "HTML/CSS",
+      "Tailwind CSS"
+    ],
+    "preferred_skills": [
+      "REST APIs",
+      "Git & GitHub"
+    ],
+    "is_verified": true,
+    "canonical_hash": "daf3234a85b6e13ff8e67751437bd59454ceb366c27e26f0a7455e9f0646d784"
+  },
+  {
+    "id": "job_wellfound_109",
+    "source_id": "src_wellfound",
+    "source": "Wellfound",
+    "external_job_id": "wellfound_1008",
+    "title": "AI/ML Applications Developer",
+    "company": "Sarvam AI",
+    "location": "Bangalore, India",
+    "work_mode": "REMOTE",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 3,
+    "salary_min": "₹16,00,000",
+    "salary_max": "₹25,00,000",
+    "salary_numeric_min": 1600000,
+    "salary_numeric_max": 2500000,
+    "source_url": "https://wellfound.com/company/sarvam-ai",
+    "posted_at": "2026-10-07T06:23:17.630Z",
+    "description": "Develop frontier GenAI and Indic language LLM conversational interfaces, embeddings retrieval pipelines, and evaluation harnesses.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "Python",
+      "JavaScript",
+      "React",
+      "REST APIs"
+    ],
+    "preferred_skills": [
+      "PyTorch",
+      "FastAPI",
+      "Docker"
+    ],
+    "is_verified": true,
+    "canonical_hash": "d54c09f655d48a231f47f2b312c784b992edc606727771accf2d119931f5dbc9"
+  },
+  {
+    "id": "job_indeed_110",
+    "source_id": "src_indeed",
+    "source": "Indeed",
+    "external_job_id": "indeed_1009",
+    "title": "Cloud DevOps & SRE Engineer",
+    "company": "ThoughtWorks",
+    "location": "Pune, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 3,
+    "salary_min": "₹11,00,000",
+    "salary_max": "₹17,00,000",
+    "salary_numeric_min": 1100000,
+    "salary_numeric_max": 1700000,
+    "source_url": "https://in.indeed.com/jobs?q=Cloud%20DevOps%20%26%20SRE%20Engineer%20ThoughtWorks&l=Pune%2C%20India",
+    "posted_at": "2026-10-06T21:23:17.630Z",
+    "description": "Implement automated GitOps delivery pipelines, cloud microservice security controls, and high-availability monitoring.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "Docker",
+      "AWS",
+      "Git & GitHub",
+      "Linux"
+    ],
+    "preferred_skills": [
+      "Kubernetes",
+      "CI/CD",
+      "Terraform",
+      "Node.js"
+    ],
+    "is_verified": true,
+    "canonical_hash": "664e57a6d4e0e4dcbfa094c802a67182ec09aee01de77c539bdb7e31b7ee9eb4"
+  },
+  {
+    "id": "job_linkedin_111",
+    "source_id": "src_linkedin",
+    "source": "LinkedIn",
+    "external_job_id": "linkedin_1010",
+    "title": "Frontend Engineer - Consumer Web",
+    "company": "Zomato",
+    "location": "Delhi NCR, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 3,
+    "salary_min": "₹12,50,000",
+    "salary_max": "₹19,00,000",
+    "salary_numeric_min": 1250000,
+    "salary_numeric_max": 1900000,
+    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Frontend%20Engineer%20-%20Consumer%20Web%20Zomato&location=Delhi%20NCR%2C%20India",
+    "posted_at": "2026-10-06T05:23:17.630Z",
+    "description": "Help scale Zomato Gold, dining discovery, and restaurant menu experiences with high performance web rendering.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "React",
+      "JavaScript",
+      "TypeScript",
+      "Tailwind CSS"
+    ],
+    "preferred_skills": [
+      "Next.js",
+      "GraphQL",
+      "Redux"
+    ],
+    "is_verified": true,
+    "canonical_hash": "706fee2886af87eb2a25baee626c51064e15e3ec0a5767bc49c9a74bc7a11b76"
+  },
+  {
+    "id": "job_linkedin_112",
+    "source_id": "src_linkedin",
+    "source": "LinkedIn",
+    "external_job_id": "linkedin_1011",
+    "title": "Software Development Engineer 1 (SDE-1)",
+    "company": "Amazon India",
+    "location": "Hyderabad, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 0,
+    "experience_max": 2,
+    "salary_min": "₹17,00,000",
+    "salary_max": "₹28,00,000",
+    "salary_numeric_min": 1700000,
+    "salary_numeric_max": 2800000,
+    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Software%20Development%20Engineer%201%20(SDE-1)%20Amazon%20India&location=Hyderabad%2C%20India",
+    "posted_at": "2026-10-06T03:23:17.630Z",
+    "description": "Design robust backend services for Amazon Retail ordering and automated fulfillment optimization.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "Java",
+      "JavaScript",
+      "Node.js",
+      "PostgreSQL"
+    ],
+    "preferred_skills": [
+      "AWS",
+      "Distributed Systems",
+      "Docker"
+    ],
+    "is_verified": true,
+    "canonical_hash": "a3a7dffea348bc44a802657781dae84fee4cf966b3d71e2171439ed7fbc0c428"
+  },
+  {
+    "id": "job_naukri_113",
+    "source_id": "src_naukri",
+    "source": "Naukri",
+    "external_job_id": "naukri_1012",
+    "title": "Full Stack Web Developer (Node.js & React)",
+    "company": "Infosys Wings",
+    "location": "Hyderabad, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 0,
+    "experience_max": 2,
+    "salary_min": "₹7,50,000",
+    "salary_max": "₹11,00,000",
+    "salary_numeric_min": 750000,
+    "salary_numeric_max": 1100000,
+    "source_url": "https://www.naukri.com/jobs-in-india?k=Full%20Stack%20Web%20Developer%20(Node.js%20%26%20React)%20Infosys%20Wings&l=Hyderabad%2C%20India",
+    "posted_at": "2026-10-06T01:23:17.630Z",
+    "description": "Develop enterprise digital transformation portals for Fortune 500 financial clients with agile sprint workflows.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "React",
+      "Node.js",
+      "Express.js",
+      "PostgreSQL"
+    ],
+    "preferred_skills": [
+      "Git & GitHub",
+      "REST APIs"
+    ],
+    "is_verified": true,
+    "canonical_hash": "eeaaf44a7fd57111d5acccca826cc112466fcc3961225b9024c69b47c53439ce"
+  },
+  {
+    "id": "job_linkedin_114",
+    "source_id": "src_linkedin",
+    "source": "LinkedIn",
+    "external_job_id": "linkedin_1013",
+    "title": "Backend Developer - Golang / Node.js",
+    "company": "Meesho",
+    "location": "Bangalore, India",
+    "work_mode": "REMOTE",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 3,
+    "salary_min": "₹13,00,000",
+    "salary_max": "₹21,00,000",
+    "salary_numeric_min": 1300000,
+    "salary_numeric_max": 2100000,
+    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Backend%20Developer%20-%20Golang%20%2F%20Node.js%20Meesho&location=Bangalore%2C%20India",
+    "posted_at": "2026-10-05T23:23:17.630Z",
+    "description": "Power India’s premier social e-commerce ecosystem processing millions of seller catalog updates and order dispatches.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "Node.js",
+      "PostgreSQL",
+      "Redis",
+      "REST APIs"
+    ],
+    "preferred_skills": [
+      "Go",
+      "Kafka",
+      "Docker"
+    ],
+    "is_verified": true,
+    "canonical_hash": "08741590d0862159fd33dabb2f6b5c49a05bee93967d09a611113620b312051f"
+  },
+  {
+    "id": "job_indeed_115",
+    "source_id": "src_indeed",
+    "source": "Indeed",
+    "external_job_id": "indeed_1014",
+    "title": "Data Analyst & Visualization Associate",
+    "company": "Cognizant Digital",
+    "location": "Pune, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 0,
+    "experience_max": 2,
+    "salary_min": "₹6,00,000",
+    "salary_max": "₹9,50,000",
+    "salary_numeric_min": 600000,
+    "salary_numeric_max": 950000,
+    "source_url": "https://in.indeed.com/jobs?q=Cognizant+Data+Analyst",
+    "posted_at": "2026-10-05T21:23:17.630Z",
+    "description": "Analyze operational telemetry and translate data into actionable visual executive dashboards and customer retention models.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "Python",
+      "SQL",
+      "PowerBI",
+      "Excel"
+    ],
+    "preferred_skills": [
+      "Tableau",
+      "JavaScript"
+    ],
+    "is_verified": true,
+    "canonical_hash": "2d81a478bd10884e06fcfdc0b042499139bd26a85a77c36a6256e9c795b139c0"
+  },
+  {
+    "id": "job_wellfound_116",
+    "source_id": "src_wellfound",
+    "source": "Wellfound",
+    "external_job_id": "wellfound_1015",
+    "title": "Junior React Engineer - Design Systems",
+    "company": "Postman",
+    "location": "Bangalore, India",
+    "work_mode": "REMOTE",
+    "employment_type": "FULL_TIME",
+    "experience_min": 0,
+    "experience_max": 2,
+    "salary_min": "₹11,00,000",
+    "salary_max": "₹17,00,000",
+    "salary_numeric_min": 1100000,
+    "salary_numeric_max": 1700000,
+    "source_url": "https://wellfound.com/jobs?keywords=Junior%20React%20Engineer%20-%20Design%20Systems&location=Bangalore%2C%20India",
+    "posted_at": "2026-10-05T20:23:17.630Z",
+    "description": "Contribute to Postman’s shared design system components powering developer API collaboration across web and desktop.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "React",
+      "TypeScript",
+      "JavaScript",
+      "CSS/Tailwind"
+    ],
+    "preferred_skills": [
+      "Figma",
+      "Storybook",
+      "Vite"
+    ],
+    "is_verified": true,
+    "canonical_hash": "01476920def07589559840760724b2a6bdb3fd2709fa51505a8152e6e2ee48c4"
+  },
+  {
+    "id": "job_linkedin_117",
+    "source_id": "src_linkedin",
+    "source": "LinkedIn",
+    "external_job_id": "linkedin_1016",
+    "title": "Software Engineer - Cloud Platform",
+    "company": "Google India",
+    "location": "Bangalore, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 4,
+    "salary_min": "₹20,0,000",
+    "salary_max": "₹34,00,000",
+    "salary_numeric_min": 200000,
+    "salary_numeric_max": 3400000,
+    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Software%20Engineer%20-%20Cloud%20Platform%20Google%20India&location=Bangalore%2C%20India",
+    "posted_at": "2026-10-04T07:23:17.630Z",
+    "description": "Build hyper-scale developer tooling, infrastructure APIs, and distributed container orchestration for Google Cloud Platform.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "Python",
+      "JavaScript",
+      "PostgreSQL",
+      "Docker"
+    ],
+    "preferred_skills": [
+      "GCP",
+      "Kubernetes",
+      "Go"
+    ],
+    "is_verified": true,
+    "canonical_hash": "4deb01d3bdf5106d46c9d09de83c787e34a69042237cd174552da1deee82177b"
+  },
+  {
+    "id": "job_linkedin_118",
+    "source_id": "src_linkedin",
+    "source": "LinkedIn",
+    "external_job_id": "linkedin_1017",
+    "title": "UI/UX & Frontend Developer",
+    "company": "Flipkart",
+    "location": "Bangalore, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 3,
+    "salary_min": "₹12,00,000",
+    "salary_max": "₹18,50,000",
+    "salary_numeric_min": 1200000,
+    "salary_numeric_max": 1850000,
+    "source_url": "https://www.linkedin.com/jobs/search/?keywords=UI%2FUX%20%26%20Frontend%20Developer%20Flipkart&location=Bangalore%2C%20India",
+    "posted_at": "2026-10-04T05:23:17.630Z",
+    "description": "Craft frictionless, accessible shopping experiences across Big Billion Days product pages and seller dashboard analytics.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "React",
+      "JavaScript",
+      "HTML/CSS",
+      "Tailwind CSS"
+    ],
+    "preferred_skills": [
+      "Next.js",
+      "Figma",
+      "Redux"
+    ],
+    "is_verified": true,
+    "canonical_hash": "8ce218e6a2c9f68468d013979477de35c302bc3eeb1f32c0a59ffa8187db5799"
+  },
+  {
+    "id": "job_naukri_119",
+    "source_id": "src_naukri",
+    "source": "Naukri",
+    "external_job_id": "naukri_1018",
+    "title": "Associate Software Engineer - Java & Spring",
+    "company": "HCL Technologies",
+    "location": "Hyderabad, India",
+    "work_mode": "ON_SITE",
+    "employment_type": "FULL_TIME",
+    "experience_min": 0,
+    "experience_max": 2,
+    "salary_min": "₹5,50,000",
+    "salary_max": "₹8,50,000",
+    "salary_numeric_min": 550000,
+    "salary_numeric_max": 850000,
+    "source_url": "https://www.naukri.com/jobs-in-india?k=Associate%20Software%20Engineer%20-%20Java%20%26%20Spring%20HCL%20Technologies&l=Hyderabad%2C%20India",
+    "posted_at": "2026-10-04T03:23:17.630Z",
+    "description": "Graduate engineering role working on mission-critical enterprise supply chain management and inventory tracking applications.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "Java",
+      "SQL",
+      "JavaScript",
+      "HTML/CSS"
+    ],
+    "preferred_skills": [
+      "Spring Boot",
+      "Git & GitHub"
+    ],
+    "is_verified": true,
+    "canonical_hash": "f62951f94adcd397f9ac9f7ea04dc1f69a137a4e183ebc5c245d317d1c0f8910"
+  },
+  {
+    "id": "job_indeed_120",
+    "source_id": "src_indeed",
+    "source": "Indeed",
+    "external_job_id": "indeed_1019",
+    "title": "Full Stack Engineer - FinTech Solutions",
+    "company": "Paytm",
+    "location": "Delhi NCR, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 3,
+    "salary_min": "₹9,50,000",
+    "salary_max": "₹15,00,000",
+    "salary_numeric_min": 950000,
+    "salary_numeric_max": 1500000,
+    "source_url": "https://in.indeed.com/jobs?q=Paytm+Software+Engineer",
+    "posted_at": "2026-10-04T01:23:17.630Z",
+    "description": "Build scalable QR code merchant payment systems and high-concurrency soundbox notification delivery backends.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "Node.js",
+      "React",
+      "MongoDB",
+      "REST APIs"
+    ],
+    "preferred_skills": [
+      "Redis",
+      "Kafka",
+      "Docker"
+    ],
+    "is_verified": true,
+    "canonical_hash": "7d0ca610d8d347d27a6bf6fca233625e8d5870536dbc2211f9527c8463360fc4"
+  },
+  {
+    "id": "job_linkedin_121",
+    "source_id": "src_linkedin",
+    "source": "LinkedIn",
+    "external_job_id": "linkedin_1020",
+    "title": "DevOps & Infrastructure Engineer",
+    "company": "Atlassian",
+    "location": "Bangalore, India",
+    "work_mode": "REMOTE",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 4,
+    "salary_min": "₹17,00,000",
+    "salary_max": "₹26,00,000",
+    "salary_numeric_min": 1700000,
+    "salary_numeric_max": 2600000,
+    "source_url": "https://www.linkedin.com/jobs/search/?keywords=DevOps%20%26%20Infrastructure%20Engineer%20Atlassian&location=Bangalore%2C%20India",
+    "posted_at": "2026-10-03T23:23:17.630Z",
+    "description": "Help engineer the resilient global cloud platform supporting Jira, Confluence, and Trello with automated chaos testing.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "AWS",
+      "Docker",
+      "Kubernetes",
+      "Git & GitHub"
+    ],
+    "preferred_skills": [
+      "Terraform",
+      "Python",
+      "CI/CD"
+    ],
+    "is_verified": true,
+    "canonical_hash": "803bac2bdda704f63a654c66a470abf26723a0e36304dd1eecc247e99dfc168c"
+  },
+  {
+    "id": "job_linkedin_122",
+    "source_id": "src_linkedin",
+    "source": "LinkedIn",
+    "external_job_id": "linkedin_1021",
+    "title": "Software Engineer - Platform & APIs",
+    "company": "Uber India",
+    "location": "Hyderabad, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 4,
+    "salary_min": "₹18,00,000",
+    "salary_max": "₹30,00,000",
+    "salary_numeric_min": 1800000,
+    "salary_numeric_max": 3000000,
+    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Software%20Engineer%20-%20Platform%20%26%20APIs%20Uber%20India&location=Hyderabad%2C%20India",
+    "posted_at": "2026-09-30T07:23:17.630Z",
+    "description": "Build real-time driver dispatch matching, surge pricing algorithms, and high-frequency geolocation tracking APIs.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "Node.js",
+      "Python",
+      "PostgreSQL",
+      "Docker"
+    ],
+    "preferred_skills": [
+      "Redis",
+      "Kafka",
+      "Microservices"
+    ],
+    "is_verified": true,
+    "canonical_hash": "9d63472f698100b09952d99f7c721323f2a140f4f22950825d10bb55d837ed17"
+  },
+  {
+    "id": "job_linkedin_123",
+    "source_id": "src_linkedin",
+    "source": "LinkedIn",
+    "external_job_id": "linkedin_1022",
+    "title": "React & Frontend Web Engineer",
+    "company": "Adobe India",
+    "location": "Delhi NCR, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 3,
+    "salary_min": "₹16,00,000",
+    "salary_max": "₹25,00,000",
+    "salary_numeric_min": 1600000,
+    "salary_numeric_max": 2500000,
+    "source_url": "https://www.linkedin.com/jobs/search/?keywords=React%20%26%20Frontend%20Web%20Engineer%20Adobe%20India&location=Delhi%20NCR%2C%20India",
+    "posted_at": "2026-09-30T03:23:17.630Z",
+    "description": "Develop next-generation Creative Cloud web applications and browser-based PDF collaboration suites.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "React",
+      "JavaScript",
+      "TypeScript",
+      "HTML/CSS"
+    ],
+    "preferred_skills": [
+      "WebAssembly",
+      "Canvas",
+      "Redux"
+    ],
+    "is_verified": true,
+    "canonical_hash": "f8625be41ceccf0206cbf8c79d9646a11b787b137509ec2b061255427e65463c"
+  },
+  {
+    "id": "job_naukri_124",
+    "source_id": "src_naukri",
+    "source": "Naukri",
+    "external_job_id": "naukri_1023",
+    "title": "Graduate Software Engineer - Cloud Track",
+    "company": "Wipro Technologies",
+    "location": "Pune, India",
+    "work_mode": "ON_SITE",
+    "employment_type": "FULL_TIME",
+    "experience_min": 0,
+    "experience_max": 1,
+    "salary_min": "₹5,50,000",
+    "salary_max": "₹8,50,000",
+    "salary_numeric_min": 550000,
+    "salary_numeric_max": 850000,
+    "source_url": "https://www.naukri.com/jobs-in-india?k=Graduate%20Software%20Engineer%20-%20Cloud%20Track%20Wipro%20Technologies&l=Pune%2C%20India",
+    "posted_at": "2026-09-29T23:23:17.630Z",
+    "description": "Wipro Turbo campus hiring track for emerging software talent with full-stack training on enterprise architectures.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "JavaScript",
+      "HTML/CSS",
+      "SQL",
+      "Git & GitHub"
+    ],
+    "preferred_skills": [
+      "React",
+      "Cloud Basics"
+    ],
+    "is_verified": true,
+    "canonical_hash": "842de1e54f6d99e056ce36f8cf24bcd419adac4c3729b01881bcb8b3ae4c42e3"
+  },
+  {
+    "id": "job_linkedin_125",
+    "source_id": "src_linkedin",
+    "source": "LinkedIn",
+    "external_job_id": "linkedin_1024",
+    "title": "Full Stack Developer - Enterprise CRM",
+    "company": "Salesforce India",
+    "location": "Hyderabad, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 3,
+    "salary_min": "₹15,00,000",
+    "salary_max": "₹24,00,000",
+    "salary_numeric_min": 1500000,
+    "salary_numeric_max": 2400000,
+    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Full%20Stack%20Developer%20-%20Enterprise%20CRM%20Salesforce%20India&location=Hyderabad%2C%20India",
+    "posted_at": "2026-09-29T19:23:17.630Z",
+    "description": "Empower customer 360 CRM platforms with intuitive React single-page applications and high-availability API endpoints.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "JavaScript",
+      "React",
+      "Node.js",
+      "PostgreSQL"
+    ],
+    "preferred_skills": [
+      "Lightning Web Components",
+      "AWS",
+      "REST APIs"
+    ],
+    "is_verified": true,
+    "canonical_hash": "a887a2255ca4fa42fa3d87597c5afe063e924029ac9937cf1e47fa95b038b661"
+  },
+  {
+    "id": "job_wellfound_126",
+    "source_id": "src_wellfound",
+    "source": "Wellfound",
+    "external_job_id": "wellfound_1025",
+    "title": "Junior Frontend Developer - Startup Studio",
+    "company": "Kstart / Kalaari Labs",
+    "location": "Bangalore, India",
+    "work_mode": "REMOTE",
+    "employment_type": "FULL_TIME",
+    "experience_min": 0,
+    "experience_max": 2,
+    "salary_min": "₹8,00,000",
+    "salary_max": "₹13,00,000",
+    "salary_numeric_min": 800000,
+    "salary_numeric_max": 1300000,
+    "source_url": "https://wellfound.com/jobs?keywords=Frontend+Developer",
+    "posted_at": "2026-09-29T13:23:17.630Z",
+    "description": "Build fast zero-to-one MVPs for early stage Indian tech startups across healthcare, fintech, and AI.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "React",
+      "JavaScript",
+      "Tailwind CSS",
+      "Vite"
+    ],
+    "preferred_skills": [
+      "Next.js",
+      "Figma",
+      "TypeScript"
+    ],
+    "is_verified": true,
+    "canonical_hash": "4cde9a38ca7abe43d68438dc653231d0cb6ddf134e45bb8ae414efad590f3dd5"
+  },
+  {
+    "id": "job_indeed_127",
+    "source_id": "src_indeed",
+    "source": "Indeed",
+    "external_job_id": "indeed_1026",
+    "title": "Backend Systems Developer - High Scale",
+    "company": "Persistent Systems",
+    "location": "Pune, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 3,
+    "salary_min": "₹7,50,000",
+    "salary_max": "₹12,00,000",
+    "salary_numeric_min": 750000,
+    "salary_numeric_max": 1200000,
+    "source_url": "https://in.indeed.com/jobs?q=Persistent+Systems+Software+Engineer",
+    "posted_at": "2026-09-23T07:23:17.630Z",
+    "description": "Engineer clinical health information exchange gateways and secure patient record APIs.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "Node.js",
+      "PostgreSQL",
+      "JavaScript",
+      "REST APIs"
+    ],
+    "preferred_skills": [
+      "Docker",
+      "AWS"
+    ],
+    "is_verified": true,
+    "canonical_hash": "c868d95d04a49efa7cc7d3f4280ce99a5332a786a602608dd38c4d65d8ad25f4"
+  },
+  {
+    "id": "job_naukri_128",
+    "source_id": "src_naukri",
+    "source": "Naukri",
+    "external_job_id": "naukri_1027",
+    "title": "React & Mobile Web Application Engineer",
+    "company": "Tech Mahindra",
+    "location": "Hyderabad, India",
+    "work_mode": "ON_SITE",
+    "employment_type": "FULL_TIME",
+    "experience_min": 0,
+    "experience_max": 2,
+    "salary_min": "₹6,00,000",
+    "salary_max": "₹9,00,000",
+    "salary_numeric_min": 600000,
+    "salary_numeric_max": 900000,
+    "source_url": "https://www.naukri.com/jobs-in-india?k=React%20%26%20Mobile%20Web%20Application%20Engineer%20Tech%20Mahindra&l=Hyderabad%2C%20India",
+    "posted_at": "2026-09-23T01:23:17.630Z",
+    "description": "Deliver responsive telecommunication self-service portals and subscriber management interfaces.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "React",
+      "JavaScript",
+      "HTML/CSS",
+      "Git & GitHub"
+    ],
+    "preferred_skills": [
+      "Bootstrap",
+      "Redux"
+    ],
+    "is_verified": true,
+    "canonical_hash": "0c117fb2ea51cb0fbe6a821853ec85eb35073a00f48e3ec34db35de17a3a9064"
+  },
+  {
+    "id": "job_indeed_129",
+    "source_id": "src_indeed",
+    "source": "Indeed",
+    "external_job_id": "indeed_1028",
+    "title": "Software Development Engineer - Automation",
+    "company": "Zoho Corporation",
+    "location": "Chennai, India",
+    "work_mode": "ON_SITE",
+    "employment_type": "FULL_TIME",
+    "experience_min": 0,
+    "experience_max": 2,
+    "salary_min": "₹7,00,000",
+    "salary_max": "₹11,00,000",
+    "salary_numeric_min": 700000,
+    "salary_numeric_max": 1100000,
+    "source_url": "https://in.indeed.com/jobs?q=Software%20Development%20Engineer%20-%20Automation%20Zoho%20Corporation&l=Chennai%2C%20India",
+    "posted_at": "2026-09-22T19:23:17.630Z",
+    "description": "Automate build verification testing and performance regressions across Zoho CRM and Desk applications.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "Python",
+      "JavaScript",
+      "SQL",
+      "Git & GitHub"
+    ],
+    "preferred_skills": [
+      "Selenium",
+      "Linux"
+    ],
+    "is_verified": true,
+    "canonical_hash": "c4fd37fb22a2b5c457dd6090ad5512cf482625b3f895cc4f21e518c2ce30a8e1"
+  },
+  {
+    "id": "job_linkedin_130",
+    "source_id": "src_linkedin",
+    "source": "LinkedIn",
+    "external_job_id": "linkedin_1029",
+    "title": "Frontend Engineer - Trading Platforms",
+    "company": "Zerodha",
+    "location": "Bangalore, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 3,
+    "salary_min": "₹15,00,000",
+    "salary_max": "₹24,00,000",
+    "salary_numeric_min": 1500000,
+    "salary_numeric_max": 2400000,
+    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Frontend%20Engineer%20-%20Trading%20Platforms%20Zerodha&location=Bangalore%2C%20India",
+    "posted_at": "2026-10-07T04:23:17.630Z",
+    "description": "Build Kite web interfaces with ultra-low latency order placement, live charting, and accessible financial widgets.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "React",
+      "JavaScript",
+      "TypeScript",
+      "WebSockets"
+    ],
+    "preferred_skills": [
+      "Canvas",
+      "Go",
+      "Redux"
+    ],
+    "is_verified": true,
+    "canonical_hash": "39a84597eed7c133796edd3933e0e3e8fa3bcdcac3458e9ba7505ac28bbec43d"
+  },
+  {
+    "id": "job_linkedin_131",
+    "source_id": "src_linkedin",
+    "source": "LinkedIn",
+    "external_job_id": "linkedin_1030",
+    "title": "Software Development Engineer - Fintech",
+    "company": "Groww",
+    "location": "Bangalore, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 0,
+    "experience_max": 2,
+    "salary_min": "₹14,00,000",
+    "salary_max": "₹22,00,000",
+    "salary_numeric_min": 1400000,
+    "salary_numeric_max": 2200000,
+    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Software%20Development%20Engineer%20-%20Fintech%20Groww&location=Bangalore%2C%20India",
+    "posted_at": "2026-10-07T02:23:17.630Z",
+    "description": "Engineer seamless mutual fund, stocks, and UPI checkout workflows serving millions of Indian retail investors.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "React",
+      "Node.js",
+      "PostgreSQL",
+      "JavaScript"
+    ],
+    "preferred_skills": [
+      "Kafka",
+      "Docker",
+      "Redis"
+    ],
+    "is_verified": true,
+    "canonical_hash": "71cb4b57d71ccf8ec86490308a2b8ab743f0c83cecb2687feab9e2a9e5e9885d"
+  },
+  {
+    "id": "job_linkedin_132",
+    "source_id": "src_linkedin",
+    "source": "LinkedIn",
+    "external_job_id": "linkedin_1031",
+    "title": "Full Stack Engineer - Consumer Apps",
+    "company": "Urban Company",
+    "location": "Delhi NCR, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 3,
+    "salary_min": "₹13,00,000",
+    "salary_max": "₹20,00,000",
+    "salary_numeric_min": 1300000,
+    "salary_numeric_max": 2000000,
+    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Full%20Stack%20Engineer%20-%20Consumer%20Apps%20Urban%20Company&location=Delhi%20NCR%2C%20India",
+    "posted_at": "2026-10-07T03:23:17.630Z",
+    "description": "Design partner matchmaking systems, scheduling algorithms, and customer service delivery tracking interfaces.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "React",
+      "Node.js",
+      "PostgreSQL",
+      "Tailwind CSS"
+    ],
+    "preferred_skills": [
+      "Redis",
+      "AWS",
+      "Docker"
+    ],
+    "is_verified": true,
+    "canonical_hash": "64767d3a7f8ad2916ca6d4b7b3a07934e3679f894de3430446fa4e09d382d18b"
+  },
+  {
+    "id": "job_naukri_133",
+    "source_id": "src_naukri",
+    "source": "Naukri",
+    "external_job_id": "naukri_1032",
+    "title": "Frontend Web Developer - E-Commerce",
+    "company": "Nykaa",
+    "location": "Mumbai, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 3,
+    "salary_min": "₹10,00,000",
+    "salary_max": "₹16,00,000",
+    "salary_numeric_min": 1000000,
+    "salary_numeric_max": 1600000,
+    "source_url": "https://www.naukri.com/jobs-in-india?k=Frontend%20Web%20Developer%20-%20E-Commerce%20Nykaa&l=Mumbai%2C%20India",
+    "posted_at": "2026-10-07T01:23:17.630Z",
+    "description": "Build high-converting beauty and fashion storefront experiences with sub-second page loads and responsive design.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "React",
+      "JavaScript",
+      "HTML/CSS",
+      "Tailwind CSS"
+    ],
+    "preferred_skills": [
+      "Next.js",
+      "Redux",
+      "Performance Optimization"
+    ],
+    "is_verified": true,
+    "canonical_hash": "58a567cc397f7f5851b720fad82343a0d5d262747236e8b0c3cbf60d5a45ea7a"
+  },
+  {
+    "id": "job_indeed_134",
+    "source_id": "src_indeed",
+    "source": "Indeed",
+    "external_job_id": "indeed_1033",
+    "title": "Associate Software Engineer - Booking Engine",
+    "company": "MakeMyTrip",
+    "location": "Delhi NCR, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 0,
+    "experience_max": 2,
+    "salary_min": "₹11,00,000",
+    "salary_max": "₹17,00,000",
+    "salary_numeric_min": 1100000,
+    "salary_numeric_max": 1700000,
+    "source_url": "https://in.indeed.com/jobs?q=Associate%20Software%20Engineer%20-%20Booking%20Engine%20MakeMyTrip&l=Delhi%20NCR%2C%20India",
+    "posted_at": "2026-10-07T00:23:17.630Z",
+    "description": "Build fast hotel and flight reservation engines handling peak festive season holiday booking volumes.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "Java",
+      "JavaScript",
+      "React",
+      "SQL"
+    ],
+    "preferred_skills": [
+      "Spring Boot",
+      "REST APIs",
+      "Git & GitHub"
+    ],
+    "is_verified": true,
+    "canonical_hash": "b38311a305ce959dd0acf2803f9601873471203b98824e889fddd7cca2dcbadb"
+  },
+  {
+    "id": "job_wellfound_135",
+    "source_id": "src_wellfound",
+    "source": "Wellfound",
+    "external_job_id": "wellfound_1034",
+    "title": "Cloud Infrastructure Developer",
+    "company": "BrowserStack",
+    "location": "Mumbai, India",
+    "work_mode": "REMOTE",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 3,
+    "salary_min": "₹16,00,000",
+    "salary_max": "₹26,00,000",
+    "salary_numeric_min": 1600000,
+    "salary_numeric_max": 2600000,
+    "source_url": "https://wellfound.com/jobs?keywords=Cloud%20Infrastructure%20Developer&location=Mumbai%2C%20India",
+    "posted_at": "2026-10-06T06:23:17.630Z",
+    "description": "Develop virtual browser automation containers and real device testing cloud backends for millions of global developers.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "Node.js",
+      "Docker",
+      "Linux",
+      "JavaScript"
+    ],
+    "preferred_skills": [
+      "AWS",
+      "Kubernetes",
+      "WebSockets"
+    ],
+    "is_verified": true,
+    "canonical_hash": "f3afc66200df2a6bd6f13d10031241419e0109777e92b867ecb2994dfaab2778"
+  },
+  {
+    "id": "job_linkedin_136",
+    "source_id": "src_linkedin",
+    "source": "LinkedIn",
+    "external_job_id": "linkedin_1035",
+    "title": "Product Engineer - SaaS Platform",
+    "company": "Freshworks",
+    "location": "Chennai, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 3,
+    "salary_min": "₹12,00,000",
+    "salary_max": "₹19,00,000",
+    "salary_numeric_min": 1200000,
+    "salary_numeric_max": 1900000,
+    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Product%20Engineer%20-%20SaaS%20Platform%20Freshworks&location=Chennai%2C%20India",
+    "posted_at": "2026-10-06T04:23:17.630Z",
+    "description": "Engineer modern AI-powered customer support ticketing and live chat web applications for Freshdesk and Freshsales.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "React",
+      "Node.js",
+      "PostgreSQL",
+      "JavaScript"
+    ],
+    "preferred_skills": [
+      "Ruby",
+      "AWS",
+      "Redis"
+    ],
+    "is_verified": true,
+    "canonical_hash": "1dec6bf2f06a270fa3e6da05f98f9d87ffb0c521de71c814e0120553ab610e7f"
+  },
+  {
+    "id": "job_linkedin_137",
+    "source_id": "src_linkedin",
+    "source": "LinkedIn",
+    "external_job_id": "linkedin_1036",
+    "title": "Data & AdTech Engineer",
+    "company": "InMobi",
+    "location": "Bangalore, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 3,
+    "salary_min": "₹14,00,000",
+    "salary_max": "₹22,00,000",
+    "salary_numeric_min": 1400000,
+    "salary_numeric_max": 2200000,
+    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Data%20%26%20AdTech%20Engineer%20InMobi&location=Bangalore%2C%20India",
+    "posted_at": "2026-10-06T02:23:17.630Z",
+    "description": "Develop high-throughput ad exchange bidding pipelines and real-time impression analytics dashboards.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "Python",
+      "SQL",
+      "Node.js",
+      "PostgreSQL"
+    ],
+    "preferred_skills": [
+      "Spark",
+      "Kafka",
+      "Docker"
+    ],
+    "is_verified": true,
+    "canonical_hash": "70383cf7b1d61e8bf9fd8e2a0e7c20d142a9e2040f10ef2b11ed39fadff58590"
+  },
+  {
+    "id": "job_naukri_138",
+    "source_id": "src_naukri",
+    "source": "Naukri",
+    "external_job_id": "naukri_1037",
+    "title": "Associate Engineer - 5G & Digital Platforms",
+    "company": "Jio Platforms",
+    "location": "Mumbai, India",
+    "work_mode": "ON_SITE",
+    "employment_type": "FULL_TIME",
+    "experience_min": 0,
+    "experience_max": 2,
+    "salary_min": "₹8,00,000",
+    "salary_max": "₹12,50,000",
+    "salary_numeric_min": 800000,
+    "salary_numeric_max": 1250000,
+    "source_url": "https://www.naukri.com/jobs-in-india?k=Associate%20Engineer%20-%205G%20%26%20Digital%20Platforms%20Jio%20Platforms&l=Mumbai%2C%20India",
+    "posted_at": "2026-10-06T00:23:17.630Z",
+    "description": "Build enterprise telecommunication subscriber onboarding portals and cloud edge management microservices.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "JavaScript",
+      "React",
+      "Node.js",
+      "SQL"
+    ],
+    "preferred_skills": [
+      "Docker",
+      "REST APIs",
+      "Git & GitHub"
+    ],
+    "is_verified": true,
+    "canonical_hash": "c853541a7d5ab819fe52b110a25a4f91aa7e3d81176dc5a6b73226e0d3c7f140"
+  },
+  {
+    "id": "job_indeed_139",
+    "source_id": "src_indeed",
+    "source": "Indeed",
+    "external_job_id": "indeed_1038",
+    "title": "Frontend Developer - Airtel Xstream & Thanks",
+    "company": "Airtel Digital",
+    "location": "Delhi NCR, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 3,
+    "salary_min": "₹11,00,000",
+    "salary_max": "₹18,00,000",
+    "salary_numeric_min": 1100000,
+    "salary_numeric_max": 1800000,
+    "source_url": "https://in.indeed.com/jobs?q=Frontend%20Developer%20-%20Airtel%20Xstream%20%26%20Thanks%20Airtel%20Digital&l=Delhi%20NCR%2C%20India",
+    "posted_at": "2026-10-05T22:23:17.630Z",
+    "description": "Create engaging digital entertainment, broadband recharges, and bill payment user experiences across Airtel web properties.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "React",
+      "JavaScript",
+      "HTML/CSS",
+      "Tailwind CSS"
+    ],
+    "preferred_skills": [
+      "TypeScript",
+      "Next.js",
+      "Redux"
+    ],
+    "is_verified": true,
+    "canonical_hash": "bb258d8d774247f169f12b43f51bf230186bf14d76dac3509cde97f304079526"
+  },
+  {
+    "id": "job_linkedin_140",
+    "source_id": "src_linkedin",
+    "source": "LinkedIn",
+    "external_job_id": "linkedin_1039",
+    "title": "Analyst - Global Markets Technology",
+    "company": "Goldman Sachs India",
+    "location": "Bangalore, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 0,
+    "experience_max": 2,
+    "salary_min": "₹20,00,000",
+    "salary_max": "₹32,00,000",
+    "salary_numeric_min": 2000000,
+    "salary_numeric_max": 3200000,
+    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Analyst%20-%20Global%20Markets%20Technology%20Goldman%20Sachs%20India&location=Bangalore%2C%20India",
+    "posted_at": "2026-10-04T06:23:17.630Z",
+    "description": "Develop institutional trading blotters, risk valuation calculators, and real-time electronic market making infrastructure.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "Java",
+      "JavaScript",
+      "PostgreSQL",
+      "Python"
+    ],
+    "preferred_skills": [
+      "React",
+      "Spring Boot",
+      "Financial Modeling"
+    ],
+    "is_verified": true,
+    "canonical_hash": "c6be5e10598f8d6d092c2a493b1d3c7a5fdb18714a0c11dc5f22ec4cc47c4ed9"
+  },
+  {
+    "id": "job_linkedin_141",
+    "source_id": "src_linkedin",
+    "source": "LinkedIn",
+    "external_job_id": "linkedin_1040",
+    "title": "Software Engineer - Payments & Clearing",
+    "company": "JPMorgan Chase India",
+    "location": "Hyderabad, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 3,
+    "salary_min": "₹16,00,000",
+    "salary_max": "₹25,00,000",
+    "salary_numeric_min": 1600000,
+    "salary_numeric_max": 2500000,
+    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Software%20Engineer%20-%20Payments%20%26%20Clearing%20JPMorgan%20Chase%20India&location=Hyderabad%2C%20India",
+    "posted_at": "2026-10-04T04:23:17.630Z",
+    "description": "Engineer mission-critical corporate treasury clearing gateways and international wire settlement platforms.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "Java",
+      "Spring Boot",
+      "SQL",
+      "JavaScript"
+    ],
+    "preferred_skills": [
+      "AWS",
+      "Kafka",
+      "Docker"
+    ],
+    "is_verified": true,
+    "canonical_hash": "01d2a5c2609edba0ab3f2cd7212156516486dd0d8dea911343341ae4b6403855"
+  },
+  {
+    "id": "job_indeed_142",
+    "source_id": "src_indeed",
+    "source": "Indeed",
+    "external_job_id": "indeed_1041",
+    "title": "Technology Associate - Wealth Management",
+    "company": "Morgan Stanley",
+    "location": "Mumbai, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 0,
+    "experience_max": 2,
+    "salary_min": "₹15,00,000",
+    "salary_max": "₹24,00,000",
+    "salary_numeric_min": 1500000,
+    "salary_numeric_max": 2400000,
+    "source_url": "https://in.indeed.com/jobs?q=Technology%20Associate%20-%20Wealth%20Management%20Morgan%20Stanley&l=Mumbai%2C%20India",
+    "posted_at": "2026-10-04T02:23:17.630Z",
+    "description": "Build advisor portfolio rebalancing interfaces, capital gains tax simulators, and regulatory reporting pipelines.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "Python",
+      "SQL",
+      "JavaScript",
+      "React"
+    ],
+    "preferred_skills": [
+      "Docker",
+      "Git & GitHub"
+    ],
+    "is_verified": true,
+    "canonical_hash": "511edd73742881c0e9f6932379fc1c56093401014b1241ac9e92f9249d104470"
+  },
+  {
+    "id": "job_naukri_143",
+    "source_id": "src_naukri",
+    "source": "Naukri",
+    "external_job_id": "naukri_1042",
+    "title": "Graduate Developer - Cards & Payments",
+    "company": "Barclays India",
+    "location": "Pune, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 0,
+    "experience_max": 2,
+    "salary_min": "₹10,50,000",
+    "salary_max": "₹15,50,000",
+    "salary_numeric_min": 1050000,
+    "salary_numeric_max": 1550000,
+    "source_url": "https://www.naukri.com/jobs-in-india?k=Graduate%20Developer%20-%20Cards%20%26%20Payments%20Barclays%20India&l=Pune%2C%20India",
+    "posted_at": "2026-10-04T00:23:17.630Z",
+    "description": "Join the Barclays Pune technology team building digital consumer card applications and fraud prevention tools.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "JavaScript",
+      "React",
+      "SQL",
+      "HTML/CSS"
+    ],
+    "preferred_skills": [
+      "Node.js",
+      "Git & GitHub"
+    ],
+    "is_verified": true,
+    "canonical_hash": "6bc038c6f394e6779d03344220e523ecfd537a4dc3a54619bc364618e8d9543f"
+  },
+  {
+    "id": "job_linkedin_144",
+    "source_id": "src_linkedin",
+    "source": "LinkedIn",
+    "external_job_id": "linkedin_1043",
+    "title": "Software Developer - Cloud Applications",
+    "company": "Oracle India",
+    "location": "Bangalore, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 3,
+    "salary_min": "₹14,00,000",
+    "salary_max": "₹22,00,000",
+    "salary_numeric_min": 1400000,
+    "salary_numeric_max": 2200000,
+    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Software%20Developer%20-%20Cloud%20Applications%20Oracle%20India&location=Bangalore%2C%20India",
+    "posted_at": "2026-10-03T22:23:17.630Z",
+    "description": "Engineer Oracle Cloud ERP modules, supply chain tracking interfaces, and multi-tenant database microservices.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "Java",
+      "SQL",
+      "JavaScript",
+      "PostgreSQL"
+    ],
+    "preferred_skills": [
+      "Oracle Cloud",
+      "Docker",
+      "Kubernetes"
+    ],
+    "is_verified": true,
+    "canonical_hash": "4fd11ec71c09330595ab679c390077307589771061c6af175c58eb55ead56d99"
+  },
+  {
+    "id": "job_linkedin_145",
+    "source_id": "src_linkedin",
+    "source": "LinkedIn",
+    "external_job_id": "linkedin_1044",
+    "title": "Network & Cloud Software Engineer",
+    "company": "Cisco India",
+    "location": "Bangalore, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 3,
+    "salary_min": "₹15,00,000",
+    "salary_max": "₹23,00,000",
+    "salary_numeric_min": 1500000,
+    "salary_numeric_max": 2300000,
+    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Network%20%26%20Cloud%20Software%20Engineer%20Cisco%20India&location=Bangalore%2C%20India",
+    "posted_at": "2026-10-03T20:23:17.630Z",
+    "description": "Build software-defined networking control planes, telemetry analytics collectors, and cloud router automation APIs.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "Python",
+      "Linux",
+      "JavaScript",
+      "Docker"
+    ],
+    "preferred_skills": [
+      "Networking",
+      "Kubernetes",
+      "Go"
+    ],
+    "is_verified": true,
+    "canonical_hash": "8739155fa3451bd19972c3d46fdc3a9a191e4f2aa119537fde0519bfc81cf79d"
+  },
+  {
+    "id": "job_linkedin_146",
+    "source_id": "src_linkedin",
+    "source": "LinkedIn",
+    "external_job_id": "linkedin_1045",
+    "title": "Software Engineer - QuickBooks & TurboTax",
+    "company": "Intuit India",
+    "location": "Bangalore, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 3,
+    "salary_min": "₹18,00,000",
+    "salary_max": "₹28,00,000",
+    "salary_numeric_min": 1800000,
+    "salary_numeric_max": 2800000,
+    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Software%20Engineer%20-%20QuickBooks%20%26%20TurboTax%20Intuit%20India&location=Bangalore%2C%20India",
+    "posted_at": "2026-10-03T18:23:17.630Z",
+    "description": "Craft intuitive small business accounting features, tax calculation engines, and automated invoice reconciliation UI.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "React",
+      "Node.js",
+      "PostgreSQL",
+      "JavaScript"
+    ],
+    "preferred_skills": [
+      "AWS",
+      "GraphQL",
+      "TypeScript"
+    ],
+    "is_verified": true,
+    "canonical_hash": "c7597e5e4dc4256573ecbfff4ad8b7b6486fa912fdb0fa2b3af5de5abe175dfc"
+  },
+  {
+    "id": "job_linkedin_147",
+    "source_id": "src_linkedin",
+    "source": "LinkedIn",
+    "external_job_id": "linkedin_1046",
+    "title": "Software Engineer - Retail Supply Chain",
+    "company": "Walmart Global Tech",
+    "location": "Bangalore, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 3,
+    "salary_min": "₹16,00,000",
+    "salary_max": "₹26,00,000",
+    "salary_numeric_min": 1600000,
+    "salary_numeric_max": 2600000,
+    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Software%20Engineer%20-%20Retail%20Supply%20Chain%20Walmart%20Global%20Tech&location=Bangalore%2C%20India",
+    "posted_at": "2026-10-03T16:23:17.630Z",
+    "description": "Optimize global supply chain dispatch, inventory forecasting microservices, and store associate handheld device apps.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "Java",
+      "React",
+      "Node.js",
+      "PostgreSQL"
+    ],
+    "preferred_skills": [
+      "Kafka",
+      "Docker",
+      "Kubernetes"
+    ],
+    "is_verified": true,
+    "canonical_hash": "fc0a5011b17f3600f7bd39a856913a935affd8edb9333d322b96b4680f46ff9d"
+  },
+  {
+    "id": "job_indeed_148",
+    "source_id": "src_indeed",
+    "source": "Indeed",
+    "external_job_id": "indeed_1047",
+    "title": "Cloud Solutions Engineer",
+    "company": "Dell Technologies",
+    "location": "Bangalore, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 3,
+    "salary_min": "₹12,00,000",
+    "salary_max": "₹18,00,000",
+    "salary_numeric_min": 1200000,
+    "salary_numeric_max": 1800000,
+    "source_url": "https://in.indeed.com/jobs?q=Cloud%20Solutions%20Engineer%20Dell%20Technologies&l=Bangalore%2C%20India",
+    "posted_at": "2026-09-29T17:23:17.630Z",
+    "description": "Develop hyper-converged infrastructure management web suites and automated cloud server provisioning agents.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "Python",
+      "Docker",
+      "Linux",
+      "JavaScript"
+    ],
+    "preferred_skills": [
+      "VMware",
+      "Kubernetes",
+      "AWS"
+    ],
+    "is_verified": true,
+    "canonical_hash": "c2672bf424ccf1d4d71bfc3b91214b9aabbd866a7b20588010fa3c178c876c06"
+  },
+  {
+    "id": "job_linkedin_149",
+    "source_id": "src_linkedin",
+    "source": "LinkedIn",
+    "external_job_id": "linkedin_1048",
+    "title": "Software Engineer - Silicon & Firmware Tooling",
+    "company": "Intel India",
+    "location": "Bangalore, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 3,
+    "salary_min": "₹15,00,000",
+    "salary_max": "₹23,00,000",
+    "salary_numeric_min": 1500000,
+    "salary_numeric_max": 2300000,
+    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Software%20Engineer%20-%20Silicon%20%26%20Firmware%20Tooling%20Intel%20India&location=Bangalore%2C%20India",
+    "posted_at": "2026-09-29T15:23:17.630Z",
+    "description": "Build validation software pipelines, benchmark harnesses, and firmware deployment utilities for Intel client processors.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "Python",
+      "C/C++",
+      "Linux",
+      "Git & GitHub"
+    ],
+    "preferred_skills": [
+      "Embedded Systems",
+      "SQL"
+    ],
+    "is_verified": true,
+    "canonical_hash": "ac3e6f2d080258b09d764c2e1f3dd047d9930c2ec13c55d4391d985e2511a60b"
+  },
+  {
+    "id": "job_linkedin_150",
+    "source_id": "src_linkedin",
+    "source": "LinkedIn",
+    "external_job_id": "linkedin_1049",
+    "title": "Compiler & Software Tools Developer",
+    "company": "AMD India",
+    "location": "Hyderabad, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 3,
+    "salary_min": "₹16,00,000",
+    "salary_max": "₹25,00,000",
+    "salary_numeric_min": 1600000,
+    "salary_numeric_max": 2500000,
+    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Compiler%20%26%20Software%20Tools%20Developer%20AMD%20India&location=Hyderabad%2C%20India",
+    "posted_at": "2026-09-29T13:23:17.630Z",
+    "description": "Develop ROCm GPU compute drivers, math library optimizations, and profiling tools for high-performance AI supercomputers.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "C/C++",
+      "Python",
+      "Linux",
+      "Git & GitHub"
+    ],
+    "preferred_skills": [
+      "LLVM",
+      "OpenCL",
+      "CUDA"
+    ],
+    "is_verified": true,
+    "canonical_hash": "8dcb8f31208cac0f9668f4a16b03a16067d62bb7f3828fc0e3d220747012b142"
+  },
+  {
+    "id": "job_linkedin_151",
+    "source_id": "src_linkedin",
+    "source": "LinkedIn",
+    "external_job_id": "linkedin_1050",
+    "title": "Deep Learning & Systems Software Engineer",
+    "company": "NVIDIA India",
+    "location": "Pune, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 4,
+    "salary_min": "₹22,00,000",
+    "salary_max": "₹35,00,000",
+    "salary_numeric_min": 2200000,
+    "salary_numeric_max": 3500000,
+    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Deep%20Learning%20%26%20Systems%20Software%20Engineer%20NVIDIA%20India&location=Pune%2C%20India",
+    "posted_at": "2026-09-29T11:23:17.630Z",
+    "description": "Engineer full-stack accelerated computing platforms, TensorRT inference serving backends, and autonomous vehicle SDKs.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "Python",
+      "C/C++",
+      "Linux",
+      "Docker"
+    ],
+    "preferred_skills": [
+      "CUDA",
+      "PyTorch",
+      "TensorRT"
+    ],
+    "is_verified": true,
+    "canonical_hash": "26768d8b53d0247cbf1f64cab31802c4cc742b17f80c0ad68dad4c5405560b70"
+  },
+  {
+    "id": "job_indeed_152",
+    "source_id": "src_indeed",
+    "source": "Indeed",
+    "external_job_id": "indeed_1051",
+    "title": "Modem & Wireless Software Developer",
+    "company": "Qualcomm India",
+    "location": "Hyderabad, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 3,
+    "salary_min": "₹15,00,000",
+    "salary_max": "₹24,00,000",
+    "salary_numeric_min": 1500000,
+    "salary_numeric_max": 2400000,
+    "source_url": "https://in.indeed.com/jobs?q=Modem%20%26%20Wireless%20Software%20Developer%20Qualcomm%20India&l=Hyderabad%2C%20India",
+    "posted_at": "2026-09-29T09:23:17.630Z",
+    "description": "Implement wireless protocol stack state machines, Snapdragon RF calibration tooling, and low-power IoT drivers.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "C/C++",
+      "Linux",
+      "Python",
+      "Git & GitHub"
+    ],
+    "preferred_skills": [
+      "5G Protocols",
+      "Embedded Linux"
+    ],
+    "is_verified": true,
+    "canonical_hash": "4ff320e318b849d666ffc0a451622789f17c6747dc25cd0ed5132bc1cafb83cf"
+  },
+  {
+    "id": "job_naukri_153",
+    "source_id": "src_naukri",
+    "source": "Naukri",
+    "external_job_id": "naukri_1052",
+    "title": "Associate Software Engineer - Hybrid Cloud",
+    "company": "IBM India",
+    "location": "Bangalore, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 0,
+    "experience_max": 2,
+    "salary_min": "₹8,50,000",
+    "salary_max": "₹13,50,000",
+    "salary_numeric_min": 850000,
+    "salary_numeric_max": 1350000,
+    "source_url": "https://www.naukri.com/jobs-in-india?k=Associate%20Software%20Engineer%20-%20Hybrid%20Cloud%20IBM%20India&l=Bangalore%2C%20India",
+    "posted_at": "2026-09-29T07:23:17.630Z",
+    "description": "Build enterprise container migration assistants, modern API gateways, and Red Hat OpenShift hybrid cloud portals.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "Java",
+      "JavaScript",
+      "SQL",
+      "HTML/CSS"
+    ],
+    "preferred_skills": [
+      "Red Hat OpenShift",
+      "Docker",
+      "Node.js"
+    ],
+    "is_verified": true,
+    "canonical_hash": "3feb7e90eb10ff17b6a41a013c39c3fb32891eb0987cf05c88e824f862f4ca43"
+  },
+  {
+    "id": "job_linkedin_154",
+    "source_id": "src_linkedin",
+    "source": "LinkedIn",
+    "external_job_id": "linkedin_1053",
+    "title": "Developer - Cloud ERP & Business Tech",
+    "company": "SAP Labs India",
+    "location": "Bangalore, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 3,
+    "salary_min": "₹14,00,000",
+    "salary_max": "₹21,00,000",
+    "salary_numeric_min": 1400000,
+    "salary_numeric_max": 2100000,
+    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Developer%20-%20Cloud%20ERP%20%26%20Business%20Tech%20SAP%20Labs%20India&location=Bangalore%2C%20India",
+    "posted_at": "2026-09-29T05:23:17.630Z",
+    "description": "Engineer SAP Business Technology Platform microservices, enterprise analytics visualizations, and secure multi-tenant apps.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "JavaScript",
+      "Node.js",
+      "PostgreSQL",
+      "React"
+    ],
+    "preferred_skills": [
+      "SAP BTP",
+      "Docker",
+      "TypeScript"
+    ],
+    "is_verified": true,
+    "canonical_hash": "6e13d634b4eeacea56f708c33617afa214e1fff167826eca9d7ef325ae6afd84"
+  },
+  {
+    "id": "job_naukri_155",
+    "source_id": "src_naukri",
+    "source": "Naukri",
+    "external_job_id": "naukri_1054",
+    "title": "Full Stack Engineer - Digital Consulting",
+    "company": "LTIMindtree",
+    "location": "Pune, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 0,
+    "experience_max": 2,
+    "salary_min": "₹7,50,000",
+    "salary_max": "₹11,50,000",
+    "salary_numeric_min": 750000,
+    "salary_numeric_max": 1150000,
+    "source_url": "https://www.naukri.com/jobs-in-india?k=Full%20Stack%20Engineer%20-%20Digital%20Consulting%20LTIMindtree&l=Pune%2C%20India",
+    "posted_at": "2026-09-29T03:23:17.630Z",
+    "description": "Deliver omnichannel customer portals and automated claims processing modules for global insurance and banking clients.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "React",
+      "Node.js",
+      "PostgreSQL",
+      "JavaScript"
+    ],
+    "preferred_skills": [
+      "Git & GitHub",
+      "REST APIs"
+    ],
+    "is_verified": true,
+    "canonical_hash": "65acc029f332c9fe0c257ea7348e408d4acbad244482b0b31798b19cdf555eca"
+  },
+  {
+    "id": "job_naukri_156",
+    "source_id": "src_naukri",
+    "source": "Naukri",
+    "external_job_id": "naukri_1055",
+    "title": "Analyst Developer - Retail & Commerce",
+    "company": "Capgemini India",
+    "location": "Hyderabad, India",
+    "work_mode": "ON_SITE",
+    "employment_type": "FULL_TIME",
+    "experience_min": 0,
+    "experience_max": 2,
+    "salary_min": "₹6,50,000",
+    "salary_max": "₹9,80,000",
+    "salary_numeric_min": 650000,
+    "salary_numeric_max": 980000,
+    "source_url": "https://www.naukri.com/jobs-in-india?k=Analyst%20Developer%20-%20Retail%20%26%20Commerce%20Capgemini%20India&l=Hyderabad%2C%20India",
+    "posted_at": "2026-09-22T17:23:17.630Z",
+    "description": "Modernize enterprise e-commerce storefronts, point-of-sale integrations, and loyalty membership portals.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "JavaScript",
+      "React",
+      "HTML/CSS",
+      "SQL"
+    ],
+    "preferred_skills": [
+      "Node.js",
+      "Bootstrap"
+    ],
+    "is_verified": true,
+    "canonical_hash": "e3da7b512be215d795bc750915d5a8a9668ac2b18d96282e05d343b74fd6a7d3"
+  },
+  {
+    "id": "job_indeed_157",
+    "source_id": "src_indeed",
+    "source": "Indeed",
+    "external_job_id": "indeed_1056",
+    "title": "Associate Software Engineer - Cloud First",
+    "company": "Accenture India",
+    "location": "Bangalore, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 0,
+    "experience_max": 2,
+    "salary_min": "₹7,00,000",
+    "salary_max": "₹10,50,000",
+    "salary_numeric_min": 700000,
+    "salary_numeric_max": 1050000,
+    "source_url": "https://in.indeed.com/jobs?q=Associate%20Software%20Engineer%20-%20Cloud%20First%20Accenture%20India&l=Bangalore%2C%20India",
+    "posted_at": "2026-09-22T15:23:17.630Z",
+    "description": "Participate in large-scale enterprise cloud transformations, building responsive client dashboards and serverless backends.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "JavaScript",
+      "React",
+      "SQL",
+      "Git & GitHub"
+    ],
+    "preferred_skills": [
+      "AWS",
+      "Node.js",
+      "Python"
+    ],
+    "is_verified": true,
+    "canonical_hash": "a59a78fa0c43284722382657572978e1b841842e05c901cd07065a8b6d91a5d0"
+  },
+  {
+    "id": "job_naukri_158",
+    "source_id": "src_naukri",
+    "source": "Naukri",
+    "external_job_id": "naukri_1057",
+    "title": "Junior Systems Developer",
+    "company": "DXC Technology",
+    "location": "Noida, India",
+    "work_mode": "ON_SITE",
+    "employment_type": "FULL_TIME",
+    "experience_min": 0,
+    "experience_max": 1,
+    "salary_min": "₹5,50,000",
+    "salary_max": "₹8,20,000",
+    "salary_numeric_min": 550000,
+    "salary_numeric_max": 820000,
+    "source_url": "https://www.naukri.com/jobs-in-india?k=Junior%20Systems%20Developer%20DXC%20Technology&l=Noida%2C%20India",
+    "posted_at": "2026-09-22T13:23:17.630Z",
+    "description": "Maintain high-availability IT infrastructure monitoring tooling and automated alert dispatch scripts.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "SQL",
+      "JavaScript",
+      "HTML/CSS",
+      "Linux"
+    ],
+    "preferred_skills": [
+      "Git & GitHub",
+      "Python"
+    ],
+    "is_verified": true,
+    "canonical_hash": "3af0dc8997bd5a0600fb6cbe3099dd9bcba88d570e95e4cc28e2e42ee5be46fe"
+  },
+  {
+    "id": "job_indeed_159",
+    "source_id": "src_indeed",
+    "source": "Indeed",
+    "external_job_id": "indeed_1058",
+    "title": "Associate Consultant - Data & Cloud",
+    "company": "Genpact",
+    "location": "Gurgaon, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 0,
+    "experience_max": 2,
+    "salary_min": "₹6,50,000",
+    "salary_max": "₹9,50,000",
+    "salary_numeric_min": 650000,
+    "salary_numeric_max": 950000,
+    "source_url": "https://in.indeed.com/jobs?q=Associate%20Consultant%20-%20Data%20%26%20Cloud%20Genpact&l=Gurgaon%2C%20India",
+    "posted_at": "2026-09-22T11:23:17.630Z",
+    "description": "Implement financial analytics pipelines, customer churn forecasting, and operational KPI executive dashboards.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "Python",
+      "SQL",
+      "JavaScript",
+      "Excel"
+    ],
+    "preferred_skills": [
+      "PowerBI",
+      "Tableau"
+    ],
+    "is_verified": true,
+    "canonical_hash": "75d76e096547bab3dd9d7e7e0e0100fcd0c9b85d12095d0b7d48b346aedac6b2"
+  },
+  {
+    "id": "job_naukri_160",
+    "source_id": "src_naukri",
+    "source": "Naukri",
+    "external_job_id": "naukri_1059",
+    "title": "Full Stack Engineer - Banking Systems",
+    "company": "Hexaware Technologies",
+    "location": "Chennai, India",
+    "work_mode": "ON_SITE",
+    "employment_type": "FULL_TIME",
+    "experience_min": 0,
+    "experience_max": 2,
+    "salary_min": "₹6,80,000",
+    "salary_max": "₹10,20,000",
+    "salary_numeric_min": 680000,
+    "salary_numeric_max": 1020000,
+    "source_url": "https://www.naukri.com/jobs-in-india?k=Full%20Stack%20Engineer%20-%20Banking%20Systems%20Hexaware%20Technologies&l=Chennai%2C%20India",
+    "posted_at": "2026-09-22T09:23:17.630Z",
+    "description": "Engineer digital loan application workflows, document verification APIs, and core banking customer web interfaces.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "React",
+      "Node.js",
+      "SQL",
+      "JavaScript"
+    ],
+    "preferred_skills": [
+      "Express.js",
+      "REST APIs"
+    ],
+    "is_verified": true,
+    "canonical_hash": "6e12ea3a923604e89956765479f350023488654bd70ac4f86339a694f588840c"
+  },
+  {
+    "id": "job_indeed_161",
+    "source_id": "src_indeed",
+    "source": "Indeed",
+    "external_job_id": "indeed_1060",
+    "title": "Software Developer - Cloud Transformation",
+    "company": "Mphasis",
+    "location": "Bangalore, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 0,
+    "experience_max": 2,
+    "salary_min": "₹6,50,000",
+    "salary_max": "₹9,80,000",
+    "salary_numeric_min": 650000,
+    "salary_numeric_max": 980000,
+    "source_url": "https://in.indeed.com/jobs?q=Software%20Developer%20-%20Cloud%20Transformation%20Mphasis&l=Bangalore%2C%20India",
+    "posted_at": "2026-09-22T07:23:17.630Z",
+    "description": "Deliver responsive micro-frontends and cloud native services for international mortgage lending clients.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "JavaScript",
+      "React",
+      "HTML/CSS",
+      "Git & GitHub"
+    ],
+    "preferred_skills": [
+      "Node.js",
+      "SQL"
+    ],
+    "is_verified": true,
+    "canonical_hash": "aa519fcfeaa6b21fea93e35e02483097c6580aaa1ce146dbebd9f28520db3de4"
+  }
+]

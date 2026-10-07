@@ -15,6 +15,7 @@
     "dev": "concurrently -n \"API,WEB\" -c \"cyan,magenta\" \"npm run dev --prefix apps/api\" \"npm run dev --prefix apps/web\"",
     "dev:web": "npm run dev --prefix apps/web",
     "dev:api": "npm run dev --prefix apps/api",
+    "build": "npm run build --prefix apps/web",
     "build:web": "npm run build --prefix apps/web"
   },
   "keywords": [

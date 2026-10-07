@@ -14,32 +14,34 @@ const GoogleIcon = () => (
 export default function GoogleAccountChooserModal({ isOpen, onClose, onAuthSuccess }) {
   const { switchPersona, refreshData } = useCareer();
   const [selectedAccount, setSelectedAccount] = useState(null);
-  const [isCustomMode, setIsCustomMode] = useState(false);
+  const getSavedGoogleAccounts = () => {
+    try {
+      const saved = localStorage.getItem('careerlens_saved_google_user');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.email && !/rahul|priya/i.test(parsed.email)) {
+          return [{
+            name: parsed.name || parsed.email.split('@')[0],
+            email: parsed.email,
+            avatar: parsed.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(parsed.name || parsed.email)}`,
+            status: "Verified Google Account",
+            badge: "Saved on Device"
+          }];
+        }
+      }
+    } catch {}
+    return [];
+  };
+
+  const deviceAccounts = getSavedGoogleAccounts();
+  const [isCustomMode, setIsCustomMode] = useState(deviceAccounts.length === 0);
+
   const [customEmail, setCustomEmail] = useState('');
   const [customName, setCustomName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const [showConsoleGuide, setShowConsoleGuide] = useState(false);
 
   if (!isOpen) return null;
-
-  // Detected device Google accounts for instant selection
-  const deviceAccounts = [
-    {
-      name: "Rahul Sharma",
-      email: "rahul.sharma@gmail.com",
-      avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=RahulSharma",
-      status: "Verified Google Account",
-      badge: "Active on Device"
-    },
-    {
-      name: "Priya Nair",
-      email: "priya.nair@gmail.com",
-      avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=PriyaNair",
-      status: "Verified Google Account",
-      badge: "Google Workspace"
-    }
-  ];
 
   const handleSelectAccount = async (account) => {
     setIsLoading(true);
@@ -63,6 +65,11 @@ export default function GoogleAccountChooserModal({ isOpen, onClose, onAuthSucce
       if (data.success && data.data?.token) {
         localStorage.setItem('careerlens_token', data.data.token);
         localStorage.setItem('careerlens_auth_provider', 'google');
+        localStorage.setItem('careerlens_saved_google_user', JSON.stringify({
+          name: account.name,
+          email: account.email,
+          avatar: account.avatar
+        }));
         if (data.data.user?.id) {
           await switchPersona(data.data.user.id);
         } else {
@@ -195,13 +202,15 @@ export default function GoogleAccountChooserModal({ isOpen, onClose, onAuthSucce
                 <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
                   Enter your Google Account:
                 </p>
-                <button
-                  type="button"
-                  onClick={() => setIsCustomMode(false)}
-                  className="text-xs text-brand-400 hover:text-brand-300"
-                >
-                  ← Back to device list
-                </button>
+                {deviceAccounts.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setIsCustomMode(false)}
+                    className="text-xs text-brand-400 hover:text-brand-300"
+                  >
+                    ← Back to saved accounts
+                  </button>
+                )}
               </div>
 
               <div className="space-y-1">

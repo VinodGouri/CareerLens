@@ -9,130 +9,10 @@ const DATA_DIR = path.resolve(__dirname, '../data');
 const USERS_FILE = path.join(DATA_DIR, 'users_store.json');
 
 /**
- * Default Seed Persona (Rahul Sharma)
- * Pre-seeded so tests, demo scenarios, and persona switching remain 100% active.
+ * Seed Users Configuration
+ * Testing accounts Rahul Sharma and Priya Nair have been removed as requested.
  */
-const DEFAULT_SEED_USERS = [
-  {
-    id: "user_fresher_01",
-    name: "Rahul Sharma",
-    email: "rahul.sharma@gmail.com",
-    password_hash: bcrypt.hashSync("Password123!", 10),
-    role: "USER",
-    auth_provider: "email",
-    is_verified: true,
-    avatar_url: "https://api.dicebear.com/7.x/bottts/svg?seed=RahulSharma",
-    headline: "Aspiring Full Stack Engineer | React, Node.js & Cloud Enthusiast",
-    summary: "Recent Computer Science graduate with hands-on project experience in MERN stack, PostgreSQL, and scalable microservices. Passionate about engineering high-performance web products.",
-    location: "Hyderabad, India",
-    phone: "+91 98765 43210",
-    linkedin_url: "https://linkedin.com/in/rahulsharma-dev",
-    github_url: "https://github.com/rahulsharma-dev",
-    portfolio_url: "https://rahulsharma.dev",
-    experience_level: "FRESHER",
-    preferred_roles: ["Full Stack Developer", "Software Engineer", "Frontend Developer"],
-    preferred_locations: ["Hyderabad", "Bangalore", "Remote"],
-    work_modes: ["REMOTE", "HYBRID"],
-    expected_salary: "₹7,00,000 - ₹12,00,000",
-    education: [
-      {
-        id: "edu_01",
-        institution: "JNTU College of Engineering, Hyderabad",
-        degree: "B.Tech",
-        field: "Computer Science and Engineering",
-        start_year: 2021,
-        end_year: 2025,
-        grade: "8.6 CGPA",
-        course_type: "Full Time"
-      }
-    ],
-    experience: [
-      {
-        id: "exp_01",
-        company: "TechNova Solutions",
-        role: "Software Engineering Intern",
-        employment_type: "Internship",
-        start_date: "2024-05",
-        end_date: "2024-11",
-        description: "Built real-time collaboration dashboards using React and Express. Reduced API latency by 28% through Redis caching.",
-        technologies: ["React", "Express.js", "Redis", "PostgreSQL"]
-      }
-    ],
-    projects: [
-      {
-        id: "proj_01",
-        name: "CampusConnect LMS Platform",
-        description: "End-to-end learning management system featuring real-time lecture chat, automated grading, and role-based access control.",
-        technologies: ["React", "Node.js", "Express.js", "PostgreSQL", "Socket.io"],
-        github_url: "https://github.com/rahulsharma-dev/campusconnect",
-        live_url: "https://campusconnect-demo.dev",
-        role: "Full Stack Developer",
-        achievements: "Handled 1,200+ concurrent students during exam week with zero downtime."
-      },
-      {
-        id: "proj_02",
-        name: "DevInsight - GitHub Analytics",
-        description: "Developer productivity tool analyzing git commit velocity, PR review times, and skill frequency distributions.",
-        technologies: ["Next.js", "Tailwind CSS", "TypeScript", "GitHub GraphQL API"],
-        github_url: "https://github.com/rahulsharma-dev/devinsight",
-        live_url: "https://devinsight.vercel.app",
-        role: "Lead Creator",
-        achievements: "Used by 450+ developers across 12 college coding clubs."
-      }
-    ],
-    skills: [
-      { id: "s_react", name: "React", category: "Frontend", proficiency: "ADVANCED", years: 2, evidence: ["CampusConnect LMS", "Internship at TechNova"] },
-      { id: "s_node", name: "Node.js", category: "Backend", proficiency: "ADVANCED", years: 2, evidence: ["REST APIs in Express"] },
-      { id: "s_postgres", name: "PostgreSQL", category: "Database", proficiency: "INTERMEDIATE", years: 1.5, evidence: ["Complex Joins & Indexes"] },
-      { id: "s_javascript", name: "JavaScript", category: "Programming", proficiency: "ADVANCED", years: 3, evidence: ["ES6+, Async/Await"] },
-      { id: "s_python", name: "Python", category: "Programming", proficiency: "INTERMEDIATE", years: 2, evidence: ["DSA Solutions"] },
-      { id: "s_git", name: "Git & GitHub", category: "DevOps", proficiency: "ADVANCED", years: 3, evidence: ["Open Source Contributor"] },
-      { id: "s_tailwind", name: "Tailwind CSS", category: "Frontend", proficiency: "ADVANCED", years: 2, evidence: ["Production UI styling"] }
-    ],
-    certifications: [
-      {
-        id: "cert_01",
-        name: "Meta Front-End Developer Professional Certificate",
-        issuer: "Coursera / Meta",
-        issue_date: "2024",
-        credential_url: "https://coursera.org/verify/professional-cert/meta"
-      }
-    ]
-  },
-  {
-    id: "user_junior_02",
-    name: "Priya Nair",
-    email: "priya.nair@example.com",
-    password_hash: bcrypt.hashSync("Password123!", 10),
-    role: "USER",
-    auth_provider: "linkedin",
-    is_verified: true,
-    avatar_url: "https://api.dicebear.com/7.x/bottts/svg?seed=PriyaNair",
-    headline: "Frontend Engineer (1.5 YOE) transitioning to Full Stack",
-    summary: "Frontend engineer building performant web applications with React and TypeScript. Eager to expand into backend architecture and microservices.",
-    location: "Bangalore, India",
-    phone: "+91 91234 56789",
-    linkedin_url: "https://linkedin.com/in/priyanair",
-    github_url: "https://github.com/priyanair",
-    portfolio_url: "https://priyanair.io",
-    experience_level: "EARLY_CAREER",
-    preferred_roles: ["Full Stack Developer", "Software Engineer", "Frontend Developer"],
-    preferred_locations: ["Bangalore", "Remote"],
-    work_modes: ["REMOTE", "HYBRID"],
-    expected_salary: "₹10,00,000 - ₹15,00,000",
-    skills: [
-      { id: "s_react", name: "React", category: "Frontend", proficiency: "ADVANCED", years: 2.5, evidence: ["LinkedIn Skill Assessment Badge"] },
-      { id: "s_javascript", name: "JavaScript", category: "Programming", proficiency: "ADVANCED", years: 3, evidence: ["LinkedIn Verified Assessment"] },
-      { id: "s_tailwind", name: "Tailwind CSS", category: "Frontend", proficiency: "ADVANCED", years: 2, evidence: ["LinkedIn Endorsed by 14 colleagues"] },
-      { id: "s_system_design", name: "System Design", category: "Architecture", proficiency: "INTERMEDIATE", years: 1.5, evidence: ["LinkedIn Endorsed"] },
-      { id: "s_rest", name: "REST APIs", category: "Backend", proficiency: "ADVANCED", years: 2.5, evidence: ["LinkedIn Endorsed"] }
-    ],
-    projects: [],
-    education: [],
-    experience: [],
-    certifications: []
-  }
-];
+const DEFAULT_SEED_USERS = [];
 
 class UserService {
   constructor() {
@@ -151,13 +31,13 @@ class UserService {
         this.users = JSON.parse(raw);
         console.log(`👤 [USER STORE] Loaded ${this.users.length} registered users from ${USERS_FILE}`);
       } else {
-        this.users = [...DEFAULT_SEED_USERS];
+        this.users = [];
         this.saveStore();
-        console.log(`👤 [USER STORE] Initialized fresh users store with default verified persona`);
+        console.log(`👤 [USER STORE] Initialized fresh users store`);
       }
     } catch (err) {
       console.warn('⚠️ [USER STORE] Error loading users file, using memory store:', err.message);
-      this.users = [...DEFAULT_SEED_USERS];
+      this.users = [];
     }
   }
 

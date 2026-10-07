@@ -1,5 +1,169 @@
 [
   {
+    "id": "company careers_1791361131022_2",
+    "source_id": "src_company careers",
+    "source": "Company Careers",
+    "external_job_id": "1791361131023",
+    "title": "Junior Software Engineer (Fresher / SDE-1)",
+    "company": "Microsoft",
+    "location": "Hyderabad, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 0,
+    "experience_max": 2,
+    "salary_min": "₹16,00,000",
+    "salary_max": "₹26,00,000",
+    "salary_numeric_min": 1600000,
+    "salary_numeric_max": 2600000,
+    "source_url": "https://careers.microsoft.com/v2/global/en/home.html",
+    "posted_at": "2026-10-07T08:18:51.022Z",
+    "description": "Verified engineering role at Microsoft in Hyderabad, India. Ingested from Company Careers with automated ATS scoring and active portal application link.",
+    "responsibilities": [
+      "Design and build scalable client and server systems.",
+      "Collaborate with agile cross-functional product pods."
+    ],
+    "requirements": [
+      "Strong problem solving and software engineering skills.",
+      "Knowledge of modern web frameworks and databases."
+    ],
+    "required_skills": [
+      "JavaScript",
+      "React",
+      "HTML/CSS",
+      "Git & GitHub"
+    ],
+    "preferred_skills": [
+      "Python",
+      "SQL",
+      "Node.js"
+    ],
+    "is_verified": true,
+    "canonical_hash": "2ab4298f0c9e12fcf8ed24103c685b0ad2d518b3df0c7ccefb1d89604dc178eb"
+  },
+  {
+    "id": "company careers_1791361131022_1",
+    "source_id": "src_company careers",
+    "source": "Company Careers",
+    "external_job_id": "1791361131023",
+    "title": "Frontend Engineer - Modern Web Apps",
+    "company": "Google",
+    "location": "Bangalore, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 3,
+    "salary_min": "₹18,00,000",
+    "salary_max": "₹28,00,000",
+    "salary_numeric_min": 1800000,
+    "salary_numeric_max": 2800000,
+    "source_url": "https://careers.google.com/jobs/results/",
+    "posted_at": "2026-10-07T08:18:51.022Z",
+    "description": "Verified engineering role at Google in Bangalore, India. Ingested from Company Careers with automated ATS scoring and active portal application link.",
+    "responsibilities": [
+      "Design and build scalable client and server systems.",
+      "Collaborate with agile cross-functional product pods."
+    ],
+    "requirements": [
+      "Strong problem solving and software engineering skills.",
+      "Knowledge of modern web frameworks and databases."
+    ],
+    "required_skills": [
+      "React",
+      "JavaScript",
+      "TypeScript",
+      "HTML/CSS"
+    ],
+    "preferred_skills": [
+      "Next.js",
+      "Tailwind CSS",
+      "Redux"
+    ],
+    "is_verified": true,
+    "canonical_hash": "ce6f21cfe8df538e83a580e30aa14ddcb45a447cdab84e6f0731d15df691b45e"
+  },
+  {
+    "id": "job_linkedin_1791361131023_270",
+    "source_id": "src_linkedin",
+    "source": "LinkedIn",
+    "external_job_id": "4471646111",
+    "title": "Software Development Engineer II, Seller Partner Services Tech",
+    "company": "Amazon",
+    "location": "Bengaluru, Karnataka, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 0,
+    "experience_max": 2,
+    "salary_min": "₹9,00,000",
+    "salary_max": "₹16,00,000",
+    "salary_numeric_min": 900000,
+    "salary_numeric_max": 1600000,
+    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Software%20Development%20Engineer%20II%2C%20Seller%20Partner%20Services%20Tech%20undefined&location=India",
+    "posted_at": "2026-10-07T08:18:51.022Z",
+    "description": "Live job listing directly posted on LinkedIn for Software Development Engineer II, Seller Partner Services Tech at Amazon in Bengaluru, Karnataka, India. Click 'Apply' to navigate directly to this live LinkedIn posting.",
+    "responsibilities": [
+      "Design and build scalable client and server systems.",
+      "Collaborate with agile cross-functional product pods."
+    ],
+    "requirements": [
+      "Strong problem solving and software engineering skills.",
+      "Knowledge of modern web frameworks and databases."
+    ],
+    "required_skills": [
+      "JavaScript",
+      "React",
+      "Node.js",
+      "PostgreSQL"
+    ],
+    "preferred_skills": [
+      "Docker",
+      "AWS",
+      "Redis"
+    ],
+    "is_verified": true,
+    "canonical_hash": "1fcbed04c7028c7279a20c08977ac430317530939ff56b2d91f4d483decceadd"
+  },
+  {
+    "id": "job_linkedin_1791361131023_575",
+    "source_id": "src_linkedin",
+    "source": "LinkedIn",
+    "external_job_id": "4455793886",
+    "title": "Software Dev Engineer II, Alexa Connections",
+    "company": "Amazon",
+    "location": "Chennai, Tamil Nadu, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 0,
+    "experience_max": 2,
+    "salary_min": "₹9,00,000",
+    "salary_max": "₹16,00,000",
+    "salary_numeric_min": 900000,
+    "salary_numeric_max": 1600000,
+    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Software%20Dev%20Engineer%20II%2C%20Alexa%20Connections%20undefined&location=India",
+    "posted_at": "2026-10-07T08:18:51.022Z",
+    "description": "Live job listing directly posted on LinkedIn for Software Dev Engineer II, Alexa Connections at Amazon in Chennai, Tamil Nadu, India. Click 'Apply' to navigate directly to this live LinkedIn posting.",
+    "responsibilities": [
+      "Design and build scalable client and server systems.",
+      "Collaborate with agile cross-functional product pods."
+    ],
+    "requirements": [
+      "Strong problem solving and software engineering skills.",
+      "Knowledge of modern web frameworks and databases."
+    ],
+    "required_skills": [
+      "JavaScript",
+      "React",
+      "Node.js",
+      "PostgreSQL"
+    ],
+    "preferred_skills": [
+      "Docker",
+      "AWS",
+      "Redis"
+    ],
+    "is_verified": true,
+    "canonical_hash": "eccc99e5ab9567c35c462bd7f4bad45f40b41f8b48099cf206928379c136a286"
+  },
+  {
     "id": "job_company_1791359878817",
     "source_id": "src_company_careers",
     "source": "Company Careers",

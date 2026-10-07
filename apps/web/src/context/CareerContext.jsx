@@ -22,14 +22,18 @@ export function CareerProvider({ children }) {
   const refreshData = async () => {
     try {
       setLoading(true);
+      const token = localStorage.getItem('careerlens_token');
+      const authHeaders = token ? { 'Authorization': `Bearer ${token}` } : {};
+
       const [profRes, jobsRes, appsRes, resRes] = await Promise.all([
-        fetch('/api/v1/profile').then(r => r.json()).catch(() => ({ success: false })),
-        fetch('/api/v1/jobs').then(r => r.json()).catch(() => ({ success: false })),
-        fetch('/api/v1/applications').then(r => r.json()).catch(() => ({ success: false })),
-        fetch('/api/v1/learning/resources').then(r => r.json()).catch(() => ({ success: false }))
+        fetch('/api/v1/profile', { headers: authHeaders }).then(r => r.json()).catch(() => ({ success: false })),
+        fetch('/api/v1/jobs', { headers: authHeaders }).then(r => r.json()).catch(() => ({ success: false })),
+        fetch('/api/v1/applications', { headers: authHeaders }).then(r => r.json()).catch(() => ({ success: false })),
+        fetch('/api/v1/learning/resources', { headers: authHeaders }).then(r => r.json()).catch(() => ({ success: false }))
       ]);
 
       if (profRes.success) setCurrentUser(profRes.data || null);
+      else setCurrentUser(null);
       if (jobsRes.success && jobsRes.data?.jobs) setJobs(jobsRes.data.jobs);
       else setJobs([]);
       if (appsRes.success && Array.isArray(appsRes.data)) setApplications(appsRes.data);

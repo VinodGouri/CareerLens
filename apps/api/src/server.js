@@ -35,11 +35,32 @@ const ingestionEngine = new JobIngestionEngine(jobService.jobs);
 let learningResources = [...SEED_LEARNING_RESOURCES];
 let applications = [...SEED_APPLICATIONS];
 
-// Helper: Active user session (defaults to first verified persona or null)
+// Helper: Active user session
 let currentUserId = null;
-function getCurrentUser() {
-  return (currentUserId && userService.findById(currentUserId)) || userService.getAllUsers()[0] || null;
+function getCurrentUser(req = null) {
+  if (req) {
+    const authHeader = req.headers?.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.replace('Bearer ', '').trim();
+      const match = token.match(/careerlens-(?:jwt|oauth-[a-z]+)-([a-zA-Z0-9_]+)-\d+/);
+      if (match && match[1]) {
+        const u = userService.findById(match[1]);
+        if (u) return u;
+      }
+    }
+  }
+  if (currentUserId) {
+    const u = userService.findById(currentUserId);
+    if (u) return u;
+  }
+  return null;
 }
+
+// User Logout (Clears active server session)
+app.post('/api/v1/auth/logout', (req, res) => {
+  currentUserId = null;
+  res.json({ success: true, message: "Logged out successfully" });
+});
 
 /* -------------------------------------------------------------
  * 1. AUTHENTICATION & VERIFICATION ENGINE (OTP, Real Email, Google)
@@ -324,7 +345,7 @@ app.post('/api/v1/auth/oauth/:provider', (req, res) => {
   if (!user) {
     const timestamp = Date.now();
     const userEmail = email || `${provider}.user.${timestamp}@careerlens.io`;
-    const userName = name || (provider === 'github' ? (username || 'GitHub Developer') : (provider === 'linkedin' ? (email?.toLowerCase().includes('priya') ? 'Priya Nair' : 'LinkedIn Professional') : 'Google Candidate'));
+    const userName = name || (provider === 'github' ? (username || 'GitHub Developer') : (provider === 'linkedin' ? 'LinkedIn Professional' : 'Google Professional'));
 
     let initialSkills = [];
     let initialProjects = [];
@@ -550,7 +571,7 @@ app.post('/api/v1/auth/register', (req, res) => {
 });
 
 app.get('/api/v1/auth/me', (req, res) => {
-  const user = getCurrentUser();
+  const user = getCurrentUser(req);
   res.json({ success: true, data: user });
 });
 
@@ -558,7 +579,7 @@ app.get('/api/v1/auth/me', (req, res) => {
  * 2. PROFILE MANAGEMENT
  * ----------------------------------------------------------- */
 app.get('/api/v1/profile', (req, res) => {
-  const user = getCurrentUser();
+  const user = getCurrentUser(req);
   if (!user) {
     return res.json({ success: true, data: null });
   }
@@ -713,6 +734,14 @@ app.get('/api/v1/jobs/facets', (req, res) => {
 
 // Single Job Ingestion via Adapter
 app.post('/api/v1/jobs/ingest', (req, res) => {
+  const user = getCurrentUser(req);
+  if (!user) {
+    return res.status(401).json({
+      success: false,
+      error: { code: 'AUTH_REQUIRED', message: 'Sign in required. Please sign in to import job listings.' }
+    });
+  }
+
   const { rawJob, source } = req.body;
   if (!rawJob) {
     return res.status(400).json({ success: false, error: { message: "rawJob payload is required" } });
@@ -754,6 +783,14 @@ app.post('/api/v1/jobs/ingest', (req, res) => {
 
 // Live URL / Raw Posting Ingestion (Company Career Portals, LinkedIn, Naukri, Indeed, Wellfound)
 app.post('/api/v1/jobs/ingest-url', (req, res) => {
+  const user = getCurrentUser(req);
+  if (!user) {
+    return res.status(401).json({
+      success: false,
+      error: { code: 'AUTH_REQUIRED', message: 'Sign in required. Please sign in to import external job links.' }
+    });
+  }
+
   const { url, rawText, source, company } = req.body;
   const input = url || rawText;
   if (!input) {
@@ -767,7 +804,6 @@ app.post('/api/v1/jobs/ingest-url', (req, res) => {
     : getDirectSourceUrl(rawNormalized.source, rawNormalized.title, rawNormalized.company, rawNormalized.location, rawNormalized.source_url);
 
   const batchRes = jobService.ingestBatch([rawNormalized]);
-  const user = getCurrentUser();
 
   if (batchRes.duplicatesBlocked.length > 0 && batchRes.newlyIngested.length === 0) {
     const existing = batchRes.duplicatesBlocked[0];
@@ -804,7 +840,16 @@ app.post('/api/v1/jobs/ingest-url', (req, res) => {
 
 // Sync Opportunities from Individual Company Career Portals (Google, Microsoft, Amazon, Razorpay, etc.)
 app.post('/api/v1/jobs/sync-company-careers', (req, res) => {
-  const user = getCurrentUser();
+  const user = getCurrentUser(req);
+  if (!user) {
+    return res.status(401).json({
+      success: false,
+      error: {
+        code: 'AUTH_REQUIRED',
+        message: 'Sign in required. Please sign in to sync company career portal jobs.'
+      }
+    });
+  }
   const todayIso = new Date().toISOString();
 
   const companyJobs = [
@@ -922,7 +967,16 @@ app.post('/api/v1/jobs/sync-company-careers', (req, res) => {
 
 // Candidate-Tailored Ingestion Sync (LinkedIn, Naukri, Indeed)
 app.post('/api/v1/jobs/sync-candidate-feed', async (req, res) => {
-  const user = getCurrentUser();
+  const user = getCurrentUser(req);
+  if (!user) {
+    return res.status(401).json({
+      success: false,
+      error: {
+        code: 'AUTH_REQUIRED',
+        message: 'Sign in required. Please sign in to sync live job postings to your candidate repository.'
+      }
+    });
+  }
   const { source, count = 12 } = req.body || {};
 
   const targetRole = (user?.preferred_roles && user.preferred_roles[0]) || 'Software Engineer';
@@ -976,7 +1030,16 @@ app.post('/api/v1/jobs/sync-candidate-feed', async (req, res) => {
 
 // Live Multi-Source Ingestion Sync Feed (Fallback / Quick Sync)
 app.post('/api/v1/jobs/sync-demo-feed', async (req, res) => {
-  const user = getCurrentUser();
+  const user = getCurrentUser(req);
+  if (!user) {
+    return res.status(401).json({
+      success: false,
+      error: {
+        code: 'AUTH_REQUIRED',
+        message: 'Sign in required. Please sign in to sync live job postings.'
+      }
+    });
+  }
   const targetRole = (user?.preferred_roles && user.preferred_roles[0]) || 'Software Engineer';
   const targetLoc = user?.location || 'Hyderabad, India';
 

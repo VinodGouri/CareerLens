@@ -19,11 +19,15 @@ import { useCareer } from '../../context/CareerContext';
 export default function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { currentUser, activePersona, switchPersona, setIsAIChatOpen } = useCareer();
+  const { currentUser, setCurrentUser, activePersona, switchPersona, setIsAIChatOpen } = useCareer();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     localStorage.removeItem('careerlens_token');
     localStorage.removeItem('careerlens_onboarded');
+    try {
+      await fetch('/api/v1/auth/logout', { method: 'POST' });
+    } catch {}
+    if (setCurrentUser) setCurrentUser(null);
     navigate('/login');
   };
 

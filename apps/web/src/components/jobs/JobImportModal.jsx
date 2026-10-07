@@ -149,9 +149,13 @@ export default function JobImportModal({ isOpen, onClose, onJobIngested }) {
     setResult(null);
 
     try {
+      const token = localStorage.getItem('careerlens_token');
       const res = await fetch('/api/v1/jobs/ingest-url', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
         body: JSON.stringify({
           url: url.trim(),
           company: company.trim(),

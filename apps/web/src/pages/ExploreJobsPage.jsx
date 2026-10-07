@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { 
   Search, 
   MapPin, 
@@ -29,7 +30,9 @@ import MatchExplanationModal from '../components/jobs/MatchExplanationModal';
 import JobImportModal from '../components/jobs/JobImportModal';
 
 export default function ExploreJobsPage() {
+  const navigate = useNavigate();
   const { 
+    currentUser,
     jobs, 
     searchQuery, 
     setSearchQuery,
@@ -252,13 +255,22 @@ export default function ExploreJobsPage() {
     minSalary !== '0' ||
     selectedSkill !== 'ALL';
 
-  // Trigger Multi-Source Ingestion Sync Feed
+  // Trigger Multi-Source Ingestion Sync Feed (Only after sign in)
   const handleSyncFeed = async () => {
+    if (!currentUser) {
+      navigate('/login');
+      return;
+    }
+
     setIsSyncing(true);
     try {
+      const token = localStorage.getItem('careerlens_token');
       const res = await fetch('/api/v1/jobs/sync-candidate-feed', { 
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
         body: JSON.stringify({ source: selectedSource !== 'ALL' ? selectedSource : undefined, count: 12 })
       }).then(r => r.json());
 
@@ -268,6 +280,8 @@ export default function ExploreJobsPage() {
           duplicates: res.data.duplicatesBlockedCount
         });
         await refreshData();
+      } else if (res.error?.code === 'AUTH_REQUIRED') {
+        navigate('/login');
       }
     } catch (e) {
       console.warn("Sync fallback, refreshing data:", e);
@@ -300,7 +314,13 @@ export default function ExploreJobsPage() {
           <div className="flex items-center gap-2 self-start sm:self-auto">
             {/* Import Job URL Button */}
             <button
-              onClick={() => setIsImportModalOpen(true)}
+              onClick={() => {
+                if (!currentUser) {
+                  navigate('/login');
+                  return;
+                }
+                setIsImportModalOpen(true);
+              }}
               className="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs border border-white/10 transition-all flex items-center gap-1.5 whitespace-nowrap active:scale-95 shadow-sm"
               title="Paste a job link from Google, Microsoft, Amazon, Razorpay, LinkedIn, Naukri, etc. to extract and score"
             >
@@ -649,10 +669,16 @@ export default function ExploreJobsPage() {
                 className="w-full sm:w-auto px-5 py-3 rounded-xl bg-gradient-to-r from-brand-600 via-indigo-600 to-accent-cyan hover:opacity-95 text-white font-bold text-xs shadow-glow-primary transition-all flex items-center justify-center gap-2"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
-                <span>{isSyncing ? 'Syncing Adapters...' : 'Fetch Jobs from LinkedIn, Naukri & Indeed'}</span>
+                <span>{isSyncing ? 'Syncing Adapters...' : (currentUser ? 'Fetch Jobs from Company Portals & Boards' : 'Sign In to Sync Live Jobs')}</span>
               </button>
               <button
-                onClick={() => setIsImportModalOpen(true)}
+                onClick={() => {
+                  if (!currentUser) {
+                    navigate('/login');
+                    return;
+                  }
+                  setIsImportModalOpen(true);
+                }}
                 className="w-full sm:w-auto px-4 py-3 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs border border-white/10 transition-all flex items-center justify-center gap-2"
               >
                 <Plus className="w-3.5 h-3.5 text-accent-cyan" />

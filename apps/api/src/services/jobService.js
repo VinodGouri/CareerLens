@@ -33,19 +33,89 @@ export function generateCanonicalHash(title, company, location) {
 
 /**
  * Authentic Source Redirect URL Resolver
- * Guarantees that if a job is from LinkedIn, it redirects directly to LinkedIn for that job search/posting.
- * Same for Naukri, Indeed, and Wellfound.
+ * Guarantees that:
+ * - Jobs from Company Career Portals redirect directly to the verified official company careers portal (Google, Amazon, Microsoft, Uber, Razorpay, etc.)
+ * - Jobs from LinkedIn redirect directly to LinkedIn for that job search/posting.
+ * - Same for Naukri, Indeed, and Wellfound.
  */
 export function getDirectSourceUrl(source, title, company, location, existingUrl = '') {
   const s = (source || 'LinkedIn').toLowerCase();
-  if (existingUrl) {
+
+  // If a valid HTTP existingUrl is provided:
+  if (existingUrl && typeof existingUrl === 'string' && existingUrl.startsWith('http')) {
+    // If it's a company careers portal or direct ATS URL, preserve it directly!
+    if (s.includes('company') || s.includes('career') || s.includes('direct') || s.includes('portal')) {
+      return existingUrl;
+    }
     if (s === 'linkedin' && existingUrl.includes('linkedin.com')) return existingUrl;
     if (s === 'naukri' && existingUrl.includes('naukri.com')) return existingUrl;
     if (s === 'indeed' && existingUrl.includes('indeed.com')) return existingUrl;
     if (s === 'wellfound' && existingUrl.includes('wellfound.com')) return existingUrl;
   }
+
   const q = encodeURIComponent(`${title} ${company}`.trim());
   const loc = encodeURIComponent(location || 'India');
+
+  // Direct Company Career Portals Routing
+  if (s.includes('company') || s.includes('career') || s.includes('direct') || s.includes('portal')) {
+    const compLower = (company || '').toLowerCase();
+    if (compLower.includes('google')) {
+      return `https://careers.google.com/jobs/results/?q=${encodeURIComponent(title)}&location=${loc}`;
+    }
+    if (compLower.includes('microsoft')) {
+      return `https://careers.microsoft.com/v2/global/en/home.html`;
+    }
+    if (compLower.includes('amazon')) {
+      return `https://www.amazon.jobs/en/search?base_query=${encodeURIComponent(title)}&loc_query=${loc}`;
+    }
+    if (compLower.includes('uber')) {
+      return `https://www.uber.com/us/en/careers/list/?query=${encodeURIComponent(title)}`;
+    }
+    if (compLower.includes('razorpay')) {
+      return `https://razorpay.com/jobs/`;
+    }
+    if (compLower.includes('swiggy')) {
+      return `https://careers.swiggy.com/`;
+    }
+    if (compLower.includes('zoho')) {
+      return `https://www.zoho.com/careers/`;
+    }
+    if (compLower.includes('atlassian')) {
+      return `https://www.atlassian.com/company/careers/jobs?search=${encodeURIComponent(title)}`;
+    }
+    if (compLower.includes('stripe')) {
+      return `https://stripe.com/jobs/search?query=${encodeURIComponent(title)}`;
+    }
+    if (compLower.includes('flipkart')) {
+      return `https://www.flipkartcareers.com/`;
+    }
+    if (compLower.includes('cred')) {
+      return `https://careers.cred.club/`;
+    }
+    if (compLower.includes('zomato')) {
+      return `https://www.zomato.com/careers`;
+    }
+    if (compLower.includes('adobe')) {
+      return `https://careers.adobe.com/us/en/search-results?keywords=${encodeURIComponent(title)}`;
+    }
+    if (compLower.includes('salesforce')) {
+      return `https://careers.salesforce.com/en/jobs/?search=${encodeURIComponent(title)}`;
+    }
+    if (compLower.includes('apple')) {
+      return `https://jobs.apple.com/en-in/search?search=${encodeURIComponent(title)}`;
+    }
+    if (compLower.includes('netflix')) {
+      return `https://jobs.netflix.com/search?q=${encodeURIComponent(title)}`;
+    }
+    if (compLower.includes('tcs')) {
+      return `https://www.tcs.com/careers/india`;
+    }
+    if (compLower.includes('infosys')) {
+      return `https://www.infosys.com/careers.html`;
+    }
+    return existingUrl || `https://www.google.com/search?q=${encodeURIComponent(`${company} official careers ${title}`)}`;
+  }
+
   if (s === 'linkedin') {
     return `https://www.linkedin.com/jobs/search/?keywords=${q}&location=${loc}`;
   }
@@ -58,6 +128,7 @@ export function getDirectSourceUrl(source, title, company, location, existingUrl
   if (s === 'wellfound') {
     return `https://wellfound.com/jobs?keywords=${encodeURIComponent(title)}&location=${loc}`;
   }
+
   return existingUrl || `https://www.linkedin.com/jobs/search/?keywords=${q}&location=${loc}`;
 }
 
@@ -73,17 +144,33 @@ function createInitialJobCatalog() {
   const rawJobsDef = [
     // --- POSTED TODAY (0 to 12 hours ago) ---
     {
+      title: 'Software Engineer - Distributed Systems & Cloud',
+      company: 'Google India',
+      location: 'Bangalore, India',
+      work_mode: 'HYBRID',
+      source: 'Company Careers',
+      salary_min: '₹22,00,000',
+      salary_max: '₹34,00,000',
+      experience_min: 1,
+      experience_max: 4,
+      ageHours: 1,
+      source_url: 'https://careers.google.com/jobs/results/?q=software%20engineer&location=India',
+      required_skills: ['Python', 'Go', 'Distributed Systems', 'Kubernetes'],
+      preferred_skills: ['GCP', 'Docker', 'Linux'],
+      description: 'Build Google Cloud hyper-scale backend infrastructure and storage services handling petabytes of traffic per second.'
+    },
+    {
       title: 'Full Stack Engineer (React & Node.js)',
       company: 'Razorpay',
       location: 'Bangalore, India',
       work_mode: 'HYBRID',
-      source: 'LinkedIn',
+      source: 'Company Careers',
       salary_min: '₹14,00,000',
       salary_max: '₹22,00,000',
       experience_min: 1,
       experience_max: 3,
       ageHours: 2,
-      source_url: 'https://razorpay.com/careers/job/?id=full-stack-engineer-bangalore',
+      source_url: 'https://razorpay.com/jobs/',
       required_skills: ['React', 'Node.js', 'PostgreSQL', 'JavaScript'],
       preferred_skills: ['Redis', 'Docker', 'AWS'],
       description: 'Join Razorpay payments platform team to build scalable merchant checkout flows and microservices handling millions of transactions daily.'
@@ -93,13 +180,13 @@ function createInitialJobCatalog() {
       company: 'Swiggy Tech',
       location: 'Bangalore, India',
       work_mode: 'HYBRID',
-      source: 'LinkedIn',
+      source: 'Company Careers',
       salary_min: '₹12,00,000',
       salary_max: '₹18,00,000',
       experience_min: 0,
       experience_max: 2,
       ageHours: 4,
-      source_url: 'https://careers.swiggy.com/#/job-details/frontend-developer',
+      source_url: 'https://careers.swiggy.com/',
       required_skills: ['React', 'JavaScript', 'Tailwind CSS', 'HTML/CSS'],
       preferred_skills: ['Next.js', 'Redux', 'TypeScript'],
       description: 'Build fast, responsive, accessible consumer checkout interfaces and real-time delivery tracking UI using React and modern CSS.'
@@ -109,7 +196,7 @@ function createInitialJobCatalog() {
       company: 'Microsoft India',
       location: 'Hyderabad, India',
       work_mode: 'HYBRID',
-      source: 'LinkedIn',
+      source: 'Company Careers',
       salary_min: '₹16,00,000',
       salary_max: '₹26,00,000',
       experience_min: 1,
@@ -157,13 +244,13 @@ function createInitialJobCatalog() {
       company: 'CRED',
       location: 'Bangalore, India',
       work_mode: 'HYBRID',
-      source: 'LinkedIn',
+      source: 'Company Careers',
       salary_min: '₹18,00,000',
       salary_max: '₹28,00,000',
       experience_min: 1,
       experience_max: 4,
       ageHours: 7,
-      source_url: 'https://cred.club/careers',
+      source_url: 'https://careers.cred.club/',
       required_skills: ['Node.js', 'PostgreSQL', 'Express.js', 'Redis'],
       preferred_skills: ['Kafka', 'Docker', 'AWS'],
       description: 'Architect low-latency financial ledger services, credit card rewards systems, and secure member auth APIs.'
@@ -189,7 +276,7 @@ function createInitialJobCatalog() {
       company: 'Zoho Corporation',
       location: 'Chennai, India',
       work_mode: 'ON_SITE',
-      source: 'Indeed',
+      source: 'Company Careers',
       salary_min: '₹6,50,000',
       salary_max: '₹10,50,000',
       experience_min: 0,
@@ -255,13 +342,13 @@ function createInitialJobCatalog() {
       company: 'Amazon India',
       location: 'Hyderabad, India',
       work_mode: 'HYBRID',
-      source: 'LinkedIn',
+      source: 'Company Careers',
       salary_min: '₹17,00,000',
       salary_max: '₹28,00,000',
       experience_min: 0,
       experience_max: 2,
       ageHours: 28,
-      source_url: 'https://amazon.jobs/en/search?base_query=software+engineer&loc_query=India',
+      source_url: 'https://www.amazon.jobs/en/search?base_query=software+engineer&loc_query=India',
       required_skills: ['Java', 'JavaScript', 'Node.js', 'PostgreSQL'],
       preferred_skills: ['AWS', 'Distributed Systems', 'Docker'],
       description: 'Design robust backend services for Amazon Retail ordering and automated fulfillment optimization.'
@@ -337,8 +424,8 @@ function createInitialJobCatalog() {
       company: 'Google India',
       location: 'Bangalore, India',
       work_mode: 'HYBRID',
-      source: 'LinkedIn',
-      salary_min: '₹20,0,000',
+      source: 'Company Careers',
+      salary_min: '₹20,00,000',
       salary_max: '₹34,00,000',
       experience_min: 1,
       experience_max: 4,
@@ -353,7 +440,7 @@ function createInitialJobCatalog() {
       company: 'Flipkart',
       location: 'Bangalore, India',
       work_mode: 'HYBRID',
-      source: 'LinkedIn',
+      source: 'Company Careers',
       salary_min: '₹12,00,000',
       salary_max: '₹18,50,000',
       experience_min: 1,
@@ -401,13 +488,13 @@ function createInitialJobCatalog() {
       company: 'Atlassian',
       location: 'Bangalore, India',
       work_mode: 'REMOTE',
-      source: 'LinkedIn',
+      source: 'Company Careers',
       salary_min: '₹17,00,000',
       salary_max: '₹26,00,000',
       experience_min: 1,
       experience_max: 4,
       ageHours: 80,
-      source_url: 'https://www.atlassian.com/company/careers/resources/all-jobs',
+      source_url: 'https://www.atlassian.com/company/careers/jobs',
       required_skills: ['AWS', 'Docker', 'Kubernetes', 'Git & GitHub'],
       preferred_skills: ['Terraform', 'Python', 'CI/CD'],
       description: 'Help engineer the resilient global cloud platform supporting Jira, Confluence, and Trello with automated chaos testing.'
@@ -419,13 +506,13 @@ function createInitialJobCatalog() {
       company: 'Uber India',
       location: 'Hyderabad, India',
       work_mode: 'HYBRID',
-      source: 'LinkedIn',
+      source: 'Company Careers',
       salary_min: '₹18,00,000',
       salary_max: '₹30,00,000',
       experience_min: 1,
       experience_max: 4,
       ageHours: 7 * 24,
-      source_url: 'https://www.uber.com/us/en/careers/list/?location=IND--Bengaluru',
+      source_url: 'https://www.uber.com/us/en/careers/list/',
       required_skills: ['Node.js', 'Python', 'PostgreSQL', 'Docker'],
       preferred_skills: ['Redis', 'Kafka', 'Microservices'],
       description: 'Build real-time driver dispatch matching, surge pricing algorithms, and high-frequency geolocation tracking APIs.'
@@ -435,7 +522,7 @@ function createInitialJobCatalog() {
       company: 'Adobe India',
       location: 'Delhi NCR, India',
       work_mode: 'HYBRID',
-      source: 'LinkedIn',
+      source: 'Company Careers',
       salary_min: '₹16,00,000',
       salary_max: '₹25,00,000',
       experience_min: 1,
@@ -467,13 +554,13 @@ function createInitialJobCatalog() {
       company: 'Salesforce India',
       location: 'Hyderabad, India',
       work_mode: 'HYBRID',
-      source: 'LinkedIn',
+      source: 'Company Careers',
       salary_min: '₹15,00,000',
       salary_max: '₹24,00,000',
       experience_min: 1,
       experience_max: 3,
       ageHours: 7 * 24 + 12,
-      source_url: 'https://salesforce.wd1.myworkdayjobs.com/External_Career_Site',
+      source_url: 'https://careers.salesforce.com/en/jobs/',
       required_skills: ['JavaScript', 'React', 'Node.js', 'PostgreSQL'],
       preferred_skills: ['Lightning Web Components', 'AWS', 'REST APIs'],
       description: 'Empower customer 360 CRM platforms with intuitive React single-page applications and high-availability API endpoints.'
@@ -1115,12 +1202,34 @@ class JobService {
       }
 
       // 1. Load or seed jobs
+      const defaultCatalog = createInitialJobCatalog();
       if (fs.existsSync(JOBS_FILE)) {
         const raw = fs.readFileSync(JOBS_FILE, 'utf-8');
-        this.jobs = JSON.parse(raw);
-        console.log(`💼 [JOB STORE] Loaded ${this.jobs.length} jobs from ${JOBS_FILE}`);
+        let loadedJobs = JSON.parse(raw);
+        
+        const defaultMap = new Map(defaultCatalog.map(j => [j.canonical_hash, j]));
+        
+        // Sync Company Careers source & direct verified portals
+        loadedJobs = loadedJobs.map(job => {
+          const match = defaultMap.get(job.canonical_hash);
+          if (match && match.source === 'Company Careers') {
+            return {
+              ...job,
+              source: 'Company Careers',
+              source_id: 'src_company_careers',
+              source_url: match.source_url
+            };
+          }
+          return job;
+        });
+
+        const existingHashes = new Set(loadedJobs.map(j => j.canonical_hash || generateCanonicalHash(j.title, j.company, j.location)));
+        const missingJobs = defaultCatalog.filter(j => !existingHashes.has(j.canonical_hash));
+        this.jobs = [...missingJobs, ...loadedJobs];
+        this.saveJobsStore();
+        console.log(`💼 [JOB STORE] Loaded and updated ${this.jobs.length} jobs (Company Careers: ${this.jobs.filter(j => j.source === 'Company Careers').length})`);
       } else {
-        this.jobs = createInitialJobCatalog();
+        this.jobs = defaultCatalog;
         this.saveJobsStore();
         console.log(`💼 [JOB STORE] Created fresh catalog with ${this.jobs.length} verified jobs`);
       }
@@ -1232,6 +1341,7 @@ class JobService {
     const facets = {
       totalInDatabase: this.jobs.length,
       bySource: {
+        'Company Careers': results.filter(j => j.source === 'Company Careers' || j.source?.toLowerCase().includes('career')).length,
         LinkedIn: results.filter(j => j.source === 'LinkedIn').length,
         Naukri: results.filter(j => j.source === 'Naukri').length,
         Indeed: results.filter(j => j.source === 'Indeed').length,
@@ -1261,6 +1371,7 @@ class JobService {
         results = results.filter(j => 
           j.title.toLowerCase().includes(q) || 
           j.company.toLowerCase().includes(q) ||
+          j.source.toLowerCase().includes(q) ||
           (j.required_skills || []).some(s => s.toLowerCase().includes(q)) ||
           (j.preferred_skills || []).some(s => s.toLowerCase().includes(q)) ||
           j.location.toLowerCase().includes(q)
@@ -1280,7 +1391,11 @@ class JobService {
 
     // 6. Source Filter
     if (source && source !== 'ALL') {
-      results = results.filter(j => j.source.toLowerCase() === source.toLowerCase());
+      if (source === 'Company Careers' || source.toLowerCase().includes('career')) {
+        results = results.filter(j => j.source === 'Company Careers' || j.source?.toLowerCase().includes('career') || j.source_id === 'src_company_careers');
+      } else {
+        results = results.filter(j => j.source.toLowerCase() === source.toLowerCase());
+      }
     }
 
     // 7. Experience Filter

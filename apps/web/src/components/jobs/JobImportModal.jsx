@@ -10,13 +10,79 @@ import {
   ExternalLink, 
   Plus, 
   ArrowRight,
-  ShieldCheck
+  ShieldCheck,
+  Globe
 } from 'lucide-react';
 import MatchScoreBadge from '../ui/MatchScoreBadge';
 
+function detectSourceAndCompany(inputUrl) {
+  if (!inputUrl) return null;
+  const lower = inputUrl.toLowerCase();
+  
+  if (lower.includes('careers.google.com') || lower.includes('google.com/about/careers') || (lower.includes('google') && lower.includes('career'))) {
+    return { source: 'Company Careers', company: 'Google' };
+  }
+  if (lower.includes('amazon.jobs') || (lower.includes('amazon') && lower.includes('jobs'))) {
+    return { source: 'Company Careers', company: 'Amazon' };
+  }
+  if (lower.includes('careers.microsoft.com') || (lower.includes('microsoft') && lower.includes('careers'))) {
+    return { source: 'Company Careers', company: 'Microsoft' };
+  }
+  if (lower.includes('razorpay.com/jobs') || lower.includes('razorpay.com/careers') || (lower.includes('razorpay') && lower.includes('job'))) {
+    return { source: 'Company Careers', company: 'Razorpay' };
+  }
+  if (lower.includes('swiggy.com/careers') || (lower.includes('swiggy') && lower.includes('career'))) {
+    return { source: 'Company Careers', company: 'Swiggy' };
+  }
+  if (lower.includes('uber.com/careers') || (lower.includes('uber') && lower.includes('job'))) {
+    return { source: 'Company Careers', company: 'Uber' };
+  }
+  if (lower.includes('atlassian.com/company/careers') || (lower.includes('atlassian') && lower.includes('career'))) {
+    return { source: 'Company Careers', company: 'Atlassian' };
+  }
+  if (lower.includes('zoho.com/careers') || (lower.includes('zoho') && lower.includes('career'))) {
+    return { source: 'Company Careers', company: 'Zoho' };
+  }
+  if (lower.includes('greenhouse.io') || lower.includes('lever.co') || lower.includes('myworkdayjobs.com') || lower.includes('ashbyhq.com') || lower.includes('smartrecruiters.com')) {
+    try {
+      const u = new URL(inputUrl);
+      const hostParts = u.hostname.split('.');
+      const compSlug = hostParts[0] === 'jobs' || hostParts[0] === 'boards' ? hostParts[1] : hostParts[0];
+      const compName = compSlug ? compSlug.charAt(0).toUpperCase() + compSlug.slice(1) : '';
+      return { source: 'Company Careers', company: compName };
+    } catch {
+      return { source: 'Company Careers', company: '' };
+    }
+  }
+  if (lower.includes('linkedin.com')) {
+    return { source: 'LinkedIn', company: '' };
+  }
+  if (lower.includes('naukri.com')) {
+    return { source: 'Naukri', company: '' };
+  }
+  if (lower.includes('indeed.com')) {
+    return { source: 'Indeed', company: '' };
+  }
+  if (lower.includes('wellfound.com') || lower.includes('angel.co')) {
+    return { source: 'Wellfound', company: '' };
+  }
+  if (lower.includes('career') || lower.includes('jobs') || lower.includes('hiring')) {
+    try {
+      const u = new URL(inputUrl);
+      const brand = u.hostname.replace(/^(www\.|careers\.|jobs\.)/i, '').split('.')[0];
+      const compName = brand ? brand.charAt(0).toUpperCase() + brand.slice(1) : '';
+      return { source: 'Company Careers', company: compName };
+    } catch {
+      return { source: 'Company Careers', company: '' };
+    }
+  }
+  return null;
+}
+
 export default function JobImportModal({ isOpen, onClose, onJobIngested }) {
   const [url, setUrl] = useState('');
-  const [source, setSource] = useState('LinkedIn');
+  const [company, setCompany] = useState('');
+  const [source, setSource] = useState('Company Careers');
   const [rawText, setRawText] = useState('');
   const [isIngesting, setIsIngesting] = useState(false);
   const [error, setError] = useState('');
@@ -24,19 +90,48 @@ export default function JobImportModal({ isOpen, onClose, onJobIngested }) {
 
   if (!isOpen) return null;
 
+  const handleUrlChange = (newUrl) => {
+    setUrl(newUrl);
+    const detected = detectSourceAndCompany(newUrl);
+    if (detected) {
+      setSource(detected.source);
+      if (detected.company && !company) {
+        setCompany(detected.company);
+      }
+    }
+  };
+
   const handleQuickSample = (sampleType) => {
     setError('');
     setResult(null);
-    if (sampleType === 'linkedin') {
+    if (sampleType === 'google') {
+      setSource('Company Careers');
+      setCompany('Google');
+      setUrl('https://careers.google.com/jobs/results/94829104-software-engineer-iii-google-cloud-bangalore');
+      setRawText('Software Engineer III, Google Cloud at Google in Bangalore. Required: Go, Java, Distributed Systems, Cloud Architecture, Kubernetes.');
+    } else if (sampleType === 'razorpay') {
+      setSource('Company Careers');
+      setCompany('Razorpay');
+      setUrl('https://razorpay.com/jobs/backend-engineer-payments-core-bangalore-9381');
+      setRawText('Backend Engineer (Payments Core) at Razorpay in Bangalore. Required: Go, Node.js, PostgreSQL, Kafka, Microservices.');
+    } else if (sampleType === 'microsoft') {
+      setSource('Company Careers');
+      setCompany('Microsoft');
+      setUrl('https://careers.microsoft.com/us/en/job/1849201/Software-Engineer-II-Azure-Hyderabad');
+      setRawText('Software Engineer II, Azure Core at Microsoft in Hyderabad. Required: C#, .NET Core, Azure, Distributed Systems.');
+    } else if (sampleType === 'linkedin') {
       setSource('LinkedIn');
+      setCompany('Swiggy');
       setUrl('https://www.linkedin.com/jobs/view/3982104928');
       setRawText('Frontend Engineer at Swiggy Tech in Bangalore. Required: React, TypeScript, Tailwind CSS, Redux. Preferred: Next.js, GraphQL.');
     } else if (sampleType === 'naukri') {
       setSource('Naukri');
+      setCompany('Paytm');
       setUrl('https://www.naukri.com/job-listings-full-stack-developer-paytm-hyderabad-392810');
       setRawText('Full Stack Developer (React + Node) at Paytm in Hyderabad. Required: React, Node.js, PostgreSQL, REST APIs. Preferred: Docker, Redis.');
     } else if (sampleType === 'indeed') {
       setSource('Indeed');
+      setCompany('ThoughtWorks');
       setUrl('https://in.indeed.com/viewjob?jk=98a72bc1940ef');
       setRawText('Associate Cloud Software Engineer at ThoughtWorks in Pune. Required: JavaScript, React, Python, PostgreSQL. Preferred: AWS, Docker.');
     }
@@ -59,6 +154,7 @@ export default function JobImportModal({ isOpen, onClose, onJobIngested }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           url: url.trim(),
+          company: company.trim(),
           rawText: rawText.trim(),
           source
         })
@@ -92,10 +188,10 @@ export default function JobImportModal({ isOpen, onClose, onJobIngested }) {
               <span>Multi-Source Ingestion Pipeline</span>
             </div>
             <h2 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
-              Ingest Job from Portals
+              Ingest Job Postings
             </h2>
             <p className="text-xs text-slate-400 mt-1">
-              Import a live listing from LinkedIn, Naukri, or Indeed. CareerLens normalizes the schema, runs SHA-256 deduplication, and scores it against your candidate profile.
+              Import opportunities directly from <strong>Company Career Portals</strong> (Google, Microsoft, Amazon, Razorpay, etc.) or job boards like LinkedIn, Naukri, Indeed. CareerLens normalizes the schema, runs SHA-256 deduplication, stamps today's date, and scores against your candidate profile.
             </p>
           </div>
 
@@ -113,6 +209,30 @@ export default function JobImportModal({ isOpen, onClose, onJobIngested }) {
             Try Quick Sample Listing:
           </p>
           <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => handleQuickSample('google')}
+              className="text-xs font-bold px-3 py-1.5 rounded-lg bg-emerald-600/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-600/30 transition-all flex items-center gap-1"
+            >
+              <Globe className="w-3 h-3 text-emerald-400" />
+              + Google Careers
+            </button>
+            <button
+              type="button"
+              onClick={() => handleQuickSample('microsoft')}
+              className="text-xs font-bold px-3 py-1.5 rounded-lg bg-emerald-600/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-600/30 transition-all flex items-center gap-1"
+            >
+              <Globe className="w-3 h-3 text-emerald-400" />
+              + Microsoft Careers
+            </button>
+            <button
+              type="button"
+              onClick={() => handleQuickSample('razorpay')}
+              className="text-xs font-bold px-3 py-1.5 rounded-lg bg-emerald-600/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-600/30 transition-all flex items-center gap-1"
+            >
+              <Globe className="w-3 h-3 text-emerald-400" />
+              + Razorpay Careers
+            </button>
             <button
               type="button"
               onClick={() => handleQuickSample('linkedin')}
@@ -145,21 +265,47 @@ export default function JobImportModal({ isOpen, onClose, onJobIngested }) {
             <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
               Portal Source
             </label>
-            <div className="grid grid-cols-4 gap-2">
-              {['LinkedIn', 'Naukri', 'Indeed', 'Wellfound'].map((s) => (
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+              {['Company Careers', 'LinkedIn', 'Naukri', 'Indeed', 'Wellfound'].map((s) => (
                 <button
                   key={s}
                   type="button"
                   onClick={() => setSource(s)}
-                  className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all ${
+                  className={`py-2 px-2.5 rounded-xl text-xs font-bold border transition-all text-center ${
                     source === s 
-                      ? 'bg-brand-600 text-white border-brand-500 shadow-glow-primary' 
+                      ? s === 'Company Careers'
+                        ? 'bg-emerald-600 text-white border-emerald-500 shadow-glow-emerald ring-2 ring-emerald-500/40'
+                        : 'bg-brand-600 text-white border-brand-500 shadow-glow-primary' 
                       : 'bg-white/5 text-slate-400 border-white/10 hover:text-white'
                   }`}
                 >
-                  {s}
+                  {s === 'Company Careers' ? 'Company Site' : s}
                 </button>
               ))}
+            </div>
+          </div>
+
+          {/* Company Name Input */}
+          <div>
+            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5 flex items-center justify-between">
+              <span>Company Name {source === 'Company Careers' ? '(e.g. Google, Razorpay, Amazon)' : '(Optional)'}</span>
+              {source === 'Company Careers' && (
+                <span className="text-[10px] text-emerald-400 font-medium flex items-center gap-1">
+                  <Globe className="w-3 h-3" /> Direct Career Portal
+                </span>
+              )}
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                <Building2 className="w-4 h-4" />
+              </div>
+              <input
+                type="text"
+                value={company}
+                onChange={(e) => setCompany(e.target.value)}
+                placeholder={source === 'Company Careers' ? "e.g. Google, Amazon, Microsoft, Razorpay, Uber" : "Optional company name..."}
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-brand-500 transition-all"
+              />
             </div>
           </div>
 
@@ -175,8 +321,8 @@ export default function JobImportModal({ isOpen, onClose, onJobIngested }) {
               <input
                 type="url"
                 value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                placeholder="https://www.linkedin.com/jobs/view/..."
+                onChange={(e) => handleUrlChange(e.target.value)}
+                placeholder={source === 'Company Careers' ? "https://careers.google.com/jobs/results/... or https://company.com/careers/..." : "https://www.linkedin.com/jobs/view/..."}
                 className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-brand-500 transition-all"
               />
             </div>
@@ -191,7 +337,7 @@ export default function JobImportModal({ isOpen, onClose, onJobIngested }) {
               rows={3}
               value={rawText}
               onChange={(e) => setRawText(e.target.value)}
-              placeholder="Paste job title, company name, skills, or job description excerpt..."
+              placeholder="Paste job title, requirements, skills, or job description excerpt..."
               className="w-full p-3 rounded-xl bg-white/[0.04] border border-white/10 text-white placeholder-slate-500 text-xs focus:outline-none focus:border-brand-500 transition-all"
             />
           </div>
@@ -207,7 +353,11 @@ export default function JobImportModal({ isOpen, onClose, onJobIngested }) {
           <button
             type="submit"
             disabled={isIngesting}
-            className="w-full py-3 px-4 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-brand-600 via-indigo-600 to-accent-cyan hover:opacity-95 shadow-glow-primary transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+            className={`w-full py-3 px-4 rounded-xl font-bold text-sm text-white transition-all flex items-center justify-center gap-2 disabled:opacity-50 ${
+              source === 'Company Careers'
+                ? 'bg-gradient-to-r from-emerald-600 via-teal-600 to-brand-600 shadow-glow-emerald hover:opacity-95'
+                : 'bg-gradient-to-r from-brand-600 via-indigo-600 to-accent-cyan shadow-glow-primary hover:opacity-95'
+            }`}
           >
             {isIngesting ? (
               <>
@@ -217,7 +367,11 @@ export default function JobImportModal({ isOpen, onClose, onJobIngested }) {
             ) : (
               <>
                 <Plus className="w-4 h-4" />
-                <span>Ingest & Match to My Profile</span>
+                <span>
+                  {source === 'Company Careers' 
+                    ? `Ingest from ${company || 'Company Career Site'}` 
+                    : `Ingest & Match from ${source}`}
+                </span>
               </>
             )}
           </button>
@@ -231,8 +385,12 @@ export default function JobImportModal({ isOpen, onClose, onJobIngested }) {
                 <CheckCircle2 className="w-5 h-5 text-emerald-400" />
                 <span className="font-bold text-sm text-white">Successfully Ingested!</span>
               </div>
-              <span className="text-[10px] px-2 py-0.5 rounded font-bold uppercase bg-white/10 text-slate-200">
-                {result.source}
+              <span className={`text-[10px] px-2 py-0.5 rounded font-bold uppercase ${
+                result.source === 'Company Careers'
+                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                  : 'bg-white/10 text-slate-200'
+              }`}>
+                {result.source === 'Company Careers' ? `${result.company} Careers` : result.source}
               </span>
             </div>
 
@@ -246,6 +404,17 @@ export default function JobImportModal({ isOpen, onClose, onJobIngested }) {
                   <MapPin className="w-3.5 h-3.5 text-slate-400" />
                   <span>{result.location}</span>
                 </p>
+                {result.source_url && (
+                  <a
+                    href={result.source_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-[11px] font-semibold text-accent-cyan hover:underline mt-1.5"
+                  >
+                    <span>Direct application link ({result.company})</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                )}
               </div>
               <div className="flex flex-col items-end">
                 <MatchScoreBadge score={result.matchScore || 85} size="md" />
@@ -254,7 +423,7 @@ export default function JobImportModal({ isOpen, onClose, onJobIngested }) {
             </div>
 
             <p className="text-xs text-slate-300">
-              This job has been added to your candidate feed with live skill breakdown and is ready for exploration or 1-click application tracking.
+              This opportunity has been stamped with today's date and added to your catalog with direct application routing.
             </p>
 
             <button

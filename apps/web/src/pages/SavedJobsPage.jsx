@@ -66,8 +66,15 @@ export default function SavedJobsPage() {
     return { label: `Posted ${diffDays}d ago`, isToday: false };
   };
 
-  const getApplyButtonDetails = (source) => {
-    switch (source?.toLowerCase()) {
+  const getApplyButtonDetails = (source, company) => {
+    const s = source?.toLowerCase() || '';
+    if (s === 'company careers' || s.includes('career') || s.includes('portal') || s.includes('direct')) {
+      return {
+        label: company ? `Apply on ${company}` : 'Apply on Company Site',
+        className: 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-emerald-600/30'
+      };
+    }
+    switch (s) {
       case 'linkedin':
         return {
           label: 'Apply on LinkedIn',
@@ -90,7 +97,7 @@ export default function SavedJobsPage() {
         };
       default:
         return {
-          label: `Apply on ${source || 'Source'}`,
+          label: `Apply on ${company || source || 'Source'}`,
           className: 'bg-brand-600 hover:bg-brand-500 text-white shadow-glow-primary'
         };
     }
@@ -199,7 +206,7 @@ export default function SavedJobsPage() {
         <div className="space-y-4">
           {displayJobs.map(job => {
             const postedInfo = getRelativePostedTime(job.posted_at);
-            const applyBtn = getApplyButtonDetails(job.source);
+            const applyBtn = getApplyButtonDetails(job.source, job.company);
 
             return (
               <div key={job.id} className="glass-panel-interactive rounded-2xl p-5 border border-white/10 group">

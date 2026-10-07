@@ -249,6 +249,66 @@ export function wellfoundAdapter(raw) {
 }
 
 /**
+ * 5. Individual Company Career Portal Adapter
+ * Ingests jobs directly from official company career sites (Google, Amazon, Microsoft, Uber, Razorpay, etc.)
+ * as well as ATS portals (Greenhouse, Lever, Workday, Ashby, SmartRecruiters).
+ */
+export function companyCareersAdapter(raw) {
+  const title = raw.title || raw.jobTitle || 'Software Engineer';
+  const company = raw.companyName || raw.company || 'Enterprise Company';
+  const location = raw.formattedLocation || raw.location || 'Bangalore, India';
+  
+  const workModeMap = {
+    'on-site': 'ON_SITE',
+    'onsite': 'ON_SITE',
+    'remote': 'REMOTE',
+    'hybrid': 'HYBRID'
+  };
+  const workMode = workModeMap[(raw.workplaceTypes?.[0] || raw.workplaceType || raw.workMode || '').toLowerCase()] || 'HYBRID';
+  
+  const salaryMin = raw.salary_min || '₹12,00,000';
+  const salaryMax = raw.salary_max || '₹20,00,000';
+
+  const defaultSourceUrl = raw.source_url || raw.applyUrl || raw.jobUrl || (
+    `https://www.google.com/search?q=${encodeURIComponent(`${company} official careers ${title}`)}`
+  );
+
+  return {
+    id: `job_company_${raw.jobPostingId || raw.id || Date.now()}`,
+    source_id: 'src_company_careers',
+    source: 'Company Careers',
+    external_job_id: String(raw.jobPostingId || raw.external_job_id || raw.id || `direct_${Date.now()}`),
+    title,
+    company,
+    location,
+    work_mode: workMode,
+    employment_type: raw.employmentStatus || raw.employment_type || 'FULL_TIME',
+    experience_min: raw.experienceMin ?? raw.experience_min ?? 0,
+    experience_max: raw.experienceMax ?? raw.experience_max ?? 3,
+    salary_min: salaryMin,
+    salary_max: salaryMax,
+    salary_numeric_min: parseSalaryToNumeric(salaryMin),
+    salary_numeric_max: parseSalaryToNumeric(salaryMax),
+    source_url: defaultSourceUrl,
+    posted_at: raw.posted_at || raw.listedAt || new Date().toISOString(),
+    description: raw.descriptionText || raw.description || `Engineering position at ${company} directly imported from their official career portal.`,
+    responsibilities: raw.responsibilities || [
+      'Design, implement, and maintain mission-critical product capabilities.',
+      'Participate in architecture reviews, testing, and agile team delivery.'
+    ],
+    requirements: raw.requirements || [
+      'Strong computer science fundamentals and software engineering background.',
+      'Proficiency with modern web frameworks, distributed architectures, or scalable backend APIs.'
+    ],
+    required_skills: raw.skillsRequired || raw.required_skills || ['React', 'JavaScript', 'Node.js', 'PostgreSQL'],
+    preferred_skills: raw.skillsPreferred || raw.preferred_skills || ['Docker', 'AWS', 'Redis'],
+    nice_to_have_skills: raw.skillsNiceToHave || ['CI/CD', 'Kubernetes'],
+    is_verified: true,
+    canonical_hash: generateCanonicalHash(title, company, location)
+  };
+}
+
+/**
  * Master Ingestion Router: Routes raw payload to appropriate source adapter
  */
 export function normalizeJobPayload(rawJob, sourceName) {
@@ -263,7 +323,17 @@ export function normalizeJobPayload(rawJob, sourceName) {
     case 'wellfound':
     case 'angellist':
       return wellfoundAdapter(rawJob);
+    case 'company careers':
+    case 'company portal':
+    case 'company':
+    case 'direct':
+    case 'career portal':
+    case 'careers':
+      return companyCareersAdapter(rawJob);
     default:
+      if (src.includes('career') || src.includes('portal') || (rawJob.source && rawJob.source.toLowerCase().includes('career'))) {
+        return companyCareersAdapter(rawJob);
+      }
       return linkedInAdapter(rawJob);
   }
 }
@@ -279,6 +349,7 @@ export class JobIngestionEngine {
       totalIngested: 0,
       totalDuplicatesBlocked: 0,
       bySource: {
+        'Company Careers': 0,
         LinkedIn: 0,
         Naukri: 0,
         Indeed: 0,
@@ -293,8 +364,9 @@ export class JobIngestionEngine {
       j.salary_numeric_min = j.salary_numeric_min || parseSalaryToNumeric(j.salary_min);
       j.salary_numeric_max = j.salary_numeric_max || parseSalaryToNumeric(j.salary_max);
       this.seenHashes.add(hash);
-      if (this.stats.bySource[j.source] !== undefined) {
-        this.stats.bySource[j.source]++;
+      const sKey = (j.source === 'Company Careers' || j.source?.toLowerCase().includes('career')) ? 'Company Careers' : j.source;
+      if (this.stats.bySource[sKey] !== undefined) {
+        this.stats.bySource[sKey]++;
       }
       this.stats.totalIngested++;
     });
@@ -343,64 +415,233 @@ export class JobIngestionEngine {
 }
 
 /**
- * Intelligent Job URL & Text Parser
- * Ingests external job postings directly from LinkedIn, Naukri, or Indeed URLs / Text
+ * Intelligent Company Career Portal & Job URL Detector
+ * Detects whether a URL belongs to an individual company career site or ATS platform
  */
-export function parseJobFromUrlOrText(input = '', customSource = null) {
+export function detectCompanyAndSourceFromUrl(input = '') {
+  if (!input || typeof input !== 'string') return null;
+  const text = input.trim();
+  
+  const urlMatch = text.match(/https?:\/\/[^\s]+/i);
+  const targetUrl = urlMatch ? urlMatch[0] : (text.startsWith('http') ? text : null);
+  if (!targetUrl) return null;
+
+  try {
+    const urlObj = new URL(targetUrl);
+    const host = urlObj.hostname.toLowerCase();
+    const pathname = urlObj.pathname.toLowerCase();
+
+    // 1. Traditional Job Portals (not direct company portals)
+    if (host.includes('linkedin.com')) {
+      return { source: 'LinkedIn', company: null, isCompanyPortal: false, originalUrl: targetUrl };
+    }
+    if (host.includes('naukri.com')) {
+      return { source: 'Naukri', company: null, isCompanyPortal: false, originalUrl: targetUrl };
+    }
+    if (host.includes('indeed.com')) {
+      return { source: 'Indeed', company: null, isCompanyPortal: false, originalUrl: targetUrl };
+    }
+    if (host.includes('wellfound.com') || host.includes('angel.co')) {
+      return { source: 'Wellfound', company: null, isCompanyPortal: false, originalUrl: targetUrl };
+    }
+
+    // 2. ATS & Hosted Company Career Platforms (Greenhouse, Lever, Workday, Ashby, SmartRecruiters)
+    if (host.includes('greenhouse.io')) {
+      const seg = urlObj.pathname.split('/').filter(Boolean);
+      const company = seg.length > 0 ? formatCompanySlug(seg[0]) : 'Tech Partner';
+      return { source: 'Company Careers', company, isCompanyPortal: true, originalUrl: targetUrl };
+    }
+    if (host.includes('lever.co')) {
+      const seg = urlObj.pathname.split('/').filter(Boolean);
+      const company = seg.length > 0 ? formatCompanySlug(seg[0]) : 'Tech Partner';
+      return { source: 'Company Careers', company, isCompanyPortal: true, originalUrl: targetUrl };
+    }
+    if (host.includes('myworkdayjobs.com')) {
+      const sub = host.split('.')[0] || 'Enterprise';
+      const company = formatCompanySlug(sub.replace(/(wd1|wd2|wd3|wd4|wd5)/gi, ''));
+      return { source: 'Company Careers', company, isCompanyPortal: true, originalUrl: targetUrl };
+    }
+    if (host.includes('ashbyhq.com')) {
+      const seg = urlObj.pathname.split('/').filter(Boolean);
+      const company = seg.length > 0 ? formatCompanySlug(seg[0]) : 'Tech Partner';
+      return { source: 'Company Careers', company, isCompanyPortal: true, originalUrl: targetUrl };
+    }
+    if (host.includes('smartrecruiters.com')) {
+      const seg = urlObj.pathname.split('/').filter(Boolean);
+      const company = seg.length > 0 ? formatCompanySlug(seg[0]) : 'Tech Partner';
+      return { source: 'Company Careers', company, isCompanyPortal: true, originalUrl: targetUrl };
+    }
+
+    // 3. Direct Tech Giants & High Growth Company Career Portals
+    if (host.includes('google.com') || host.includes('careers.google')) {
+      return { source: 'Company Careers', company: 'Google', isCompanyPortal: true, originalUrl: targetUrl };
+    }
+    if (host.includes('amazon.jobs') || host.includes('amazon.com')) {
+      return { source: 'Company Careers', company: 'Amazon', isCompanyPortal: true, originalUrl: targetUrl };
+    }
+    if (host.includes('microsoft.com')) {
+      return { source: 'Company Careers', company: 'Microsoft', isCompanyPortal: true, originalUrl: targetUrl };
+    }
+    if (host.includes('uber.com')) {
+      return { source: 'Company Careers', company: 'Uber', isCompanyPortal: true, originalUrl: targetUrl };
+    }
+    if (host.includes('razorpay.com')) {
+      return { source: 'Company Careers', company: 'Razorpay', isCompanyPortal: true, originalUrl: targetUrl };
+    }
+    if (host.includes('swiggy.com')) {
+      return { source: 'Company Careers', company: 'Swiggy', isCompanyPortal: true, originalUrl: targetUrl };
+    }
+    if (host.includes('zoho.com')) {
+      return { source: 'Company Careers', company: 'Zoho Corporation', isCompanyPortal: true, originalUrl: targetUrl };
+    }
+    if (host.includes('atlassian.com')) {
+      return { source: 'Company Careers', company: 'Atlassian', isCompanyPortal: true, originalUrl: targetUrl };
+    }
+    if (host.includes('stripe.com')) {
+      return { source: 'Company Careers', company: 'Stripe', isCompanyPortal: true, originalUrl: targetUrl };
+    }
+    if (host.includes('flipkart.com') || host.includes('flipkartcareers.com')) {
+      return { source: 'Company Careers', company: 'Flipkart', isCompanyPortal: true, originalUrl: targetUrl };
+    }
+    if (host.includes('cred.club')) {
+      return { source: 'Company Careers', company: 'CRED', isCompanyPortal: true, originalUrl: targetUrl };
+    }
+    if (host.includes('zomato.com')) {
+      return { source: 'Company Careers', company: 'Zomato', isCompanyPortal: true, originalUrl: targetUrl };
+    }
+    if (host.includes('adobe.com')) {
+      return { source: 'Company Careers', company: 'Adobe', isCompanyPortal: true, originalUrl: targetUrl };
+    }
+    if (host.includes('salesforce.com')) {
+      return { source: 'Company Careers', company: 'Salesforce', isCompanyPortal: true, originalUrl: targetUrl };
+    }
+    if (host.includes('apple.com')) {
+      return { source: 'Company Careers', company: 'Apple', isCompanyPortal: true, originalUrl: targetUrl };
+    }
+    if (host.includes('netflix.com')) {
+      return { source: 'Company Careers', company: 'Netflix', isCompanyPortal: true, originalUrl: targetUrl };
+    }
+    if (host.includes('tcs.com')) {
+      return { source: 'Company Careers', company: 'TCS', isCompanyPortal: true, originalUrl: targetUrl };
+    }
+    if (host.includes('infosys.com')) {
+      return { source: 'Company Careers', company: 'Infosys', isCompanyPortal: true, originalUrl: targetUrl };
+    }
+
+    // 4. Any company domain with /careers, /jobs, or careers.subdomain
+    if (host.startsWith('careers.') || host.startsWith('jobs.') || pathname.includes('career') || pathname.includes('job')) {
+      const parts = host.replace(/^(www\.|careers\.|jobs\.)/i, '').split('.');
+      const brand = parts[0] ? formatCompanySlug(parts[0]) : 'Enterprise Partner';
+      return { source: 'Company Careers', company: brand, isCompanyPortal: true, originalUrl: targetUrl };
+    }
+
+    return null;
+  } catch (e) {
+    return null;
+  }
+}
+
+function formatCompanySlug(slug = '') {
+  return slug
+    .replace(/[-_]/g, ' ')
+    .split(' ')
+    .filter(Boolean)
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(' ');
+}
+
+/**
+ * Intelligent Job URL & Text Parser
+ * Ingests external job postings directly from Company Career Portals, LinkedIn, Naukri, Indeed, or Wellfound
+ */
+export function parseJobFromUrlOrText(input = '', customSource = null, customCompany = null) {
   const text = (typeof input === 'string' ? input : '').trim();
   let source = customSource || 'LinkedIn';
   let title = 'Software Engineer';
-  let company = 'Enterprise Tech Partner';
+  let company = customCompany || 'Enterprise Tech Partner';
   let location = 'Hyderabad, India';
   let workMode = 'HYBRID';
-  let salaryMin = '₹8,00,000';
-  let salaryMax = '₹14,00,000';
+  let salaryMin = '₹12,00,000';
+  let salaryMax = '₹20,00,000';
   let skills = ['JavaScript', 'React', 'Node.js', 'PostgreSQL'];
   let description = text;
+  let sourceUrl = '';
 
-  // Source identification from URL
-  if (/linkedin\.com/i.test(text)) {
-    source = 'LinkedIn';
-  } else if (/naukri\.com/i.test(text)) {
-    source = 'Naukri';
-  } else if (/indeed\.com/i.test(text)) {
-    source = 'Indeed';
-  } else if (/wellfound\.com|angel\.co/i.test(text)) {
-    source = 'Wellfound';
+  // 1. Detect Company Career Portals vs Job Aggregator Portals
+  const detected = detectCompanyAndSourceFromUrl(text);
+  if (detected) {
+    source = detected.source;
+    if (detected.company && !customCompany) {
+      company = detected.company;
+    }
+    sourceUrl = detected.originalUrl;
   }
 
-  // Keyword extraction for common role titles
+  if (customSource) {
+    source = customSource;
+  }
+  if (customCompany) {
+    company = customCompany;
+  }
+
+  // 2. Extract job title from URL slug if available
+  if (sourceUrl) {
+    try {
+      const u = new URL(sourceUrl);
+      const segments = u.pathname.split('/').filter(Boolean);
+      const lastSeg = segments[segments.length - 1] || '';
+      const cleanSlug = lastSeg.replace(/^\d+[-_]/, '').replace(/[-_]\d+$/, '').replace(/[-_]/g, ' ');
+      if (cleanSlug.length > 3 && /engineer|developer|designer|architect|lead|analyst|manager/i.test(cleanSlug)) {
+        title = cleanSlug.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+      }
+    } catch (e) {}
+  }
+
+  // 3. Keyword extraction for common role titles from text
   if (/frontend|react|ui\b/i.test(text)) {
-    title = 'Frontend Engineer - React / Web';
+    title = title !== 'Software Engineer' ? title : 'Frontend Engineer - React / Web';
     skills = ['React', 'JavaScript', 'TypeScript', 'Tailwind CSS', 'HTML/CSS'];
   } else if (/backend|node|express|api\b/i.test(text)) {
-    title = 'Backend Engineer - Node.js / APIs';
+    title = title !== 'Software Engineer' ? title : 'Backend Engineer - Node.js / APIs';
     skills = ['Node.js', 'Express.js', 'PostgreSQL', 'REST APIs', 'Redis'];
   } else if (/full\s*stack|mern/i.test(text)) {
-    title = 'Full Stack Engineer (React + Node)';
+    title = title !== 'Software Engineer' ? title : 'Full Stack Engineer (React + Node)';
     skills = ['React', 'Node.js', 'JavaScript', 'PostgreSQL', 'Docker'];
   } else if (/python|django|fastapi/i.test(text)) {
-    title = 'Python Developer - Backend Services';
+    title = title !== 'Software Engineer' ? title : 'Python Developer - Backend Services';
     skills = ['Python', 'FastAPI', 'PostgreSQL', 'Docker', 'REST APIs'];
   } else if (/cloud|devops|aws/i.test(text)) {
-    title = 'Cloud & DevOps Engineer';
+    title = title !== 'Software Engineer' ? title : 'Cloud & DevOps Engineer';
     skills = ['AWS', 'Docker', 'Kubernetes', 'CI/CD', 'Linux'];
+  } else if (/distributed|systems/i.test(text)) {
+    skills = ['Java', 'Distributed Systems', 'PostgreSQL', 'Kafka', 'Docker'];
   }
 
-  // Location extraction
+  // 4. Location extraction
   if (/hyderabad/i.test(text)) location = 'Hyderabad, India';
   else if (/bangalore|bengaluru/i.test(text)) location = 'Bangalore, India';
   else if (/pune/i.test(text)) location = 'Pune, India';
+  else if (/chennai/i.test(text)) location = 'Chennai, India';
+  else if (/mumbai/i.test(text)) location = 'Mumbai, India';
+  else if (/delhi|noida|gurugram|gurgaon/i.test(text)) location = 'Delhi NCR, India';
   else if (/remote/i.test(text)) {
     location = 'Remote, India';
     workMode = 'REMOTE';
   }
 
-  // Company detection heuristics
-  const companyMatch = text.match(/(?:at|company|employer|by)\s+([A-Z][a-zA-Z0-9\s]{2,25})/);
-  if (companyMatch && companyMatch[1]) {
-    company = companyMatch[1].trim();
+  // 5. Company detection heuristics from text if still default
+  if (company === 'Enterprise Tech Partner') {
+    const companyMatch = text.match(/(?:at|company|employer|by)\s+([A-Z][a-zA-Z0-9\s]{2,25})/);
+    if (companyMatch && companyMatch[1]) {
+      company = companyMatch[1].trim();
+    }
   }
+
+  const defaultUrl = sourceUrl || (
+    source === 'Company Careers'
+      ? `https://www.google.com/search?q=${encodeURIComponent(`${company} official career portal ${title}`)}`
+      : `https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(title + ' ' + company)}&location=${encodeURIComponent(location)}`
+  );
 
   const rawPayload = {
     source,
@@ -410,8 +651,9 @@ export function parseJobFromUrlOrText(input = '', customSource = null) {
     workMode,
     salary_min: salaryMin,
     salary_max: salaryMax,
+    source_url: defaultUrl,
     skillsRequired: skills,
-    description: description.length > 50 ? description : `Live ingested job listing from ${source} for ${title} in ${location}.`
+    description: description.length > 50 ? description : `Live ingested job listing from ${source} for ${title} at ${company} in ${location}.`
   };
 
   return normalizeJobPayload(rawPayload, source);
@@ -419,7 +661,7 @@ export function parseJobFromUrlOrText(input = '', customSource = null) {
 
 /**
  * Generate Realistic Multi-Source Ingestion Catalog tailored to Candidate Profile
- * Produces authentic jobs from LinkedIn, Naukri, Indeed, and Wellfound in India
+ * Produces authentic jobs from Company Career Portals, LinkedIn, Naukri, Indeed, and Wellfound in India
  */
 export function generateJobsForCandidateProfile(candidate = {}, count = 12) {
   const userSkills = (candidate.skills || []).map(s => s.name || s);
@@ -427,11 +669,21 @@ export function generateJobsForCandidateProfile(candidate = {}, count = 12) {
   const candidateLoc = candidate.location || 'Hyderabad, India';
 
   const companiesBySource = {
+    'Company Careers': [
+      { name: 'Google', city: 'Bangalore, India', mode: 'HYBRID', minSal: '₹18,00,000', maxSal: '₹28,00,000', portal: 'https://careers.google.com/jobs/results/' },
+      { name: 'Microsoft', city: 'Hyderabad, India', mode: 'HYBRID', minSal: '₹16,00,000', maxSal: '₹26,00,000', portal: 'https://careers.microsoft.com/v2/global/en/home.html' },
+      { name: 'Amazon', city: 'Bangalore, India', mode: 'HYBRID', minSal: '₹17,00,000', maxSal: '₹27,00,000', portal: 'https://www.amazon.jobs/en/search' },
+      { name: 'Uber', city: 'Hyderabad, India', mode: 'HYBRID', minSal: '₹19,00,000', maxSal: '₹30,00,000', portal: 'https://www.uber.com/us/en/careers/list/' },
+      { name: 'Razorpay', city: 'Bangalore, India', mode: 'HYBRID', minSal: '₹14,00,000', maxSal: '₹22,00,000', portal: 'https://razorpay.com/jobs/' },
+      { name: 'Swiggy', city: 'Bangalore, India', mode: 'HYBRID', minSal: '₹12,00,000', maxSal: '₹18,00,000', portal: 'https://careers.swiggy.com/' },
+      { name: 'Atlassian', city: 'Bangalore, India', mode: 'REMOTE', minSal: '₹20,00,000', maxSal: '₹32,00,000', portal: 'https://www.atlassian.com/company/careers/' },
+      { name: 'Zoho Corporation', city: 'Chennai, India', mode: 'ON_SITE', minSal: '₹8,00,000', maxSal: '₹13,00,000', portal: 'https://www.zoho.com/careers/' }
+    ],
     LinkedIn: [
-      { name: 'Razorpay', city: 'Bangalore, India', mode: 'HYBRID', minSal: '₹14,00,000', maxSal: '₹22,00,000' },
-      { name: 'Swiggy Tech', city: 'Bangalore, India', mode: 'HYBRID', minSal: '₹12,00,000', maxSal: '₹18,00,000' },
-      { name: 'Microsoft India', city: 'Hyderabad, India', mode: 'HYBRID', minSal: '₹16,00,000', maxSal: '₹26,00,000' },
-      { name: 'PhonePe', city: 'Pune, India', mode: 'ON_SITE', minSal: '₹11,00,000', maxSal: '₹17,00,000' }
+      { name: 'PhonePe', city: 'Pune, India', mode: 'ON_SITE', minSal: '₹11,00,000', maxSal: '₹17,00,000' },
+      { name: 'CRED', city: 'Bangalore, India', mode: 'HYBRID', minSal: '₹18,00,000', maxSal: '₹28,00,000' },
+      { name: 'Goldman Sachs India', city: 'Bangalore, India', mode: 'HYBRID', minSal: '₹20,00,000', maxSal: '₹32,00,000' },
+      { name: 'Postman', city: 'Bangalore, India', mode: 'REMOTE', minSal: '₹16,00,000', maxSal: '₹26,00,000' }
     ],
     Naukri: [
       { name: 'Infosys Wings', city: 'Hyderabad, India', mode: 'HYBRID', minSal: '₹6,50,000', maxSal: '₹9,50,000' },
@@ -441,9 +693,9 @@ export function generateJobsForCandidateProfile(candidate = {}, count = 12) {
     ],
     Indeed: [
       { name: 'ThoughtWorks', city: 'Hyderabad, India', mode: 'HYBRID', minSal: '₹9,00,000', maxSal: '₹14,00,000' },
-      { name: 'Zoho Corporation', city: 'Bangalore, India', mode: 'ON_SITE', minSal: '₹8,50,000', maxSal: '₹13,00,000' },
       { name: 'Persistent Systems', city: 'Pune, India', mode: 'HYBRID', minSal: '₹7,50,000', maxSal: '₹11,50,000' },
-      { name: 'Cognizant Digital', city: 'Hyderabad, India', mode: 'ON_SITE', minSal: '₹6,80,000', maxSal: '₹10,20,000' }
+      { name: 'Cognizant Digital', city: 'Hyderabad, India', mode: 'ON_SITE', minSal: '₹6,80,000', maxSal: '₹10,20,000' },
+      { name: 'Dell Technologies', city: 'Bangalore, India', mode: 'HYBRID', minSal: '₹12,00,000', maxSal: '₹18,00,000' }
     ],
     Wellfound: [
       { name: 'Zepto Labs', city: 'Bangalore, India', mode: 'REMOTE', minSal: '₹13,00,000', maxSal: '₹20,00,000' },
@@ -484,7 +736,7 @@ export function generateJobsForCandidateProfile(candidate = {}, count = 12) {
     }
   ];
 
-  const sources = ['LinkedIn', 'Naukri', 'Indeed', 'Wellfound'];
+  const sources = ['Company Careers', 'LinkedIn', 'Naukri', 'Indeed', 'Wellfound'];
   const generated = [];
   const runId = Date.now();
 
@@ -497,7 +749,9 @@ export function generateJobsForCandidateProfile(candidate = {}, count = 12) {
       const tmpl = roleTemplates[(index + generated.length) % roleTemplates.length];
       
       let applyUrl;
-      if (src === 'LinkedIn') {
+      if (src === 'Company Careers') {
+        applyUrl = comp.portal || `https://www.google.com/search?q=${encodeURIComponent(`${comp.name} official careers ${tmpl.title}`)}`;
+      } else if (src === 'LinkedIn') {
         applyUrl = `https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(tmpl.title + ' ' + comp.name)}&location=${encodeURIComponent(comp.city)}`;
       } else if (src === 'Naukri') {
         applyUrl = `https://www.naukri.com/jobs-in-india?k=${encodeURIComponent(tmpl.title + ' ' + comp.name)}&l=${encodeURIComponent(comp.city)}`;

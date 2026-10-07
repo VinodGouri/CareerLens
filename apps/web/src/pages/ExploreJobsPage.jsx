@@ -58,7 +58,7 @@ export default function ExploreJobsPage() {
 
   const locations = ['All', 'Hyderabad', 'Bangalore', 'Pune', 'Delhi NCR', 'Remote'];
   const workModes = ['ALL', 'REMOTE', 'HYBRID', 'ON_SITE'];
-  const sources = ['ALL', 'LinkedIn', 'Naukri', 'Indeed', 'Wellfound'];
+  const sources = ['ALL', 'Company Careers', 'LinkedIn', 'Naukri', 'Indeed', 'Wellfound'];
   const experiences = ['ALL', 'fresher', 'experienced'];
   const salaryTiers = [
     { label: 'Any Salary', value: '0' },
@@ -157,7 +157,11 @@ export default function ExploreJobsPage() {
 
       // 5. Source filter
       if (selectedSource !== 'ALL') {
-        if (job.source.toLowerCase() !== selectedSource.toLowerCase()) return false;
+        if (selectedSource === 'Company Careers') {
+          if (job.source !== 'Company Careers' && !job.source?.toLowerCase().includes('career')) return false;
+        } else if (job.source.toLowerCase() !== selectedSource.toLowerCase()) {
+          return false;
+        }
       }
 
       // 6. Experience filter
@@ -206,6 +210,7 @@ export default function ExploreJobsPage() {
   // Source Counts for Quick Pills
   const sourceCounts = useMemo(() => {
     return {
+      'Company Careers': jobs.filter(j => j.source === 'Company Careers' || j.source?.toLowerCase().includes('career')).length,
       LinkedIn: jobs.filter(j => j.source === 'LinkedIn').length,
       Naukri: jobs.filter(j => j.source === 'Naukri').length,
       Indeed: jobs.filter(j => j.source === 'Indeed').length,
@@ -297,7 +302,7 @@ export default function ExploreJobsPage() {
             <button
               onClick={() => setIsImportModalOpen(true)}
               className="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs border border-white/10 transition-all flex items-center gap-1.5 whitespace-nowrap active:scale-95 shadow-sm"
-              title="Paste a job link from LinkedIn, Naukri, or Indeed to extract and score"
+              title="Paste a job link from Google, Microsoft, Amazon, Razorpay, LinkedIn, Naukri, etc. to extract and score"
             >
               <Plus className="w-3.5 h-3.5 text-accent-cyan" />
               <span>Import Job URL</span>
@@ -372,6 +377,7 @@ export default function ExploreJobsPage() {
           </button>
 
           {[
+            { id: 'Company Careers', color: 'border-emerald-500/40 text-emerald-300 bg-emerald-600/15' },
             { id: 'LinkedIn', color: 'border-[#0077b5]/40 text-[#38bdf8] bg-[#0077b5]/15' },
             { id: 'Naukri', color: 'border-blue-500/40 text-blue-400 bg-blue-600/15' },
             { id: 'Indeed', color: 'border-indigo-500/40 text-indigo-300 bg-indigo-600/15' },
@@ -633,7 +639,7 @@ export default function ExploreJobsPage() {
             <div className="max-w-md mx-auto space-y-2">
               <h3 className="text-xl font-extrabold text-white">No Ingested Jobs in Repository</h3>
               <p className="text-xs text-slate-300 leading-relaxed">
-                Your candidate repository currently has no active listings. Ingest live opportunities from LinkedIn, Naukri, Indeed & Wellfound tailored directly to your profile.
+                Your candidate repository currently has no active listings. Ingest live opportunities from Company Career Portals, LinkedIn, Naukri, Indeed & Wellfound tailored directly to your profile.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">

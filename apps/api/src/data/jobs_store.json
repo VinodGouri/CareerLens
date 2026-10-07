@@ -1,8 +1,91 @@
 [
   {
+    "id": "job_company_1791359878817",
+    "source_id": "src_company_careers",
+    "source": "Company Careers",
+    "external_job_id": "direct_1791359878817",
+    "title": "Software Engineer Iii Google Cloud Bangalore",
+    "company": "Google",
+    "location": "Bangalore, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 0,
+    "experience_max": 3,
+    "salary_min": "₹12,00,000",
+    "salary_max": "₹20,00,000",
+    "salary_numeric_min": 1200000,
+    "salary_numeric_max": 2000000,
+    "source_url": "https://careers.google.com/jobs/results/94829104-software-engineer-iii-google-cloud-bangalore",
+    "posted_at": "2026-10-07T07:57:58.818Z",
+    "description": "https://careers.google.com/jobs/results/94829104-software-engineer-iii-google-cloud-bangalore",
+    "responsibilities": [
+      "Design, implement, and maintain mission-critical product capabilities.",
+      "Participate in architecture reviews, testing, and agile team delivery."
+    ],
+    "requirements": [
+      "Strong computer science fundamentals and software engineering background.",
+      "Proficiency with modern web frameworks, distributed architectures, or scalable backend APIs."
+    ],
+    "required_skills": [
+      "AWS",
+      "Docker",
+      "Kubernetes",
+      "CI/CD",
+      "Linux"
+    ],
+    "preferred_skills": [
+      "Docker",
+      "AWS",
+      "Redis"
+    ],
+    "is_verified": true,
+    "canonical_hash": "bed81aeda510c381dd6ae318909320b2cc23675710962ee66cfdd9a1950dc032"
+  },
+  {
+    "id": "job_company careers_101",
+    "source_id": "src_company_careers",
+    "source": "Company Careers",
+    "external_job_id": "company careers_1000",
+    "title": "Software Engineer - Distributed Systems & Cloud",
+    "company": "Google India",
+    "location": "Bangalore, India",
+    "work_mode": "HYBRID",
+    "employment_type": "FULL_TIME",
+    "experience_min": 1,
+    "experience_max": 4,
+    "salary_min": "₹22,00,000",
+    "salary_max": "₹34,00,000",
+    "salary_numeric_min": 2200000,
+    "salary_numeric_max": 3400000,
+    "source_url": "https://careers.google.com/jobs/results/?q=software%20engineer&location=India",
+    "posted_at": "2026-10-07T06:54:59.578Z",
+    "description": "Build Google Cloud hyper-scale backend infrastructure and storage services handling petabytes of traffic per second.",
+    "responsibilities": [
+      "Deliver reliable, scalable, and well-tested features.",
+      "Collaborate across product, design, and engineering pods."
+    ],
+    "requirements": [
+      "Solid problem solving foundation and relevant technical skill stack.",
+      "Good communication and team collaboration abilities."
+    ],
+    "required_skills": [
+      "Python",
+      "Go",
+      "Distributed Systems",
+      "Kubernetes"
+    ],
+    "preferred_skills": [
+      "GCP",
+      "Docker",
+      "Linux"
+    ],
+    "is_verified": true,
+    "canonical_hash": "a9fb039f54035a4ffdda18308c3b3c2c988853e29159882a5cfca37bcbea6267"
+  },
+  {
     "id": "job_linkedin_101",
-    "source_id": "src_linkedin",
-    "source": "LinkedIn",
+    "source_id": "src_company_careers",
+    "source": "Company Careers",
     "external_job_id": "linkedin_1000",
     "title": "Full Stack Engineer (React & Node.js)",
     "company": "Razorpay",
@@ -15,7 +98,7 @@
     "salary_max": "₹22,00,000",
     "salary_numeric_min": 1400000,
     "salary_numeric_max": 2200000,
-    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Full%20Stack%20Engineer%20(React%20%26%20Node.js)%20Razorpay&location=Bangalore%2C%20India",
+    "source_url": "https://razorpay.com/jobs/",
     "posted_at": "2026-10-07T05:23:17.630Z",
     "description": "Join Razorpay payments platform team to build scalable merchant checkout flows and microservices handling millions of transactions daily.",
     "responsibilities": [
@@ -42,8 +125,8 @@
   },
   {
     "id": "job_linkedin_102",
-    "source_id": "src_linkedin",
-    "source": "LinkedIn",
+    "source_id": "src_company_careers",
+    "source": "Company Careers",
     "external_job_id": "linkedin_1001",
     "title": "Frontend Developer - Core App",
     "company": "Swiggy Tech",
@@ -56,7 +139,7 @@
     "salary_max": "₹18,00,000",
     "salary_numeric_min": 1200000,
     "salary_numeric_max": 1800000,
-    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Frontend%20Developer%20-%20Core%20App%20Swiggy%20Tech&location=Bangalore%2C%20India",
+    "source_url": "https://careers.swiggy.com/",
     "posted_at": "2026-10-07T03:23:17.630Z",
     "description": "Build fast, responsive, accessible consumer checkout interfaces and real-time delivery tracking UI using React and modern CSS.",
     "responsibilities": [
@@ -83,8 +166,8 @@
   },
   {
     "id": "job_linkedin_103",
-    "source_id": "src_linkedin",
-    "source": "LinkedIn",
+    "source_id": "src_company_careers",
+    "source": "Company Careers",
     "external_job_id": "linkedin_1002",
     "title": "Software Engineer - Distributed Systems",
     "company": "Microsoft India",
@@ -97,7 +180,7 @@
     "salary_max": "₹26,00,000",
     "salary_numeric_min": 1600000,
     "salary_numeric_max": 2600000,
-    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Software%20Engineer%20-%20Distributed%20Systems%20Microsoft%20India&location=Hyderabad%2C%20India",
+    "source_url": "https://careers.microsoft.com/v2/global/en/home.html",
     "posted_at": "2026-10-07T02:23:17.630Z",
     "description": "Engineer high-throughput cloud infrastructure and API backends serving enterprise Azure customers globally.",
     "responsibilities": [
@@ -206,8 +289,8 @@
   },
   {
     "id": "job_linkedin_106",
-    "source_id": "src_linkedin",
-    "source": "LinkedIn",
+    "source_id": "src_company_careers",
+    "source": "Company Careers",
     "external_job_id": "linkedin_1005",
     "title": "Backend API Engineer (Node.js & Postgres)",
     "company": "CRED",
@@ -220,7 +303,7 @@
     "salary_max": "₹28,00,000",
     "salary_numeric_min": 1800000,
     "salary_numeric_max": 2800000,
-    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Backend%20API%20Engineer%20(Node.js%20%26%20Postgres)%20CRED&location=Bangalore%2C%20India",
+    "source_url": "https://careers.cred.club/",
     "posted_at": "2026-10-07T00:23:17.630Z",
     "description": "Architect low-latency financial ledger services, credit card rewards systems, and secure member auth APIs.",
     "responsibilities": [
@@ -288,8 +371,8 @@
   },
   {
     "id": "job_indeed_108",
-    "source_id": "src_indeed",
-    "source": "Indeed",
+    "source_id": "src_company_careers",
+    "source": "Company Careers",
     "external_job_id": "indeed_1007",
     "title": "Junior Web Developer - React & Tailwind",
     "company": "Zoho Corporation",
@@ -302,7 +385,7 @@
     "salary_max": "₹10,50,000",
     "salary_numeric_min": 650000,
     "salary_numeric_max": 1050000,
-    "source_url": "https://in.indeed.com/jobs?q=Junior%20Web%20Developer%20-%20React%20%26%20Tailwind%20Zoho%20Corporation&l=Chennai%2C%20India",
+    "source_url": "https://www.zoho.com/careers/",
     "posted_at": "2026-10-06T22:23:17.630Z",
     "description": "Build enterprise productivity software modules within Zoho Suite utilized by over 100 million global business users.",
     "responsibilities": [
@@ -452,8 +535,8 @@
   },
   {
     "id": "job_linkedin_112",
-    "source_id": "src_linkedin",
-    "source": "LinkedIn",
+    "source_id": "src_company_careers",
+    "source": "Company Careers",
     "external_job_id": "linkedin_1011",
     "title": "Software Development Engineer 1 (SDE-1)",
     "company": "Amazon India",
@@ -466,7 +549,7 @@
     "salary_max": "₹28,00,000",
     "salary_numeric_min": 1700000,
     "salary_numeric_max": 2800000,
-    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Software%20Development%20Engineer%201%20(SDE-1)%20Amazon%20India&location=Hyderabad%2C%20India",
+    "source_url": "https://www.amazon.jobs/en/search?base_query=software+engineer&loc_query=India",
     "posted_at": "2026-10-06T03:23:17.630Z",
     "description": "Design robust backend services for Amazon Retail ordering and automated fulfillment optimization.",
     "responsibilities": [
@@ -655,8 +738,8 @@
   },
   {
     "id": "job_linkedin_117",
-    "source_id": "src_linkedin",
-    "source": "LinkedIn",
+    "source_id": "src_company_careers",
+    "source": "Company Careers",
     "external_job_id": "linkedin_1016",
     "title": "Software Engineer - Cloud Platform",
     "company": "Google India",
@@ -669,7 +752,7 @@
     "salary_max": "₹34,00,000",
     "salary_numeric_min": 200000,
     "salary_numeric_max": 3400000,
-    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Software%20Engineer%20-%20Cloud%20Platform%20Google%20India&location=Bangalore%2C%20India",
+    "source_url": "https://careers.google.com/jobs/results/?q=Software%20Engineer&location=India",
     "posted_at": "2026-10-04T07:23:17.630Z",
     "description": "Build hyper-scale developer tooling, infrastructure APIs, and distributed container orchestration for Google Cloud Platform.",
     "responsibilities": [
@@ -696,8 +779,8 @@
   },
   {
     "id": "job_linkedin_118",
-    "source_id": "src_linkedin",
-    "source": "LinkedIn",
+    "source_id": "src_company_careers",
+    "source": "Company Careers",
     "external_job_id": "linkedin_1017",
     "title": "UI/UX & Frontend Developer",
     "company": "Flipkart",
@@ -710,7 +793,7 @@
     "salary_max": "₹18,50,000",
     "salary_numeric_min": 1200000,
     "salary_numeric_max": 1850000,
-    "source_url": "https://www.linkedin.com/jobs/search/?keywords=UI%2FUX%20%26%20Frontend%20Developer%20Flipkart&location=Bangalore%2C%20India",
+    "source_url": "https://www.flipkartcareers.com/",
     "posted_at": "2026-10-04T05:23:17.630Z",
     "description": "Craft frictionless, accessible shopping experiences across Big Billion Days product pages and seller dashboard analytics.",
     "responsibilities": [
@@ -818,8 +901,8 @@
   },
   {
     "id": "job_linkedin_121",
-    "source_id": "src_linkedin",
-    "source": "LinkedIn",
+    "source_id": "src_company_careers",
+    "source": "Company Careers",
     "external_job_id": "linkedin_1020",
     "title": "DevOps & Infrastructure Engineer",
     "company": "Atlassian",
@@ -832,7 +915,7 @@
     "salary_max": "₹26,00,000",
     "salary_numeric_min": 1700000,
     "salary_numeric_max": 2600000,
-    "source_url": "https://www.linkedin.com/jobs/search/?keywords=DevOps%20%26%20Infrastructure%20Engineer%20Atlassian&location=Bangalore%2C%20India",
+    "source_url": "https://www.atlassian.com/company/careers/jobs",
     "posted_at": "2026-10-03T23:23:17.630Z",
     "description": "Help engineer the resilient global cloud platform supporting Jira, Confluence, and Trello with automated chaos testing.",
     "responsibilities": [
@@ -859,8 +942,8 @@
   },
   {
     "id": "job_linkedin_122",
-    "source_id": "src_linkedin",
-    "source": "LinkedIn",
+    "source_id": "src_company_careers",
+    "source": "Company Careers",
     "external_job_id": "linkedin_1021",
     "title": "Software Engineer - Platform & APIs",
     "company": "Uber India",
@@ -873,7 +956,7 @@
     "salary_max": "₹30,00,000",
     "salary_numeric_min": 1800000,
     "salary_numeric_max": 3000000,
-    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Software%20Engineer%20-%20Platform%20%26%20APIs%20Uber%20India&location=Hyderabad%2C%20India",
+    "source_url": "https://www.uber.com/us/en/careers/list/",
     "posted_at": "2026-09-30T07:23:17.630Z",
     "description": "Build real-time driver dispatch matching, surge pricing algorithms, and high-frequency geolocation tracking APIs.",
     "responsibilities": [
@@ -900,8 +983,8 @@
   },
   {
     "id": "job_linkedin_123",
-    "source_id": "src_linkedin",
-    "source": "LinkedIn",
+    "source_id": "src_company_careers",
+    "source": "Company Careers",
     "external_job_id": "linkedin_1022",
     "title": "React & Frontend Web Engineer",
     "company": "Adobe India",
@@ -914,7 +997,7 @@
     "salary_max": "₹25,00,000",
     "salary_numeric_min": 1600000,
     "salary_numeric_max": 2500000,
-    "source_url": "https://www.linkedin.com/jobs/search/?keywords=React%20%26%20Frontend%20Web%20Engineer%20Adobe%20India&location=Delhi%20NCR%2C%20India",
+    "source_url": "https://careers.adobe.com/us/en/search-results?keywords=India",
     "posted_at": "2026-09-30T03:23:17.630Z",
     "description": "Develop next-generation Creative Cloud web applications and browser-based PDF collaboration suites.",
     "responsibilities": [
@@ -981,8 +1064,8 @@
   },
   {
     "id": "job_linkedin_125",
-    "source_id": "src_linkedin",
-    "source": "LinkedIn",
+    "source_id": "src_company_careers",
+    "source": "Company Careers",
     "external_job_id": "linkedin_1024",
     "title": "Full Stack Developer - Enterprise CRM",
     "company": "Salesforce India",
@@ -995,7 +1078,7 @@
     "salary_max": "₹24,00,000",
     "salary_numeric_min": 1500000,
     "salary_numeric_max": 2400000,
-    "source_url": "https://www.linkedin.com/jobs/search/?keywords=Full%20Stack%20Developer%20-%20Enterprise%20CRM%20Salesforce%20India&location=Hyderabad%2C%20India",
+    "source_url": "https://careers.salesforce.com/en/jobs/",
     "posted_at": "2026-09-29T19:23:17.630Z",
     "description": "Empower customer 360 CRM platforms with intuitive React single-page applications and high-availability API endpoints.",
     "responsibilities": [

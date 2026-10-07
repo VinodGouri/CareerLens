@@ -77,8 +77,15 @@ export default function JobDetailPage() {
     return { label: `Posted ${diffDays}d ago`, isToday: false };
   };
 
-  const getApplyButtonDetails = (source) => {
-    switch (source?.toLowerCase()) {
+  const getApplyButtonDetails = (source, company) => {
+    const s = source?.toLowerCase() || '';
+    if (s === 'company careers' || s.includes('career') || s.includes('portal') || s.includes('direct')) {
+      return {
+        label: company ? `Apply on ${company}` : 'Apply on Company Site',
+        className: 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-emerald-600/40 shadow-lg'
+      };
+    }
+    switch (s) {
       case 'linkedin':
         return {
           label: 'Apply on LinkedIn',
@@ -101,14 +108,14 @@ export default function JobDetailPage() {
         };
       default:
         return {
-          label: `Apply on ${source || 'Source'}`,
+          label: `Apply on ${company || source || 'Source'}`,
           className: 'bg-brand-600 hover:bg-brand-500 text-white shadow-glow-primary'
         };
     }
   };
 
   const postedInfo = getRelativePostedTime(job.posted_at);
-  const applyBtn = getApplyButtonDetails(job.source);
+  const applyBtn = getApplyButtonDetails(job.source, job.company);
 
   const handleApplyRedirect = () => {
     window.open(job.source_url, '_blank');
